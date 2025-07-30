@@ -1,0 +1,47 @@
+/* src/styles/guide.css */
+
+/* Guide Container */
+.guide-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.guide-card {
+  background: var(--color-charcoal-800);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.guide-card:hover {
+  border-color: var(--color-power-success);
+  box-shadow: var(--shadow-md);
+}
+
+.guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-12);
+}
+
+.guide-action {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-200);
+}
+
+.guide-saving {
+  background: var(--color-bg-3);
+  color: var(--color-power-success);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.guide-description {
+  color: var(--color-gray-300);
+  line-height: 1.5;
+}
