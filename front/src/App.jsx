@@ -131,7 +131,7 @@ function App() {
         <div className="navbar-container">
           {/* 애플리케이션 브랜드 로고 및 이름입니다. */}
           <div className="navbar-brand">
-            <h2>⚡ PowerPredict AI</h2>
+            <h2> 제목 제목 </h2>
           </div>
           {/* 내비게이션 메뉴 항목들입니다. */}
           <div className="navbar-menu">

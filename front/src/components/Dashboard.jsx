@@ -135,7 +135,7 @@ function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, select
   return (
     // 대시보드 페이지의 최상위 컨테이너입니다.
     <div id="dashboard">
-      <h3>대시보드</h3>
+
       {/* 주요 통계 카드들을 담는 그리드 컨테이너입니다. */}
       <div className="stats-grid">
         {/* 현재 사용량 카드 */}

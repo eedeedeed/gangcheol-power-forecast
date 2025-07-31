@@ -16,7 +16,6 @@ function ProfilePage({ onLogout }) { // onLogout prop 추가
   return (
     // 프로필 페이지의 최상위 컨테이너입니다.
     <div id="profile-page">
-      <h3>회원정보</h3>
       <div className="settings-container"> {/* Settings 컴포넌트의 컨테이너 스타일 재사용 */}
         <div className="card">
           <div className="card__body">

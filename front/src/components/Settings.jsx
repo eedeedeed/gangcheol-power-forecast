@@ -10,7 +10,6 @@ function Settings() {
   return (
     // 설정 페이지의 최상위 컨테이너입니다.
     <div id="settings">
-      <h3>설정</h3>
       {/* 설정 항목들을 담는 컨테이너입니다. */}
       <div className="settings-container">
         {/* 시스템 설정 카드입니다. */}

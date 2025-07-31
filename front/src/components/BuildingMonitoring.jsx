@@ -11,7 +11,6 @@ function BuildingMonitoring({ buildings }) {
   return (
     // 건물 모니터링 페이지의 최상위 컨테이너입니다.
     <div id="monitoring">
-      <h3>건물 모니터링</h3>
       {/* 건물 카드들을 담는 그리드 컨테이너입니다. */}
       <div className="building-grid" id="buildingGrid">
         {/* buildings 배열을 순회하며 각 건물에 대한 카드 컴포넌트를 렌더링합니다. */}

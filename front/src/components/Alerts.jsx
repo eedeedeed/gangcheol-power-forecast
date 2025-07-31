@@ -12,7 +12,6 @@ function Alerts({ alerts }) {
   return (
     // 알림 관리 페이지의 최상위 컨테이너입니다.
     <div id="alerts">
-      <h3>알림 관리</h3>
       {/* 알림 카드들을 담는 컨테이너입니다. */}
       <div className="alerts-container" id="alertsContainer">
         {/* alerts 배열을 순회하며 각 알림에 대한 카드 컴포넌트를 렌더링합니다. */}

@@ -160,3 +160,4 @@ function AuthPage({ setActiveTab, onLoginSuccess }) { // onLoginSuccess prop 추
 }
 
 export default AuthPage;
+

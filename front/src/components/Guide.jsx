@@ -11,7 +11,6 @@ function Guide({ guides }) {
   return (
     // 절감 가이드 페이지의 최상위 컨테이너입니다.
     <div id="guide">
-      <h3>절감 가이드</h3>
       {/* 가이드 카드들을 담는 컨테이너입니다. */}
       <div className="guide-container" id="guideContainer">
         {/* guides 배열을 순회하며 각 가이드 항목에 대한 카드 컴포넌트를 렌더링합니다. */}
