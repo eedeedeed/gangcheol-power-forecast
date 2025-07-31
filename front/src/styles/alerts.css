@@ -1,0 +1,66 @@
+/* src/styles/alerts.css */
+/*
+  이 파일은 알림 관리 페이지의 특정 스타일을 정의합니다.
+  알림 목록 컨테이너, 개별 알림 카드 등에 대한 스타일을 포함합니다.
+*/
+
+/* Alerts Container (알림 컨테이너) */
+.alerts-container {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 정렬 */
+  gap: var(--space-16); /* 알림 카드 간 간격 */
+}
+
+.alert-card {
+  background: var(--color-charcoal-800); /* 배경색 */
+  border: 1px solid var(--color-border); /* 테두리 */
+  border-radius: var(--radius-lg); /* 둥근 모서리 */
+  padding: var(--space-20);
+  border-left: 4px solid; /* 좌측에 두꺼운 상태 표시 테두리 */
+}
+
+/* Warning Alert Card (경고 알림 카드) */
+.alert-card--warning {
+  border-left-color: var(--color-power-warning); /* 경고 색상 테두리 */
+}
+
+/* Info Alert Card (정보 알림 카드) */
+.alert-card--info {
+  border-left-color: var(--color-power-normal); /* 정보 색상 테두리 */
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between; /* 제목과 시간을 양 끝으로 정렬 */
+  align-items: center;
+  margin-bottom: var(--space-12);
+}
+
+.alert-title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-200); /* 알림 제목 색상 */
+}
+
+.alert-time {
+  color: var(--color-gray-400); /* 알림 시간 색상 */
+  font-size: var(--font-size-sm);
+}
+
+.alert-message {
+  color: var(--color-gray-300); /* 알림 메시지 색상 */
+  line-height: 1.5;
+}
+
+/* Blinking Effect for Warning Alerts (경고 알림 깜빡임 효과 - 현재 사용되지 않음) */
+/* 이 부분은 주석 처리되어 있거나, 실제 CSS 파일에 없을 수 있습니다.
+   만약 필요하다면 아래와 같이 정의할 수 있습니다.
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.alert-card--warning.blink {
+  animation: blink 1.5s infinite;
+}
+*/

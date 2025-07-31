@@ -1,0 +1,92 @@
+/* src/styles/auth.css */
+
+/* Auth Page Styles */
+.auth-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 73px - 48px); /* Navbar 높이와 main-content padding 고려 */
+  padding: var(--space-24);
+  background: var(--color-charcoal-700); /* 메인 콘텐츠 배경색과 동일하게 */
+}
+
+.auth-card {
+  background: var(--color-charcoal-800);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  width: 90%;
+  max-width: 500px; /* 적당한 최대 너비 설정 */
+  box-shadow: var(--shadow-lg);
+  color: var(--color-gray-200);
+  display: flex; /* 내부 요소 정렬을 위해 flexbox 사용 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  justify-content: space-between; /* 내용과 하단 링크를 분리 */
+  min-height: 350px; /* 카드 최소 높이 설정 (내용이 적을 때도 보기 좋게) */
+}
+
+.auth-header {
+  margin-bottom: var(--space-20);
+  text-align: center;
+}
+
+.auth-header h4 {
+  font-size: var(--font-size-2xl);
+  color: var(--color-gray-200);
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.auth-body .form-group {
+  margin-bottom: var(--space-16);
+}
+
+.auth-body .form-label {
+  color: var(--color-gray-300);
+  display: block; /* 라벨이 한 줄 전체를 차지하도록 */
+  margin-bottom: var(--space-8); /* 라벨과 입력 필드 사이 간격 */
+  font-size: var(--font-size-sm); /* 라벨 폰트 크기 조정 */
+}
+
+.auth-body .form-control {
+  width: 100%;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-base);
+  box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+}
+
+/* 폼 제출 버튼 컨테이너 */
+.auth-submit-container {
+  margin-top: var(--space-24); /* 폼 그룹과 버튼 사이 간격 */
+  text-align: center; /* 버튼 중앙 정렬 */
+}
+
+/* 전체 너비 버튼 */
+.btn--full-width {
+  width: 100%;
+}
+
+/* 모드 전환 텍스트 링크 */
+.auth-switch-mode {
+  text-align: right; /* 우측 정렬 */
+  margin-top: var(--space-24); /* 카드 본문과의 간격 */
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: var(--color-teal-300); /* 링크 색상 */
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  padding: var(--space-4) var(--space-8); /* 클릭 영역 확보 */
+  border-radius: var(--radius-base);
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.btn-text-link:hover {
+  background-color: rgba(var(--color-teal-300-rgb), 0.1); /* 호버 시 배경색 */
+  color: var(--color-teal-200); /* 호버 시 색상 */
+}
+
+.btn-text-link:active {
+  background-color: rgba(var(--color-teal-300-rgb), 0.2);
+}

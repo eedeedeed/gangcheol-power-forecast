@@ -1,0 +1,46 @@
+/* src/styles/monitoring.css */
+
+/* Building Grid */
+.building-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-20);
+}
+
+.building-card {
+  background: var(--color-charcoal-800);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.building-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.building-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-16);
+}
+
+.building-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-200);
+}
+
+.building-usage {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-teal-300);
+}
+
+.building-unit {
+  color: var(--color-gray-400);
+  font-size: var(--font-size-sm);
+  margin-left: var(--space-4);
+}

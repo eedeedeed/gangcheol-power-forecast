@@ -1,0 +1,205 @@
+/* src/styles/layout.css */
+
+/* Navbar Styles */
+.navbar {
+  background: var(--color-charcoal-800);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-16) var(--space-24);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navbar-brand h2 {
+  color: var(--color-teal-300);
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.navbar-menu {
+  display: flex;
+  gap: var(--space-24);
+}
+
+.navbar-item {
+  color: var(--color-gray-300);
+  text-decoration: none;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-base);
+  transition: all var(--duration-normal) var(--ease-standard);
+  font-weight: var(--font-weight-medium);
+}
+
+.navbar-item:hover {
+  background: var(--color-secondary);
+  color: var(--color-teal-300);
+}
+
+.navbar-item.active {
+  background: var(--color-teal-300);
+  color: var(--color-charcoal-800);
+}
+
+/* Main Container Layout */
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 73px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background: var(--color-charcoal-800);
+  padding: var(--space-24);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: var(--space-32);
+}
+
+.sidebar-section h4 {
+  color: var(--color-gray-200);
+  margin-bottom: var(--space-16);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Quick Alerts */
+.quick-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.quick-alert {
+  padding: var(--space-12);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  border-left: 3px solid;
+  position: relative; /* X 버튼 위치 지정을 위해 추가 */
+  padding-right: var(--space-24); /* X 버튼 공간 확보 및 내용과의 간격 조정 */
+}
+
+.quick-alert--warning {
+  background: var(--color-bg-2);
+  border-left-color: var(--color-power-warning);
+  color: var(--color-power-warning);
+}
+
+.quick-alert--info {
+  background: var(--color-bg-1);
+  border-left-color: var(--color-power-normal);
+  color: var(--color-power-normal);
+}
+
+/* Quick Alert Close Button */
+.quick-alert-close-btn {
+  position: absolute;
+  top: 4px; /* 픽셀 단위로 직접 지정하여 정확한 위치 보장 */
+  right: 4px; /* 픽셀 단위로 직접 지정하여 정확한 위치 보장 */
+  background: none; /* 배경색 제거 */
+  border: none;
+  color: var(--color-gray-400); /* X 버튼 색상을 더 밝게 변경 */
+  font-size: 1rem; /* X 버튼 크기 조정 */
+  cursor: pointer;
+  padding: 4px; /* 클릭 영역 확보를 위한 패딩 */
+  line-height: 1; /* 텍스트 라인 높이 조절 */
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.quick-alert-close-btn:hover {
+  color: var(--color-white); /* 호버 시 색상 변경 */
+}
+
+
+/* Savings Summary */
+.savings-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.savings-item {
+  padding: var(--space-12);
+  background: var(--color-bg-3);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  position: relative; /* X 버튼 위치 지정을 위해 추가 */
+  padding-right: var(--space-24); /* X 버튼 공간 확보 및 내용과의 간격 조정 */
+}
+
+.savings-value {
+  color: var(--color-power-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: var(--space-24);
+  background: var(--color-charcoal-700);
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .navbar-menu {
+    gap: var(--space-12);
+  }
+  
+  .navbar-item {
+    padding: var(--space-6) var(--space-12);
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    gap: var(--space-16);
+  }
+  
+  .navbar-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-content {
+    padding: var(--space-16);
+  }
+  
+  .sidebar {
+    padding: var(--space-16);
+  }
+}

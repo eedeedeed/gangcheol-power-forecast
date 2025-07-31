@@ -1,68 +1,70 @@
+// backend/controllers/userControllers.js
 const { User } = require('../models');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// 사용자 인증 후 JWT 생성
-const config = require('../config/config');
+const bcrypt = require('bcryptjs');
 
-// 회원가입
 exports.register = async (req, res) => {
-  try {
-    const { username, password } = req.body;
+  // 사용자 이름은 더 이상 필수 아님 (프론트에서 제거할 것이므로)
+  const { email, password } = req.body; // username 제거
 
-    // 사용자명과 비밀번호가 모두 입력되었는지 확인
-    if (!username || !password) {
-      return res.status(400).json({ error: '사용자명과 비밀번호를 모두 입력해주세요.' });
+  if (!email || !password) {
+    return res.status(400).json({ message: '이메일과 비밀번호를 입력하세요.' });
+  }
+
+  try {
+    // 1. 이메일 중복 확인 (이미 구현됨)
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) {
+      return res.status(409).json({ message: '이미 가입된 이메일 주소입니다.' }); // 요청하신 메시지
     }
 
-    // 사용자 이름 중복 확인
-    const existingUser = await User.findOne({ where: { username } }); // .findOne() 사용 (where 절)
-    if (existingUser) {
-      return res.status(409).json({ error: '이미 존재하는 사용자명입니다.' })
-    };
+    // 2. 사용자 이름 중복 확인 (이메일을 ID로 사용할 것이므로 필요 없음, 제거)
+    // const existingUsername = await User.findOne({ where: { username } });
+    // if (existingUsername) {
+    //   return res.status(409).json({ message: '이미 사용 중인 사용자 이름입니다.' });
+    // }
 
-    // 사용자 생성
-    const newUser = await User.create({ username, password});
+    // 3. 새 사용자 생성 (username 필드가 있다면 null 또는 기본값으로 저장)
+    const newUser = await User.create({
+      // username: username, // username을 더 이상 받지 않는다면 이 줄 제거 또는 null 처리
+      email,
+      password
+    });
 
-    res.status(201).json({ message: '회원가입 성공', userId: newUser.id });
-  } catch (err) {
-    console.error('회원가입 중 오류 발생:', err);
-    res.status(500).json({ error: '회원가입 실패', details: err.message });
+    // 4. JWT 토큰 생성
+    const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, {
+      expiresIn: '1h'
+    });
+
+    res.status(201).json({ message: '회원가입이 성공적으로 완료되었습니다.', token });
+  } catch (error) {
+    console.error('회원가입 중 오류 발생:', error);
+    res.status(500).json({ message: '회원가입 중 서버 오류가 발생했습니다.' });
   }
 };
 
-// 로그인
+// 로그인 (login 함수):
 exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { username, password } = req.body;
-
-    // 사용자명과 비밀번호가 모두 입력되었는지 확인
-    if (!username || !password) {
-      return res.status(400).json({ error: '사용자명과 비밀번호를 모두 입력해주세요.' });
-    }
-    
-    // 사용자 존재 여부 확인
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ error: '잘못된 사용자 이름 또는 비밀번호입니다.' })
-    };
+      return res.status(400).json({ message: '아이디 또는 비밀번호가 틀렸습니다.' }); // 요청하신 메시지
+    }
 
-    // 비밀번호 일치 여부 확인
-    const isMatch = await user.comparePassword(password); // Sequelize 모델 인스턴스는 .comparePassword 메서드 사용
+    const isMatch = await user.validPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ error: '비밀번호가 틀렸습니다.' })
-    };
+      return res.status(400).json({ message: '비밀번호가 틀렸습니다.' }); // 요청하신 메시지
+    }
 
-    //JWT 토큰 생성(로그인 성공 시)
-    const token = jwt.sign(
-      { id: user.id },
-      config.jwtSecret,
-      { expiresIn: '1h' }
-    ); // Sequelize 모델 인스턴스는 .id로 접근
+    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: '1h'
+    });
 
-    //성공 응답
     res.status(200).json({ message: '로그인 성공', token });
-  } catch (err) {
-    console.error('로그인 중 오류 발생',err);
-    res.status(500).json({ error: '로그인 실패', details: err.message });
+  } catch (error) {
+    console.error('로그인 중 오류 발생:', error);
+    res.status(500).json({ message: '로그인 중 서버 오류가 발생했습니다.' });
   }
 };
