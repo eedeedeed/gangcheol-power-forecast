@@ -139,7 +139,7 @@ function App() {
             {isLoggedIn && (
               <>
                 <a href="#" className={`navbar-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => handleTabClick('dashboard')} data-tab="dashboard">대시보드</a>
-                <a href="#" className={`navbar-item ${activeTab === 'monitoring' ? 'active' : ''}`} onClick={() => handleTabClick('monitoring')} data-tab="monitoring">건물 모니터링</a>
+                <a href="#" className={`navbar-item ${activeTab === 'monitoring' ? 'active' : ''}`} onClick={() => handleTabClick('monitoring')} data-tab="monitoring">건물 관리</a>
                 <a href="#" className={`navbar-item ${activeTab === 'alerts' ? 'active' : ''}`} onClick={() => handleTabClick('alerts')} data-tab="alerts">알림 관리</a>
                 <a href="#" className={`navbar-item ${activeTab === 'guide' ? 'active' : ''}`} onClick={() => handleTabClick('guide')} data-tab="guide">절감 가이드</a>
                 <a href="#" className={`navbar-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => handleTabClick('settings')} data-tab="settings">설정</a>

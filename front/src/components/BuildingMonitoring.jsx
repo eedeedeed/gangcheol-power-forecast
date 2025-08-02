@@ -1,40 +1,178 @@
 // src/components/BuildingMonitoring.jsx
-// 이 파일은 여러 건물의 실시간 전력 사용량 및 상태를 모니터링하는 컴포넌트입니다.
-// 각 건물에 대한 정보를 카드 형태로 표시합니다.
 
-import React from 'react';
+import React, { useState } from 'react';
+import { powerData } from '../data'; // data.js에서 powerData를 가져옵니다.
+import '../styles/monitoring.css';
 
-function BuildingMonitoring({ buildings }) {
-  // props:
-  // - buildings: 모니터링할 건물들의 배열. 각 건물 객체는 id, name, current(현재 사용량), status(상태: 'normal' 또는 'warning')를 포함합니다.
+function BuildingMonitoring() {
+  const [buildings, setBuildings] = useState(powerData.buildings);
+  const [newBuilding, setNewBuilding] = useState({
+    id: null,
+    name: '',
+    type: '',
+    area: '',
+    coolingArea: '',
+    solarCapacity: '',
+    essCapacity: '',
+    pcsCapacity: '',
+    lat: '',
+    lng: '',
+  });
+  const [editingBuildingId, setEditingBuildingId] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewBuilding(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingBuildingId) {
+      setBuildings(buildings.map(b =>
+        b.id === editingBuildingId ? { ...newBuilding, id: editingBuildingId } : b
+      ));
+      setEditingBuildingId(null);
+    } else {
+      const newId = buildings.length > 0 ? Math.max(...buildings.map(b => b.id)) + 1 : 1;
+      setBuildings([...buildings, { ...newBuilding, id: newId, current: 0, status: 'normal' }]);
+    }
+    setNewBuilding({
+      id: null, name: '', type: '', area: '', coolingArea: '', solarCapacity: '',
+      essCapacity: '', pcsCapacity: '', lat: '', lng: ''
+    });
+  };
+
+  const handleEditClick = (building) => {
+    setNewBuilding(building);
+    setEditingBuildingId(building.id);
+  };
+
+  const handleDeleteClick = (buildingId) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      setBuildings(buildings.filter(b => b.id !== buildingId));
+    }
+  };
 
   return (
-    // 건물 모니터링 페이지의 최상위 컨테이너입니다.
     <div id="monitoring">
-      {/* 건물 카드들을 담는 그리드 컨테이너입니다. */}
+      {/* 기존 건물 카드형 UI */}
       <div className="building-grid" id="buildingGrid">
-        {/* buildings 배열을 순회하며 각 건물에 대한 카드 컴포넌트를 렌더링합니다. */}
         {buildings.map(building => (
-          // 각 건물 카드의 고유 키는 building.id를 사용합니다.
           <div key={building.id} className="card building-card">
-            {/* 건물 카드의 헤더 부분입니다. */}
             <div className="building-header">
-              {/* 건물 이름입니다. */}
               <div className="building-name">{building.name}</div>
-              {/* 건물 상태를 나타내는 스팬 태그입니다.
-                  상태에 따라 다른 CSS 클래스(status--info 또는 status--warning)가 적용됩니다. */}
               <span className={`status ${building.status === 'normal' ? 'status--info' : 'status--warning'}`}>
-                {/* 상태 텍스트를 한글로 표시합니다. */}
                 {building.status === 'normal' ? '정상' : '주의'}
               </span>
             </div>
-            {/* 건물 현재 사용량을 표시하는 부분입니다. */}
-            <div className="building-usage">
-              {/* 현재 사용량을 로케일 형식에 맞게 포맷팅하고 'kW' 단위를 붙입니다. */}
-              {building.current.toLocaleString()}<span className="building-unit">kW</span>
+            <div className="building-usage">{building.current} <span className="building-unit">kW</span></div>
+            <div className="building-details">
+              <span className="building-detail-item"><strong>유형:</strong> {building.type || 'N/A'}</span>
+              <span className="building-detail-item"><strong>면적:</strong> {building.area || 'N/A'}㎡</span>
+              <span className="building-detail-item"><strong>태양광:</strong> {building.solarCapacity || 'N/A'} kW</span>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* 건물 관리 기능 추가 */}
+      <div className="building-management-section">
+        <h3>건물 관리</h3>
+        <div className="management-card">
+          <h4>{editingBuildingId ? '건물 정보 수정' : '새 건물 등록'}</h4>
+          <form onSubmit={handleSubmit} className="building-form">
+            <div className="form-group">
+              <label>건물명</label>
+              <input type="text" name="name" value={newBuilding.name} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>건물유형</label>
+              <input type="text" name="type" value={newBuilding.type} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>연면적(㎡)</label>
+              <input type="number" name="area" value={newBuilding.area} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>냉방면적(㎡)</label>
+              <input type="number" name="coolingArea" value={newBuilding.coolingArea} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>태양광용량(kW)</label>
+              <input type="number" name="solarCapacity" value={newBuilding.solarCapacity} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>ESS저장용량(kWh)</label>
+              <input type="number" name="essCapacity" value={newBuilding.essCapacity} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>PCS용량(kW)</label>
+              <input type="number" name="pcsCapacity" value={newBuilding.pcsCapacity} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>위도</label>
+              <input type="text" name="lat" value={newBuilding.lat} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label>경도</label>
+              <input type="text" name="lng" value={newBuilding.lng} onChange={handleInputChange} required />
+            </div>
+            <div className="form-actions">
+              <button type="submit" className="btn btn--primary">
+                {editingBuildingId ? '수정 완료' : '등록'}
+              </button>
+              {editingBuildingId && (
+                <button type="button" className="btn btn--secondary" onClick={() => setEditingBuildingId(null)}>
+                  취소
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        <div className="management-card">
+          <h4>등록된 건물 목록</h4>
+          <div className="table-responsive">
+            <table className="building-management-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>건물명</th>
+                  <th>유형</th>
+                  <th>연면적(㎡)</th>
+                  <th>태양광(kW)</th>
+                  <th>ESS(kWh)</th>
+                  <th>PCS(kW)</th>
+                  <th>위도</th>
+                  <th>경도</th>
+                  <th>액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                {buildings.map((building) => (
+                  <tr key={building.id}>
+                    <td>{building.id}</td>
+                    <td>{building.name}</td>
+                    <td>{building.type || 'N/A'}</td>
+                    <td>{building.area || 'N/A'}</td>
+                    <td>{building.solarCapacity || 'N/A'}</td>
+                    <td>{building.essCapacity || 'N/A'}</td>
+                    <td>{building.pcsCapacity || 'N/A'}</td>
+                    <td>{building.lat || 'N/A'}</td>
+                    <td>{building.lng || 'N/A'}</td>
+                    <td className="actions">
+                      <button onClick={() => handleEditClick(building)} className="btn btn--info">수정</button>
+                      <button onClick={() => handleDeleteClick(building.id)} className="btn btn--warning">삭제</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

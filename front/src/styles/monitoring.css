@@ -44,3 +44,115 @@
   font-size: var(--font-size-sm);
   margin-left: var(--space-4);
 }
+
+.building-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+}
+
+.building-detail-item {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-300);
+}
+
+.building-detail-item strong {
+  color: var(--color-gray-200);
+}
+
+/* ------------------------------------------------------------- */
+/* Building Management Styles (새로 추가된 부분) */
+/* ------------------------------------------------------------- */
+
+.building-management-section {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.management-card {
+  background: var(--color-charcoal-800);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.management-card h4 {
+  color: var(--color-gray-200);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.building-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.building-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.building-form .form-group label {
+  font-weight: 600;
+  color: var(--color-gray-300);
+}
+
+.building-form .form-group input {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background-color: var(--color-charcoal-700);
+  color: var(--color-gray-200);
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.building-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.building-management-table th,
+.building-management-table td {
+  text-align: left;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-gray-300);
+  font-size: 14px;
+}
+
+.building-management-table th {
+  background-color: var(--color-charcoal-700);
+  font-weight: 700;
+  color: var(--color-gray-200);
+}
+
+.building-management-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.building-management-table tr:hover {
+  background-color: rgba(var(--color-teal-300-rgb), 0.1);
+}
+
+.building-management-table .actions {
+  display: flex;
+  gap: 5px;
+}
