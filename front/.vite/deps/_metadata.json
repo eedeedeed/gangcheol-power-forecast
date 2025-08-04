@@ -2,7 +2,42 @@
   "hash": "6eeae3ed",
   "configHash": "7829a5ba",
   "lockfileHash": "3856577f",
-  "browserHash": "2e99c41a",
-  "optimized": {},
-  "chunks": {}
+  "browserHash": "aba0aebe",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "9c5afb0f",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "a530da1e",
+      "needsInterop": true
+    },
+    "react-chartjs-2": {
+      "src": "../../node_modules/react-chartjs-2/dist/index.js",
+      "file": "react-chartjs-2.js",
+      "fileHash": "40d4f026",
+      "needsInterop": false
+    },
+    "chart.js": {
+      "src": "../../node_modules/chart.js/dist/chart.js",
+      "file": "chart__js.js",
+      "fileHash": "fb1c2027",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-KS2M7ZJI": {
+      "file": "chunk-KS2M7ZJI.js"
+    },
+    "chunk-YBURIK6U": {
+      "file": "chunk-YBURIK6U.js"
+    },
+    "chunk-5WRI5ZAA": {
+      "file": "chunk-5WRI5ZAA.js"
+    }
+  }
 }

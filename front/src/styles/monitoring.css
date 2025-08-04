@@ -156,3 +156,457 @@
   display: flex;
   gap: 5px;
 }
+/* src/styles/monitoring.css - 기존 코드 끝에 추가 */
+
+/* 버튼 겹침 문제 해결 */
+.building-form .form-actions {
+  display: flex;
+  gap: var(--space-12);
+  flex-wrap: wrap;
+  margin-top: var(--space-20);
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.building-form .form-actions button {
+  flex: 0 0 auto;
+  min-width: 100px;
+  padding: var(--space-10) var(--space-20);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+/* 주소 검색 컨테이너 버튼 간격 수정 */
+.address-search-container {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+  align-items: flex-start;
+}
+
+.address-input {
+  flex: 1;
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  min-width: 0; /* flex item이 너무 작아지는 것 방지 */
+}
+
+.address-search-btn {
+  flex: 0 0 auto;
+  min-width: 80px;
+  white-space: nowrap;
+  padding: var(--space-8) var(--space-16);
+}
+
+/* 좌표 입력 필드 간격 조정 */
+.coordinates-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  margin-bottom: var(--space-12);
+}
+
+.coordinate-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.coordinate-input {
+  width: 100%;
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-4);
+}
+
+/* 폼 그룹 간격 조정 */
+.building-form .form-group {
+  margin-bottom: var(--space-16);
+}
+
+.building-form .form-group:last-of-type {
+  margin-bottom: var(--space-20);
+}
+
+/* 테이블 액션 버튼 간격 */
+.building-management-table .actions {
+  white-space: nowrap;
+}
+
+.building-management-table .actions button {
+  margin-right: var(--space-8);
+  padding: var(--space-6) var(--space-12);
+  font-size: var(--font-size-xs);
+  min-width: 60px;
+}
+
+.building-management-table .actions button:last-child {
+  margin-right: 0;
+}
+
+/* 반응형 디자인 - 작은 화면에서 버튼 세로 배치 */
+@media (max-width: 768px) {
+  .building-form .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .building-form .form-actions button {
+    width: 100%;
+    margin-bottom: var(--space-8);
+    min-width: auto;
+  }
+  
+  .building-form .form-actions button:last-child {
+    margin-bottom: 0;
+  }
+  
+  .address-search-container {
+    flex-direction: column;
+  }
+  
+  .address-search-btn {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .coordinates-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+  
+  .building-management-table .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .building-management-table .actions button {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* 매우 작은 화면 대응 */
+@media (max-width: 480px) {
+  .building-form {
+    padding: var(--space-12);
+  }
+  
+  .form-group label {
+    font-size: var(--font-size-sm);
+  }
+  
+  .form-group input,
+  .form-group select {
+    font-size: var(--font-size-sm);
+    padding: var(--space-6) var(--space-10);
+  }
+}
+
+/* 버튼 호버 효과 개선 */
+.building-form .form-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 주소 검색 결과 리스트 스크롤 개선 */
+.address-results {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--color-charcoal-800);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 주소 결과 아이템 호버 효과 */
+.address-result-item:hover {
+  background: var(--color-secondary);
+  cursor: pointer;
+}
+
+/* 선택된 주소 스타일 개선 */
+.selected-address {
+  padding: var(--space-12);
+  background: rgba(50, 184, 198, 0.1);
+  border-radius: var(--radius-base);
+  margin-bottom: var(--space-12);
+  font-size: var(--font-size-sm);
+  color: var(--color-teal-300);
+  border-left: 3px solid var(--color-teal-300);
+  word-break: keep-all;
+  line-height: 1.4;
+}
+/* src/styles/monitoring.css - 기존 코드 끝에 추가 */
+
+/* Select 박스 다크 테마 스타일링 */
+.building-form select,
+.form-group select {
+  width: 100%;
+  padding: var(--space-10) var(--space-12);
+  background-color: var(--color-charcoal-800);
+  color: var(--color-gray-200);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-base);
+  
+  /* 기본 브라우저 스타일 제거 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+  
+  /* 커스텀 드롭다운 화살표 */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23A7A9A9' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right var(--space-12) center;
+  background-size: 16px 16px;
+  padding-right: var(--space-40); /* 화살표 공간 확보 */
+}
+
+/* Select 박스 hover 상태 */
+.building-form select:hover,
+.form-group select:hover {
+  border-color: var(--color-teal-300);
+  background-color: var(--color-charcoal-700);
+}
+
+/* Select 박스 focus 상태 */
+.building-form select:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-teal-300);
+  box-shadow: 0 0 0 3px rgba(50, 184, 198, 0.3);
+  background-color: var(--color-charcoal-700);
+}
+
+/* Select 박스 disabled 상태 */
+.building-form select:disabled,
+.form-group select:disabled {
+  background-color: var(--color-secondary);
+  color: var(--color-gray-400);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Option 스타일링 (일부 브라우저에서만 지원) */
+.building-form select option,
+.form-group select option {
+  background-color: var(--color-charcoal-800);
+  color: var(--color-gray-200);
+  padding: var(--space-8);
+}
+
+/* 첫 번째 placeholder 옵션 스타일 */
+.building-form select option:first-child,
+.form-group select option:first-child {
+  color: var(--color-gray-400);
+  font-style: italic;
+}
+
+/* Select 컨테이너 스타일 개선 */
+.form-group {
+  margin-bottom: var(--space-16);
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-8);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-200);
+  word-break: keep-all;
+  line-height: 1.4;
+}
+
+/* 필수 입력 표시 */
+.form-group label.required::after {
+  content: ' *';
+  color: var(--color-red-400);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Select 박스 로딩 상태 (필요시) */
+.form-group.loading select {
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><circle fill='none' stroke='%2332B8C6' stroke-width='2' stroke-linecap='round' stroke-dasharray='31.416' stroke-dashoffset='31.416' cx='10' cy='10' r='5'><animate attributeName='stroke-dasharray' dur='2s' values='0 31.416;15.708 15.708;0 31.416' repeatCount='indefinite'/><animate attributeName='stroke-dashoffset' dur='2s' values='0;-15.708;-31.416' repeatCount='indefinite'/></circle></svg>"),
+    url("data:image/svg+xml;utf8,<svg fill='%23A7A9A9' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-position: right var(--space-40) center, right var(--space-12) center;
+  background-size: 16px 16px, 16px 16px;
+  padding-right: var(--space-64);
+}
+
+/* 에러 상태 스타일 */
+.form-group.error select {
+  border-color: var(--color-red-400);
+  box-shadow: 0 0 0 3px rgba(255, 84, 89, 0.3);
+}
+
+.form-group.error .error-message {
+  color: var(--color-red-400);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-4);
+  display: block;
+}
+
+/* 성공 상태 스타일 */
+.form-group.success select {
+  border-color: var(--color-power-success);
+  box-shadow: 0 0 0 3px rgba(93, 135, 143, 0.3);
+}
+
+/* Select 박스 그룹화 (여러 개가 나란히 있을 때) */
+.select-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-16);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .building-form select,
+  .form-group select {
+    padding: var(--space-8) var(--space-10);
+    font-size: var(--font-size-sm);
+    background-size: 14px 14px;
+    background-position: right var(--space-10) center;
+    padding-right: var(--space-32);
+  }
+  
+  .select-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 다크 테마 강화 */
+@media (prefers-color-scheme: dark) {
+  .building-form select,
+  .form-group select {
+    background-color: var(--color-charcoal-800);
+    color: var(--color-gray-200);
+    border-color: var(--color-border);
+  }
+}
+/* src/styles/monitoring.css - 기존 코드 끝에 추가 */
+
+/* 주소 직접 입력 필드 */
+.address-direct-input {
+  width: 100%;
+  padding: var(--space-10) var(--space-12);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  background: var(--color-charcoal-800);
+  color: var(--color-gray-200);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-12);
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.address-direct-input:focus {
+  outline: none;
+  border-color: var(--color-teal-300);
+  box-shadow: 0 0 0 3px rgba(50, 184, 198, 0.3);
+}
+
+/* 주소 검색 컨테이너 간격 조정 */
+.address-search-container {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+  align-items: flex-start;
+}
+
+/* 주소 도움말 스타일 */
+.address-help {
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  background: var(--color-bg-1);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  text-align: left;
+  border-left: 3px solid var(--color-teal-300);
+}
+
+/* 테이블 주소 컬럼 스타일 */
+.address-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: help;
+  position: relative;
+}
+
+.address-cell:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-charcoal-800);
+  color: var(--color-gray-200);
+  padding: var(--space-8);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-xs);
+  white-space: normal;
+  word-break: keep-all;
+  max-width: 300px;
+  z-index: 1000;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 검색 결과 스타일 개선 */
+.address-result-item {
+  padding: var(--space-12);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+
+.address-result-item:hover {
+  background: var(--color-secondary);
+}
+
+.address-result-item:last-child {
+  border-bottom: none;
+}
+
+.address-name {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-200);
+  word-break: keep-all;
+  line-height: 1.4;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .address-cell {
+    max-width: 150px;
+  }
+  
+  .building-management-table th:nth-child(5),
+  .building-management-table td:nth-child(5) {
+    display: none; /* 작은 화면에서 주소 컬럼 숨김 */
+  }
+}
+
+@media (max-width: 480px) {
+  .address-search-container {
+    flex-direction: column;
+  }
+  
+  .address-search-btn {
+    width: 100%;
+  }
+}
