@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const adminCtrl = require('../controllers/adminController');
-const auth = require('../middleware/authMiddleware');
+const adminController = require('../controllers/adminController');
 
-router.post('/register', adminCtrl.register);
-router.post('/login', adminCtrl.login);
-router.put('/update', auth, adminCtrl.update);
-router.delete('/delete', auth, adminCtrl.delete);
+router.post('/register', adminController.createAdmin); //관리자등록
+router.post('/login', adminController.loginAdmin); //관리자로그인
+router.put('/update/:id', adminController.updateAdmin); //관리자수정 put방식!!! (:id는 그냥 변수의 의미입니다...)
+router.post('/delete', adminController.deleteAdmin); //관리자 탈퇴
 
 module.exports = router;

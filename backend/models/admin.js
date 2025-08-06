@@ -1,14 +1,16 @@
 // models/admin.js
+// admin table 정의
+
 const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
-  const Admin = sequelize.define('Admin', {
+  const Admin = sequelize.define('ADMIN', {  // 테이블명 대문자로 변경
     ADMIN_ID: {
       type: DataTypes.STRING(50),
       primaryKey: true,
       allowNull: false
     },
-    ADMIN_PASSWORD: {
+    ADMIN_PASSWORD: {    // 컬럼명 대문자 및 맞춤
       type: DataTypes.STRING(100),
       allowNull: false
     },
@@ -18,14 +20,26 @@ module.exports = (sequelize, DataTypes) => {
     },
     BUILDING_ID: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
+    },
+    deletedYN: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'N'
     }
+
   }, {
-    tableName: 'admin',
+    tableName: 'ADMIN',  // 테이블명 대문자 지정
     timestamps: false
   });
 
-  // 예: 비밀번호 해싱 hook 등 추가 가능
+  // 비밀번호 해싱 hook 예시
+  Admin.beforeCreate(async (admin) => {
+    if (admin.ADMIN_PASSWORD) {
+      const salt = await bcrypt.genSalt(10);
+      admin.ADMIN_PASSWORD = await bcrypt.hash(admin.ADMIN_PASSWORD, salt);
+    }
+  });
 
   return Admin;
 };

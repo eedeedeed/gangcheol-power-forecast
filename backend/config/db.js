@@ -1,14 +1,15 @@
-// connection pool 생성
+// backend/config/db.js
 
-const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-//mysql과 connect하는 connection pool 생성 : 지정 - 4가지(host, username, password, database(schema)) 
-const pool = mysql.createPool({ 
-    host : '192.168.1.96',
-    user: 'power',
-    password : 'power0228',
-    database : 'esg_power' //node라고 생성했던 스키마 작성
-});
-
-//모듈로 사용을 위해 내보내기
-module.exports = pool;
+module.exports = {
+  development: {
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    dialect: 'mysql'
+  },
+  // 필요하다면 test/production 환경도 추가 가능
+};

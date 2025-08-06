@@ -1,54 +1,22 @@
-// models/index.js
-const fs = require('fs');
-const path = require('path');
-const {Sequelize,DataTypes} = require('sequelize');
-const basename = path.basename(__filename);
-require('dotenv').config();
-
-const db = {};
+// backend/models/index.js
+const { Sequelize, DataTypes } = require('sequelize');
+const config = require('../config/db')['development'];
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: 'mysql',
-    logging: false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
-  }
+  config.database,
+  config.username,
+  config.password,
+  config
 );
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 && 
-      file !== basename && 
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, DataTypes);
-    db[model.name] = model;
-  });
+// 모델 불러오기
+const Admin = require('./admin')(sequelize, DataTypes);
 
-// 모델 관계 설정
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
+// 여러 모델이 있다면 여기에 추가로 정의
+const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-db.DataTypes = DataTypes;
+
+db.Admin = Admin;
 
 module.exports = db;
