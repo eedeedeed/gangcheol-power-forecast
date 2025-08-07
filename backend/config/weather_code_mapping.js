@@ -9,7 +9,6 @@ const ptyMap = {
   '7': '눈날림'
 };
 
-
 //강수량 RN1
 function formatRainfall(value) {
   const val = parseFloat(value);

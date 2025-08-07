@@ -1,40 +1,25 @@
-// controllers/locationController.js
-const { Location } = require('../models');
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const { addressToGeocode } = require('../config/geocoding');
+const { convertToGrid } = require('../config/geoutil');
+const { getUltraShortForecast } = require('./weatherController');
 
-const apiKey = 'CFE0BF16-1308-3D7B-A1EA-9AA4AC4FD66D';
-
-exports.getGeocode = async (req, res) => {
-  const address = req.query.address;
-
-  if (!address) {
-    return res.status(400).json({ error: 'address query parameter is required' });
-  }
-
-  const url = `https://api.vworld.kr/req/address?service=address&request=getCoord&format=json&type=road&address=${encodeURIComponent(address)}&key=${apiKey}`;
-
+exports.getWeather = async (req, res) => {
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const { address } = req.query;
+    if (!address) return res.status(400).json({ error: '주소가 필요합니다.' });
 
-    const point = data?.response?.result?.point;
-    if (!point) {
-      return res.status(404).json({ error: '좌표 정보를 찾을 수 없습니다.' });
-    }
+    // 1. 주소 → 위경도
+    const { lat, lon } = await addressToGeocode(address);
 
-    console.log(`📍 주소: ${address}`);
-    console.log(`🧭 위도: ${point.y}`);
-    console.log(`🧭 경도: ${point.x}`);
+    // 2. 위경도 → 격자 X, Y
+    const { x, y } = convertToGrid(lat, lon);
 
-    // API 호출 결과를 클라이언트에 반환
-    res.json({
-      address,
-      latitude: point.y,
-      longitude: point.x,
-    });
+    // 3. 날씨 정보 요청
+    const weatherData = await getUltraShortForecast(x, y);
 
-  } catch (error) {
-    console.error('API 요청 실패:', error);
-    res.status(500).json({ error: 'API 요청 실패' });
+    // 4. 결과 반환
+    res.json(weatherData);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
