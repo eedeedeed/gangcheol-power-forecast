@@ -12,6 +12,7 @@ const sequelize = new Sequelize(
 // 모델 불러오기
 const Admin = require('./admin')(sequelize, DataTypes);
 
+
 // 여러 모델이 있다면 여기에 추가로 정의
 const db = {};
 db.sequelize = sequelize;

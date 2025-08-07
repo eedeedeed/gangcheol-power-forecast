@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.5",
     "mysql2": "^3.14.3",
+    "node-fetch": "^3.3.2",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {

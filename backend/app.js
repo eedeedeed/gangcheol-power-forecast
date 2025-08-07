@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const adminRoutes = require('./routes/adminRoutes');
 const buildingRouters = require('./routes/buildingRoutes');
+const locationRoutes = require('./routes/locationRoutes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // 라우터
 app.use('/admin', adminRoutes);
 app.use('/building', buildingRouters);
+app.use('/location', locationRoutes);
 
 app.listen(5000, '0.0.0.0', () => {
   console.log('🚀 서버 실행 중');
