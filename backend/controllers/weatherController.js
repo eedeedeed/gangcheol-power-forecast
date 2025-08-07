@@ -8,6 +8,7 @@ const { ptyMap, formatRainfall } = require('../config/weather_code_mapping');
 
 // 초단기예보 가져오기
 exports.getUltraShortForecast = async (nx,ny) => {
+  try {
   const API_KEY = process.env.WEATHER_API_KEY;
   const base_date = dayjs().format('YYYYMMDD');
   const base_time = getBaseTimeFromNow();
@@ -28,10 +29,44 @@ exports.getUltraShortForecast = async (nx,ny) => {
     }
   );
 
-  const items = response.data?.response?.body?.items?.item;
 
-  // 필요한 항목만 필터링
-  const filtered = items.filter(item => item.fcstTime === fcstTimeTarget && ['T1H', 'RN1', 'PTY', 'WSD', 'REH'].includes(item.category));
+    const items = response.data?.response?.body?.items?.item;
+    if (!items) throw new Error('예보 데이터가 없습니다.');
 
-  return filtered;
+    // 필요한 항목만 추출
+    const filtered = items.filter(item =>
+      item.fcstTime === fcstTimeTarget &&
+      ['T1H', 'RN1', 'PTY', 'WSD', 'REH'].includes(item.category)
+    );
+
+    // 보기 좋게 매핑
+    const result = {};
+    for (const item of filtered) {
+      const { category, fcstValue } = item;
+
+      switch (category) {
+        case 'PTY':
+          result['강수형태'] = ptyMap[fcstValue] ?? '알 수 없음';
+          break;
+        case 'RN1':
+          result['강수량'] = formatRainfall(fcstValue);
+          break;
+        case 'T1H':
+          result['기온'] = `${fcstValue}℃`;
+          break;
+        case 'REH':
+          result['습도'] = `${fcstValue}%`;
+          break;
+        case 'WSD':
+          result['풍속'] = `${fcstValue} m/s`;
+          break;
+      }
+    }
+
+    return result;
+
+  } catch (err) {
+    console.error('❌ 날씨 예보 조회 실패:', err.message);
+    throw err;
+  }
 };
