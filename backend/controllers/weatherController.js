@@ -63,6 +63,14 @@ exports.getUltraShortForecast = async (nx,ny) => {
       }
     }
 
+    //디버그
+    console.log('[DEBUG] 기준날짜 / base_date:', base_date);
+    console.log('[DEBUG] 예보발표시각 /base_time:', base_time);
+    console.log('[DEBUG] fcstTimeTarget:', fcstTimeTarget, '시 예보');
+    // if (items?.length) {
+    //   console.log('[DEBUG] sample item:', items[0]);
+    // }
+
     return result;
 
   } catch (err) {
