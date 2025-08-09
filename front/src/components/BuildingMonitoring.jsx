@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../hooks/AppContext';
 import '../styles/monitoring.css';
 import axios from 'axios';
+import { buildingRegister } from '../service/authApi';
 
 
 function BuildingMonitoring() {
@@ -150,10 +151,9 @@ const handleDaumAddressSearch = () => {
     if (!payload.building_address) return alert('주소를 입력/선택하세요.');
 
     try {
-      await axios.post('http://192.168.111.211:5000/building/register', payload);
+      await buildingRegister(payload)
       // 성공 처리
       closeAddModal();
-      await fetchBuildingList();
     } catch (err) {
       console.error('건물 등록 실패:', err);
       alert(err?.response?.data?.error || '건물 등록에 실패했습니다.');
