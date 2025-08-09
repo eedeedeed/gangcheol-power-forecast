@@ -68,3 +68,14 @@ exports.getBuildingList = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+//건물 정적 정보 조회
+exports.getBuildingStatic = async (req, res) => {
+  
+};
+
+//건물 전력lag 가져오기
+exports.getRecentPowerForLags = async (req, res) => {
+ 
+};
+

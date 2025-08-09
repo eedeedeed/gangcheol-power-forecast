@@ -2,7 +2,8 @@ const { addressToGeocode } = require('../config/geocoding');
 const { convertToGrid } = require('../config/geoutil');
 const { getUltraShortForecast } = require('./weatherController');
 
-exports.getWeather = async (req, res) => {
+//주소기반 예보가져오기
+exports.getWeatherFcst = async (address) => {
   try {
     const { address } = req.query;
     if (!address) return res.status(400).json({ error: '주소가 필요합니다.' });
@@ -21,7 +22,7 @@ exports.getWeather = async (req, res) => {
     console.log('[4] 날씨 데이터:', JSON.stringify(weatherData, null, 2));
 
     // 4. 결과 반환
-    res.json(weatherData);
+    return weatherData;
 
   } catch (err) {
     res.status(500).json({ error: err.message });
