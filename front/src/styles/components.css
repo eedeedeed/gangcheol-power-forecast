@@ -104,23 +104,11 @@ select.form-control {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-image: var(--select-caret-light);
+  background-image: var(--select-caret-dark);
   background-repeat: no-repeat;
   background-position: right var(--space-12) center;
   background-size: 16px;
   padding-right: var(--space-32);
-}
-
-/* Add a dark mode specific caret */
-@media (prefers-color-scheme: dark) {
-  select.form-control {
-    background-image: var(--select-caret-dark);
-  }
-}
-
-/* Also handle data-color-scheme */
-[data-color-scheme="dark"] select.form-control {
-  background-image: var(--select-caret-dark);
 }
 
 [data-color-scheme="light"] select.form-control {
@@ -137,6 +125,7 @@ select.form-control {
   margin-bottom: var(--space-8);
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .form-group {
@@ -167,7 +156,7 @@ select.form-control {
   border-bottom: 1px solid var(--color-card-border-inner);
 }
 
-/* Status indicators - simplified with CSS variables */
+/* Status indicators */
 .status {
   display: inline-flex;
   align-items: center;
@@ -178,81 +167,62 @@ select.form-control {
 }
 
 .status--success {
-  background-color: rgba(
-    var(--color-success-rgb, 33, 128, 141),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-success-rgb), var(--status-bg-opacity));
   color: var(--color-success);
-  border: 1px solid
-    rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-success-rgb), var(--status-border-opacity));
 }
 
 .status--error {
-  background-color: rgba(
-    var(--color-error-rgb, 192, 21, 47),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-error-rgb), var(--status-bg-opacity));
   color: var(--color-error);
-  border: 1px solid
-    rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-error-rgb), var(--status-border-opacity));
 }
 
 .status--warning {
-  background-color: rgba(
-    var(--color-warning-rgb, 168, 75, 47),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-warning-rgb), var(--status-bg-opacity));
   color: var(--color-warning);
-  border: 1px solid
-    rgba(var(--color-warning-rgb, 168, 75, 47), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-warning-rgb), var(--status-border-opacity));
 }
 
 .status--info {
-  background-color: rgba(
-    var(--color-info-rgb, 98, 108, 113),
-    var(--status-bg-opacity)
-  );
+  background-color: rgba(var(--color-info-rgb), var(--status-bg-opacity));
   color: var(--color-info);
-  border: 1px solid
-    rgba(var(--color-info-rgb, 98, 108, 113), var(--status-border-opacity));
+  border: 1px solid rgba(var(--color-info-rgb), var(--status-border-opacity));
 }
 
-/* Form Control Dark Theme Override */
-.form-control {
-  background-color: var(--color-charcoal-700);
+/* Toggle Button Group */
+.toggle-button-group {
+  display: inline-flex;
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
   border: 1px solid var(--color-border);
-  color: var(--color-gray-200);
 }
 
-.form-control:focus {
-  border-color: var(--color-teal-300);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(50, 184, 198, 0.2);
+.toggle-button {
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: var(--space-4) var(--space-12);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+  border-radius: var(--radius-base);
+  white-space: nowrap;
 }
 
-.form-label {
-  color: var(--color-gray-300);
+.toggle-button:hover {
+  color: var(--color-text);
+  background-color: var(--color-secondary-hover);
 }
 
-/* Custom Status Colors */
-.status--success {
-  background-color: rgba(
-    var(--color-success-rgb, 33, 128, 141),
-    var(--status-bg-opacity)
-  );
-  color: var(--color-success);
-  border: 1px solid
-    rgba(var(--color-success-rgb, 33, 128, 141), var(--status-border-opacity));
+.toggle-button.active {
+  background-color: var(--color-primary);
+  color: var(--color-btn-primary-text);
+  box-shadow: var(--shadow-sm);
 }
 
-.status--warning {
-  background-color: var(--color-bg-2);
-  color: var(--color-power-warning);
-  border: 1px solid rgba(255, 193, 133, 0.3);
-}
-
-.status--info {
-  background-color: var(--color-bg-1);
-  color: var(--color-power-normal);
-  border: 1px solid rgba(31, 184, 205, 0.3);
+.toggle-button:not(:last-child) {
+  margin-right: var(--space-4);
 }

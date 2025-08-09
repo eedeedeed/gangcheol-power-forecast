@@ -1,7 +1,5 @@
-// src/main.jsx
 // 이 파일은 React 애플리케이션의 진입점(Entry Point)입니다.
 // React 앱을 DOM에 마운트(렌더링)하는 역할을 합니다.
-
 import React from 'react';
 import ReactDOM from 'react-dom/client'; // React 18의 새로운 클라이언트 렌더링 API 임포트
 import App from './App.jsx'; // 애플리케이션의 최상위 컴포넌트인 App을 임포트합니다.

@@ -12,7 +12,7 @@
 }
 
 .alert-card {
-  background: var(--color-charcoal-800); /* 배경색 */
+  background: var(--color-surface); /* 배경색 */
   border: 1px solid var(--color-border); /* 테두리 */
   border-radius: var(--radius-lg); /* 둥근 모서리 */
   padding: var(--space-20);
@@ -21,46 +21,79 @@
 
 /* Warning Alert Card (경고 알림 카드) */
 .alert-card--warning {
-  border-left-color: var(--color-power-warning); /* 경고 색상 테두리 */
+  border-left-color: var(--color-warning); /* 경고 색상 테두리 */
 }
 
 /* Info Alert Card (정보 알림 카드) */
 .alert-card--info {
-  border-left-color: var(--color-power-normal); /* 정보 색상 테두리 */
+  border-left-color: var(--color-info); /* 정보 색상 테두리 */
 }
 
 .alert-header {
   display: flex;
-  justify-content: space-between; /* 제목과 시간을 양 끝으로 정렬 */
+  justify-content: space-between; /* 제목과 메타 데이터를 양 끝으로 정렬 */
   align-items: center;
   margin-bottom: var(--space-12);
 }
 
 .alert-title {
   font-weight: var(--font-weight-semibold);
-  color: var(--color-gray-200); /* 알림 제목 색상 */
+  color: var(--color-text); /* 알림 제목 색상 */
+}
+
+.alert-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12); /* 시간과 버튼 사이 간격 */
 }
 
 .alert-time {
-  color: var(--color-gray-400); /* 알림 시간 색상 */
+  color: var(--color-text-secondary); /* 알림 시간 색상 */
   font-size: var(--font-size-sm);
 }
 
 .alert-message {
-  color: var(--color-gray-300); /* 알림 메시지 색상 */
+  color: var(--color-text-secondary); /* 알림 메시지 색상 */
   line-height: 1.5;
+  font-size: 20px !important; /* !important 추가하여 강제 적용 */
 }
 
-/* Blinking Effect for Warning Alerts (경고 알림 깜빡임 효과 - 현재 사용되지 않음) */
-/* 이 부분은 주석 처리되어 있거나, 실제 CSS 파일에 없을 수 있습니다.
-   만약 필요하다면 아래와 같이 정의할 수 있습니다.
+/* Generic Close Button for Cards */
+.card-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: all var(--duration-fast) var(--ease-standard);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+}
+
+.card-close-btn:hover {
+  color: var(--color-text);
+  background-color: rgba(0,0,0,0.1);
+}
+
+
+/* Blinking Effect */
 @keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0%, 100% {
+    background-color: var(--color-surface);
+  }
+  50% {
+    /* 주황색 계열의 경고 색상을 배경으로 사용 */
+    background-color: rgba(var(--color-warning-rgb), 0.15);
+  }
 }
 
-.alert-card--warning.blink {
-  animation: blink 1.5s infinite;
+.alert-card.blink {
+  animation: blink 0.8s ease-in-out;
 }
-*/

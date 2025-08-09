@@ -1,15 +1,11 @@
-// src/data.js
-// 이 파일은 애플리케이션에서 사용되는 모든 샘플 데이터를 정의합니다.
-// 실제 애플리케이션에서는 이 데이터가 백엔드 API로부터 동적으로 로드될 것입니다.
-
-export const powerData = {
-  // 현재 전력 사용량에 대한 정보입니다.
+//현재 전력 사용량
+const powerData = {
   current_power: {
     usage: 1244,     // 현재 사용량 (kW)
     capacity: 2000,  // 총 용량 (kW)
     percentage: 62.2 // 용량 대비 사용량 퍼센트
   },
-  // 오늘 시간별 전력 사용량 데이터입니다. 라인 차트 등에 사용됩니다.
+  // 오늘 시간별 전력 사용량 데이터(라인 차트 등에 사용)
   today_usage: [
     {time: "00:00", usage: 450}, {time: "01:00", usage: 420}, {time: "02:00", usage: 400},
     {time: "03:00", usage: 380}, {time: "04:00", usage: 390}, {time: "05:00", usage: 430},
@@ -20,7 +16,7 @@ export const powerData = {
     {time: "18:00", usage: 1320}, {time: "19:00", usage: 1120}, {time: "20:00", usage: 970},
     {time: "21:00", usage: 820}, {time: "22:00", usage: 670}, {time: "23:00", usage: 520}
   ],
-  // 내일 시간별 전력 사용량 예측 데이터입니다. (현재 앱에서는 사용되지 않음)
+  // 내일 시간별 전력 사용량 예측 데이터(현재 앱에서는 사용되지 않음)
   tomorrow_prediction: [
     {time: "00:00", usage: 460, confidence: 95}, {time: "01:00", usage: 430, confidence: 94}, {time: "02:00", usage: 410, confidence: 93},
     {time: "03:00", usage: 390, confidence: 92}, {time: "04:00", usage: 400, confidence: 91}, {time: "05:00", usage: 440, confidence: 90},
@@ -49,9 +45,48 @@ export const powerData = {
   },
   // 건물 목록 및 각 건물의 현재 상태입니다.
   buildings: [
-    {id: 1, name: "본관", current: 1247, status: "normal"},    // 본관: 정상
-    {id: 2, name: "연구동", current: 845, status: "normal"},    // 연구동: 정상
-    {id: 3, name: "생산동", current: 1580, status: "warning"}   // 생산동: 주의
+    {
+      id: 1,
+      name: "강철빌딩 본관",
+      type: "상업",
+      area: 25000,
+      coolingArea: 18000,
+      pcsCapacity: 500,
+      essCapacity: 1000,
+      solarCapacity: 200,
+      address: "서울특별시 강남구 테헤란로 123",
+      detailAddress: "15층",
+      current: 1247,
+      status: "normal"
+    },
+    {
+      id: 2,
+      name: "강철 R&D 센터",
+      type: "연구소",
+      area: 18000,
+      coolingArea: 15000,
+      pcsCapacity: 300,
+      essCapacity: 600,
+      solarCapacity: 150,
+      address: "대전광역시 유성구 과학로 456",
+      detailAddress: "A동",
+      current: 845,
+      status: "normal"
+    },
+    {
+      id: 3,
+      name: "강철 스마트팩토리",
+      type: "공장",
+      area: 55000,
+      coolingArea: 35000,
+      pcsCapacity: 1200,
+      essCapacity: 2500,
+      solarCapacity: 500,
+      address: "경기도 평택시 산업단지로 789",
+      detailAddress: "3라인",
+      current: 1580,
+      status: "warning"
+    }
   ],
   // 알림 목록입니다.
   alerts: [
@@ -102,12 +137,14 @@ export const powerData = {
   ]
 };
 
+// --- API 함수 ---
 
-// AuthPage, ProfilePage에 임시 데이터 
-
-
-
-/*
-
-
-*/
+/**
+ * 초기 전력 데이터를 가져오는 API 함수 (시뮬레이션)
+ * @returns {object} powerData 객체
+ */
+export const getInitialPowerData = () => {
+  // 실제 애플리케이션에서는 fetch, axios 등을 사용하여
+  // 백엔드 API로부터 데이터를 비동기적으로 가져옵니다.
+  return powerData;
+};

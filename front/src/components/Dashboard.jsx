@@ -32,13 +32,224 @@ ChartJS.register(
   ArcElement
 );
 
-function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, selectedBuildingData }) {
+// 날씨 아이콘 컴포넌트
+const WeatherIcon = ({ condition, size = 48 }) => {
+  const getWeatherIcon = (condition) => {
+    const iconMap = {
+      'clear': '☀️',
+      'clouds': '☁️',
+      'rain': '🌧️',
+      'snow': '❄️',
+      'thunderstorm': '⛈️',
+      'drizzle': '🌦️',
+      'mist': '🌫️',
+      'fog': '🌫️'
+    };
+    return iconMap[condition] || '🌤️';
+  };
+
+  return (
+    <span style={{ fontSize: `${size}px` }}>
+      {getWeatherIcon(condition)}
+    </span>
+  );
+};
+
+// 날씨 카드 컴포넌트
+const WeatherCard = () => {
+  const [weather, setWeather] = useState({
+    temperature: '--',
+    condition: 'clear',
+    description: '날씨 정보 로딩 중...',
+    humidity: '--',
+    windSpeed: '--',
+    location: '서울'
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 날씨 데이터 가져오기
+  const fetchWeather = async () => {
+    try {
+      setLoading(true);
+      
+      // OpenWeatherMap API 사용 (무료, API 키 필요)
+      // 실제 사용시 본인의 API 키로 교체하세요
+      const API_KEY = 'YOUR_API_KEY_HERE';
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=Seoul,KR&appid=${API_KEY}&units=metric&lang=kr`
+      );
+      
+      if (!response.ok) {
+        throw new Error('날씨 정보를 가져올 수 없습니다.');
+      }
+      
+      const data = await response.json();
+      
+      setWeather({
+        temperature: Math.round(data.main.temp),
+        condition: data.weather[0].main.toLowerCase(),
+        description: data.weather[0].description,
+        humidity: data.main.humidity,
+        windSpeed: Math.round(data.wind.speed * 3.6), // m/s to km/h
+        location: data.name
+      });
+      
+      setError(null);
+    } catch (err) {
+      console.error('날씨 API 오류:', err);
+      setError(err.message);
+      
+      // 오류 시 더미 데이터 표시
+      setWeather({
+        temperature: 23,
+        condition: 'clear',
+        description: '맑음',
+        humidity: 45,
+        windSpeed: 12,
+        location: '서울'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWeather();
+    // 10분마다 날씨 정보 업데이트
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="weather-card-large">
+      <div className="weather-header">
+        <h3>실시간 날씨(목업입니다)</h3>
+        <button className="weather-refresh-btn" onClick={fetchWeather} disabled={loading}>
+          🔄
+        </button>
+      </div>
+      
+      <div className="weather-body">
+        {loading ? (
+          <div className="weather-loading">
+            <div className="loading-spinner"></div>
+            <p>날씨 정보 로딩 중...</p>
+          </div>
+        ) : (
+          <div className="weather-content">
+            <div className="weather-main">
+              <div className="weather-icon">
+                <WeatherIcon condition={weather.condition} size={80} />
+              </div>
+              <div className="weather-temp">
+                <span className="temp-value">{weather.temperature}</span>
+                <span className="temp-unit">°C</span>
+              </div>
+            </div>
+            
+            <div className="weather-info">
+              <div className="weather-location">{weather.location}</div>
+              <div className="weather-description">{weather.description}</div>
+            </div>
+            
+            <div className="weather-details">
+              <div className="detail-item">
+                <span className="detail-label">습도</span>
+                <span className="detail-value">{weather.humidity}%</span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">풍속</span>
+                <span className="detail-value">{weather.windSpeed} km/h</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, selectedBuildingData, onIntervalChange }) {
   // props:
-  // - currentPower: 현재 전력 사용량 정보 (usage, percentage, capacity)
-  // - todayUsage: 오늘 시간별 전력 사용량 데이터 (Line Chart용)
-  // - tomorrowPrediction: 내일 전력 사용량 예측 데이터 (현재 사용되지 않음)
-  // - stats: 피크 예측, 절감률, 월별 비용, 절약 비용 등 주요 통계 데이터
-  // - selectedBuildingData: 현재 선택된 건물에 대한 상세 데이터 (App.jsx에서 전달)
+  // - onIntervalChange: 표시할 시간 간격 변경을 위한 함수
+
+  // 각 차트별로 독립적인 시간 간격 상태 관리
+  const [gaugeInterval, setGaugeInterval] = useState('realtime'); // 게이지 차트용
+  const [lineInterval, setLineInterval] = useState('realtime');   // 라인 차트용
+
+  // 게이지 차트 간격 변경 핸들러
+  const handleGaugeIntervalChange = (interval) => {
+    setGaugeInterval(interval);
+    onIntervalChange(interval); // 필요시 AppContext 업데이트
+  };
+
+  // 라인 차트 간격 변경 핸들러
+  const handleLineIntervalChange = (interval) => {
+    setLineInterval(interval);
+    onIntervalChange(interval); // 필요시 AppContext 업데이트
+  };
+
+  // 드롭다운 메뉴 컴포넌트 (독립적인 상태 관리)
+  const IntervalDropdown = ({ activeInterval, onIntervalChange, className = "" }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const intervals = [
+      { key: 'realtime', label: '실시간' },
+      { key: '15min', label: '15분' },
+      { key: '30min', label: '30분' },
+      { key: '60min', label: '1시간' }
+    ];
+    
+    const currentInterval = intervals.find(item => item.key === activeInterval);
+    
+    const handleSelect = (intervalKey) => {
+      onIntervalChange(intervalKey);
+      setIsOpen(false);
+    };
+    
+    // 외부 클릭 감지를 위한 ref와 effect
+    const dropdownRef = useRef(null);
+    
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+      
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+    
+    return (
+      <div className={`interval-dropdown ${className}`} ref={dropdownRef}>
+        <button
+          className={`dropdown-button ${isOpen ? 'active' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
+          type="button"
+        >
+          <span>{currentInterval?.label || '실시간'}</span>
+          <span className="dropdown-arrow">▼</span>
+        </button>
+        
+        <div className={`dropdown-menu ${isOpen ? 'open' : ''}`}>
+          {intervals.map((interval) => (
+            <button
+              key={interval.key}
+              className={`dropdown-item ${activeInterval === interval.key ? 'selected' : ''}`}
+              onClick={() => handleSelect(interval.key)}
+              type="button"
+            >
+              {interval.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   // 오늘의 전력 사용량 추이 차트 데이터를 관리하는 상태입니다.
   const [todayUsageChartData, setTodayUsageChartData] = useState({
@@ -62,9 +273,9 @@ function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, select
       {
         data: [currentPower.percentage, 100 - currentPower.percentage], // 사용량 퍼센트와 남은 용량 퍼센트
         backgroundColor: ['rgba(50, 184, 198, 1)', '#3A3A3A'], // 사용량 부분은 청록색, 남은 용량 부분은 어두운 회색
-        borderColor: ['transparent', 'transparent'], // 테두리 없음
+        borderColor: 'transparent', // 테두리 없음
         borderWidth: 0, // 테두리 두께 0
-        cutout: '80%', // 도넛 차트의 중앙 구멍 크기
+        cutout: '65%', // 도넛 차트의 중앙 구멍 크기
         circumference: 360, // 차트가 전체 원형이 되도록 설정 (기본값)
         rotation: 0, // 차트 시작 각도 (기본값)
       },
@@ -72,23 +283,13 @@ function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, select
   });
 
   // `currentPower.percentage` prop이 변경될 때마다 게이지 차트 데이터를 업데이트합니다.
-  // App.jsx에서 currentPower가 업데이트되면 이 useEffect가 실행되어 차트가 다시 그려집니다.
   useEffect(() => {
-    setRealtimeGaugeChartData({
-      labels: ['사용량', '남은 용량'],
-      datasets: [
-        {
-          data: [currentPower.percentage, 100 - currentPower.percentage],
-          backgroundColor: ['rgba(50, 184, 198, 1)', '#3A3A3A'],
-          borderColor: ['transparent', 'transparent'],
-          borderWidth: 0,
-          cutout: '80%',
-          circumference: 360,
-          rotation: 0,
-        },
-      ],
+    setRealtimeGaugeChartData(prevData => {
+      const newData = { ...prevData };
+      newData.datasets[0].data = [currentPower.percentage, 100 - currentPower.percentage];
+      return newData;
     });
-  }, [currentPower.percentage]); // currentPower.percentage가 의존성 배열에 포함되어 변경 시 재실행
+  }, [currentPower.percentage]);
 
   // Chart.js의 공통 옵션입니다.
   const chartOptions = {
@@ -132,118 +333,147 @@ function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, select
     },
   };
 
+  // 게이지 차트 제목 생성 함수
+  const getGaugeChartTitle = () => {
+    switch (gaugeInterval) {
+      case 'realtime':
+        return '실시간 전력 사용량';
+      case '15min':
+        return '15분 평균 사용량';
+      case '30min':
+        return '30분 평균 사용량';
+      case '60min':
+        return '1시간 평균 사용량';
+      default:
+        return '실시간 전력 사용량';
+    }
+  };
+
+  // 라인 차트 제목 생성 함수
+  const getLineChartTitle = () => {
+    switch (lineInterval) {
+      case 'realtime':
+        return '오늘의 실시간 전력 사용량 추이';
+      case '15min':
+        return '오늘의 15분 평균 사용량 추이';
+      case '30min':
+        return '오늘의 30분 평균 사용량 추이';
+      case '60min':
+        return '오늘의 1시간 평균 사용량 추이';
+      default:
+        return '오늘의 전력 사용량 추이';
+    }
+  };
+
   return (
     // 대시보드 페이지의 최상위 컨테이너입니다.
     <div id="dashboard">
 
-      {/* 주요 통계 카드들을 담는 그리드 컨테이너입니다. */}
-      <div className="stats-grid">
-        {/* 현재 사용량 카드 */}
-        <div className="stat-card">
-          <div className="stat-header">
-            <h4>현재 사용량</h4>
-            {/* 선택된 건물의 상태에 따라 '정상' 또는 '주의'를 표시합니다. */}
-            <span className={`status ${selectedBuildingData.status === 'normal' ? 'status--info' : 'status--warning'}`}>
-              {selectedBuildingData.status === 'normal' ? '정상' : '주의'}
-            </span>
-          </div>
-          <div className="stat-body">
-            {/* 현재 전력 사용량을 로케일 형식으로 포맷팅하여 표시합니다. */}
-            <p className="current-usage-value">{currentPower.usage.toLocaleString()} kW</p>
-            {/* 용량 대비 현재 사용량의 퍼센트를 표시합니다. */}
-            <p className="current-usage-percentage">용량의 {currentPower.percentage.toFixed(1)}%</p>
-          </div>
+      {/* 메인 레이아웃 - 좌우 분할 */}
+      <div className="dashboard-main-layout">
+        
+        {/* 왼쪽 영역 - 노란색 네모 위치에 날씨 카드 */}
+        <div className="dashboard-left">
+          <WeatherCard />
         </div>
 
-        {/* 예상 피크 카드 */}
-        <div className="stat-card">
-          <div className="stat-header">
-            <h4>예상 피크</h4>
-            {/* 예상 피크 상태에 따라 '주의' 또는 '정상'을 표시합니다. */}
-            <span className={`status status--${stats.peak_prediction.status}`}>
-              {stats.peak_prediction.status === 'warning' ? '주의' : '정상'}
-            </span>
-          </div>
-          <div className="stat-body">
-            {/* 예상 피크 사용량을 로케일 형식으로 포맷팅하여 표시합니다. */}
-            <p className="peak-usage-value">{stats.peak_prediction.usage.toLocaleString()} kW</p>
-            {/* 예상 피크 발생 시간을 표시합니다. */}
-            <p className="peak-time">내일 {stats.peak_prediction.time}</p>
-          </div>
-        </div>
-
-        {/* 예상 사용량 카드 (새로 추가된 카드) */}
-        <div className="stat-card">
-          <div className="stat-header">
-            <h4>예상 사용량</h4>
-            <span className="status status--info">정보</span> {/* 임의의 상태값으로 '정보' 표시 */}
-          </div>
-          <div className="stat-body">
-            <p className="current-usage-value">1,750 kW</p> {/* 임의의 예상 사용량 값 */}
-            <p className="current-usage-percentage">내일 평균</p>
-          </div>
-        </div>
-
-        {/* 절감률 카드 */}
-        <div className="stat-card">
-          <div className="stat-header">
-            <h4>절감률</h4>
-            {/* 절감률 상태에 따라 '우수' 또는 '보통'을 표시합니다. */}
-            <span className={`status status--${stats.savings_rate_status}`}>
-              {stats.savings_rate_status === 'success' ? '우수' : '보통'}
-            </span>
-          </div>
-          <div className="stat-body">
-            {/* 절감률을 소수점 첫째 자리까지 표시합니다. */}
-            <p className="savings-rate-value">{stats.savings_rate.toFixed(1)}%</p>
-            <p className="savings-rate-description">전월 대비</p>
-          </div>
-        </div>
-
-        {/* 절약 비용 카드 */}
-        <div className="stat-card">
-          <div className="stat-header">
-            <h4>절약 비용</h4>
-            {/* 절약 비용 상태에 따라 '달성' 또는 '목표'를 표시합니다. */}
-            <span className={`status status--${stats.cost_saved_status}`}>
-              {stats.cost_saved_status === 'success' ? '달성' : '목표'}
-            </span>
-          </div>
-          <div className="stat-body">
-            {/* 절약 비용을 로케일 형식으로 포맷팅하여 표시합니다. */}
-            <p className="cost-saved-value">{stats.cost_saved.toLocaleString()}원</p>
-            <p className="cost-saved-description">이번 달</p>
+        {/* 오른쪽 영역 - stats 카드들 */}
+        <div className="dashboard-right">
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-header">
+                <h4>현재 사용량</h4>
+                <span className={`status ${selectedBuildingData.status === 'normal' ? 'status--info' : 'status--warning'}`}>
+                  {selectedBuildingData.status === 'normal' ? '정상' : '주의'}
+                </span>
+              </div>
+              <div className="stat-body">
+                <p className="current-usage-value">{currentPower.usage.toLocaleString()} kW</p>
+                <p className="current-usage-percentage">용량의 {currentPower.percentage.toFixed(1)}%</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-header">
+                <h4>예상 피크</h4>
+                <span className={`status status--${stats.peak_prediction.status}`}>
+                  {stats.peak_prediction.status === 'warning' ? '주의' : '정상'}
+                </span>
+              </div>
+              <div className="stat-body">
+                <p className="peak-usage-value">{stats.peak_prediction.usage.toLocaleString()} kW</p>
+                <p className="peak-time">내일 {stats.peak_prediction.time}</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-header">
+                <h4>예상 사용량</h4>
+                <span className="status status--info">정보</span>
+              </div>
+              <div className="stat-body">
+                <p className="current-usage-value">1,750 kW</p>
+                <p className="current-usage-percentage">내일 평균</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-header">
+                <h4>절감률</h4>
+                <span className={`status status--${stats.savings_rate_status}`}>
+                  {stats.savings_rate_status === 'success' ? '우수' : '보통'}
+                </span>
+              </div>
+              <div className="stat-body">
+                <p className="savings-rate-value">{stats.savings_rate.toFixed(1)}%</p>
+                <p className="savings-rate-description">전월 대비</p>
+              </div>
+            </div>
+            {/* <div className="stat-card">
+              <div className="stat-header">
+                <h4>절약 비용</h4>
+                <span className={`status status--${stats.cost_saved_status}`}>
+                  {stats.cost_saved_status === 'success' ? '달성' : '목표'}
+                </span>
+              </div>
+              <div className="stat-body">
+                <p className="cost-saved-value">{stats.cost_saved.toLocaleString()}원</p>
+                <p className="cost-saved-description">이번 달</p>
+              </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       {/* 차트들을 담는 그리드 컨테이너입니다. */}
       <div className="charts-grid">
-        {/* 실시간 전력 사용량 게이지 차트 카드 */}
+        {/* 실시간 전력 사용량 게이지 차트 카드 - 독립적인 설정 */}
         <div className="card chart-card">
-          <div className="card__header">
-            <h4>실시간 전력 사용량 <span className="chart-title-indicator"></span></h4> {/* 차트 제목 옆 인디케이터 */}
+          <div className="card__header card__header--space-between">
+            <h4>{getGaugeChartTitle()}</h4>
+            <IntervalDropdown 
+              activeInterval={gaugeInterval}
+              onIntervalChange={handleGaugeIntervalChange}
+            />
           </div>
           {/* 차트 본문입니다. 게이지 차트와 텍스트를 중앙에 배치합니다. */}
           <div className="card__body" style={{position: 'relative', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            {/* 게이지 차트 컨테이너입니다. */}
-            <div className="power-gauge-large">
-              {/* Doughnut 차트 컴포넌트입니다. `realtimeGaugeChartData`와 옵션을 전달합니다. */}
-              <Doughnut data={realtimeGaugeChartData} options={{
-                animation: false, // 애니메이션 비활성화
-                transitions: { active: { animation: { duration: 0 } } }, // 전환 애니메이션 비활성화
-                hover: { animationDuration: 0 }, // 호버 애니메이션 비활성화
-                responsiveAnimationDuration: 0, // 반응형 애니메이션 비활성화
-                responsive: true, // 반응형 활성화
-                maintainAspectRatio: false, // 종횡비 유지 비활성화
-                cutout: '80%', // 도넛 차트의 두께
-                circumference: 360, // 전체 원형
-                rotation: 0, // 0도에서 시작
-                plugins: {
-                  legend: { display: false }, // 범례 숨기기
-                  tooltip: { enabled: false } // 툴팁 숨기기
-                },
-              }} />
+           {/* 게이지 차트 컨테이너입니다. */}
+<div className="power-gauge-large">
+  {/* Doughnut 차트 컴포넌트입니다. */}
+  <Doughnut data={realtimeGaugeChartData} options={{
+  animation: false,
+  responsive: true,
+  maintainAspectRatio: false,
+  cutout: '65%',
+  // ✨ 모든 이벤트와 상호작용 완전 차단
+  events: [], // 모든 이벤트 비활성화
+  onHover: null, // 호버 이벤트 제거
+  onClick: null, // 클릭 이벤트 제거
+  plugins: {
+    legend: { display: false },
+    tooltip: { enabled: false },
+  },
+}} />
+
+
               {/* 게이지 차트 중앙에 표시될 텍스트 (퍼센트)입니다. */}
               <div className="power-gauge-text-large">
                 <span id="usagePercentageLarge">{currentPower.percentage.toFixed(1)}%</span> {/* 현재 사용량 퍼센트 표시 */}
@@ -252,11 +482,17 @@ function Dashboard({ currentPower, todayUsage, tomorrowPrediction, stats, select
           </div>
         </div>
 
-        {/* 오늘의 전력 사용량 추이 라인 차트 카드 */}
+        {/* 오늘의 전력 사용량 추이 라인 차트 카드 - 독립적인 설정 */}
         <div className="card chart-card">
-          <div className="card__header">
-            <h4>오늘의 전력 사용량 추이</h4>
-            <span className="chart-subtitle">시간별 사용량 (kW)</span>
+          <div className="card__header card__header--space-between">
+            <div className="chart-title-section">
+              <h4>{getLineChartTitle()}</h4>
+              <span className="chart-subtitle">시간별 사용량 (kW)</span>
+            </div>
+            <IntervalDropdown 
+              activeInterval={lineInterval}
+              onIntervalChange={handleLineIntervalChange}
+            />
           </div>
           {/* 차트 본문입니다. 라인 차트가 포함됩니다. */}
           <div className="card__body" style={{position: 'relative', height: '300px'}}>
