@@ -4,6 +4,7 @@ const { getUltraShortForecast } = require('./weatherController');
 
 //주소기반 예보가져오기
 exports.getWeatherFcst = async (address) => {
+  
   try {
     const { address } = req.query;
     if (!address) return res.status(400).json({ error: '주소가 필요합니다.' });
