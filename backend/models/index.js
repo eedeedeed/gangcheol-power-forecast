@@ -9,15 +9,14 @@ const sequelize = new Sequelize(
   config
 );
 
-// 모델 불러오기
-const Admin = require('./admin')(sequelize, DataTypes);
+// 등록
+const Admin         = require('./admin')(sequelize, DataTypes);
+const BuildingInfo  = require('./building')(sequelize, DataTypes);
+//const PowerConsumption = require('./powerConsumption')(sequelize, DataTypes);   // 신규
+//const PowerPrediction  = require('./powerPrediction')(sequelize, DataTypes);    // 선택
 
-
-// 여러 모델이 있다면 여기에 추가로 정의
-const db = {};
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-db.Admin = Admin;
+// 연관관계가 파일에 있으면 자동 실행됨 (building.js에 belongsTo 있음) 
+const db = { sequelize, Sequelize, Admin, BuildingInfo };
+module.exports = db;
 
 module.exports = db;

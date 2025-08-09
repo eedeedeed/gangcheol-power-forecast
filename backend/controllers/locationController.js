@@ -1,5 +1,5 @@
 const { addressToGeocode } = require('../config/geocoding');
-const { convertToGrid } = require('../config/geoutil');
+const { convertToGrid } = require('../config/geoUtil');
 const { getUltraShortForecast } = require('./weatherController');
 
 //주소기반 예보가져오기

@@ -1,81 +1,92 @@
 const { BuildingInfo } = require('../models');
+const { addressToGeocode } = require('../config/geocoding'); // 카카오/네이버/구글 중 택1
+const { convertToGrid } = require('../config/geoUtil');
+
+//건물등록
+
+//request body 값 유효성 검사 - (건물 등록 데이터가 빠진 게 없는지, 값 범위가 정상인지 체크)
+function validatePayload(body) {
+  const required = ['building_name', 'building_type', 'building_address', 'total_area', 'cooling_area'];
+  for (const k of required) {
+    if (body[k] === undefined || body[k] === null || body[k] === '') {
+      const e = new Error(`필수 필드 누락: ${k}`);
+      e.status = 400;
+      throw e;
+    }
+  }
+  const total = Number(body.total_area);
+  const cool  = Number(body.cooling_area);
+  if (!(total > 0)) {
+    const e = new Error('total_area 는 0보다 커야 합니다.');
+    e.status = 400;
+    throw e;
+  }
+  if (cool < 0 || cool > total) {
+    const e = new Error('cooling_area 는 0 이상이며 total_area 이하여야 합니다.');
+    e.status = 400;
+    throw e;
+  }
+}
 
 //건물등록
 exports.registerBuilding = async (req, res) => {
+  const t = await BuildingInfo.sequelize.transaction();
+
   try {
-    const data = req.body;
+    validatePayload(req.body); // 유효성검사
 
-    await BuildingInfo.create(data);
-    res.status(201).json({ message: '건물 등록 성공' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    const {
+      building_name,
+      building_type,
+      building_address,
+      total_area,
+      cooling_area,
+      pv_capacity = 0,
+      ess_capacity = 0,
+      pcs_capacity = 0,
+    } = req.body;
 
-//건물수정
-exports.updateBuilding = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const data = req.body;
+    console.log( '-----req.body-----' , req.body);
+    
+    // 1) 주소 → 위/경도
+    const { lat, lon } = await addressToGeocode(building_address);
+    console.log('주소 -> 위/경도 변경 OK', lat, lon);
+    
 
-    const updated = await BuildingInfo.update(data, {
-      where: { BUILDING_ID: id }
+    // 2) 위/경도 → 기상 격자(nx, ny)
+    const { nx, ny } = convertToGrid(lat, lon);
+    console.log("위/경도 -> 기상격자 변경 OK", nx,ny);
+    
+
+    // 3) INSERT (cooling_ratio/has_* 는 DB 생성칼럼이 자동 계산)
+    const created = await BuildingInfo.create({
+      building_name,
+      building_type,
+      building_address,
+      total_area,
+      cooling_area,
+      pv_capacity,
+      ess_capacity,
+      pcs_capacity,
+      latitude: lat,
+      longitude: lon,
+      nx,
+      ny,
+      geocode_status: 'OK',
+    }, { transaction: t });
+
+    await t.commit();
+
+    // 생성 칼럼 반영된 최신값 리턴
+    const fresh = await BuildingInfo.findByPk(created.building_id);
+    return res.status(201).json({
+      message: '건물 등록 성공',
+      building: fresh,
     });
 
-    if (updated[0] === 0) {
-      return res.status(404).json({ message: '건물이 존재하지 않습니다.' });
-    }
-
-    res.status(200).json({ message: '건물 정보 수정 성공' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    await t.rollback();
+    const status = err.status || 500;
+    return res.status(status).json({ error: err.message });
   }
 };
-
-//건물삭제
-exports.deleteBuilding = async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    const deleted = await BuildingInfo.destroy({
-      where: { BUILDING_ID: id }
-    });
-
-    if (deleted === 0) {
-      return res.status(404).json({ message: '건물이 존재하지 않습니다.' });
-    }
-
-    res.status(200).json({ message: '건물 삭제 성공' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-//건물조회
-exports.getBuildingList = async (req, res) => {
-  try {
-    const { admin_id } = req.query;
-    if (!admin_id) {
-      return res.status(400).json({ message: 'admin_id가 필요합니다.' });
-    }
-    //관리자 아이디 - 건물 연결된것만 조회
-    const buildings = await BuildingInfo.findAll({
-      where: { ADMIN_ID: admin_id }
-    });
-
-    res.status(200).json(buildings);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-//건물 정적 정보 조회
-exports.getBuildingStatic = async (req, res) => {
-  
-};
-
-//건물 전력lag 가져오기
-exports.getRecentPowerForLags = async (req, res) => {
- 
-};
-

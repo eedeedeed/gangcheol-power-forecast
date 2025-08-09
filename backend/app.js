@@ -19,7 +19,6 @@ app.use(express.json());
 app.use('/admin', adminRoutes);
 app.use('/building', buildingRouters);
 app.use('/location', locationRoutes);
-app.use('/predict', require('./routes/predictRoutes'));
 
 //서버실행
 app.listen(5000, '0.0.0.0', () => {

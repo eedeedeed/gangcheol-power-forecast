@@ -38,7 +38,9 @@ function convertToGrid(lat, lon) {
   const x = Math.floor(ra * Math.sin(theta) + XO + 0.5);
   const y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
 
-  return { x, y };
+  
+  return { nx: x, ny: y };
+
 }
 
 
