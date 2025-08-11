@@ -2,55 +2,160 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8) var(--space-16);
+  padding: var(--space-12) var(--space-20);
   border-radius: var(--radius-base);
   font-size: var(--font-size-base);
   font-weight: 500;
   cursor: pointer;
   border: none;
+  transition: all 0.2s ease;
 }
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .btn--primary {
   background: var(--color-primary);
   color: var(--color-cream-50);
 }
+
+.btn--primary:hover {
+  background: var(--color-teal-400);
+}
+
 .btn--secondary {
   background: rgba(94, 82, 64, 0.12);
   color: var(--color-text);
 }
+
+.btn--secondary:hover {
+  background: rgba(94, 82, 64, 0.2);
+}
+
 .btn--full-width {
   width: 100%;
 }
+
 .form-control {
   display: block; width: 100%;
   padding: var(--space-12);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--color-text);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-base);
   height: 46px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
+}
+
 .form-label {
   display: block; margin-bottom: var(--space-8);
   font-weight: 500; font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
+
 .form-group {
   margin-bottom: var(--space-16);
 }
+
 .card {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
 }
-.card__body { padding: var(--space-16); }
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card__body { 
+  padding: var(--space-20);
+}
+
 .status {
   display: inline-flex; align-items: center;
   padding: var(--space-6) var(--space-12);
-  border-radius: 9999px;
-  font-weight: 500; font-size: var(--font-size-sm);
+  border-radius: var(--radius-full);
+  font-weight: 500; 
+  font-size: var(--font-size-sm);
 }
-.status--success { background-color: rgba(33, 128, 141, 0.15); color: var(--color-success); }
-.status--error { background-color: rgba(192, 21, 47, 0.15); color: var(--color-error); }
-.status--warning { background-color: rgba(168, 75, 47, 0.15); color: var(--color-warning); }
-.status--info { background-color: rgba(98, 108, 113, 0.15); color: var(--color-text-secondary); }
+
+.status--success { 
+  background-color: rgba(33, 128, 141, 0.15); 
+  color: var(--color-success); 
+}
+
+.status--error { 
+  background-color: rgba(192, 21, 47, 0.15); 
+  color: var(--color-error); 
+}
+
+.status--warning { 
+  background-color: rgba(168, 75, 47, 0.15); 
+  color: var(--color-warning); 
+}
+
+.status--info { 
+  background-color: rgba(98, 108, 113, 0.15); 
+  color: var(--color-text-secondary); 
+}
+
+/* 🔥 차트 관련 유틸리티 클래스 */
+
+/* 차트 컨테이너 공통 스타일 */
+.chart-wrapper {
+  position: relative;
+  background: var(--chart-background);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* 차트 텍스트 색상 강제 적용 */
+.chart-text-override {
+  color: var(--chart-text-color) !important;
+}
+
+/* 다크모드 차트 필터 클래스 */
+html[data-color-scheme='dark'] .chart-dark-filter {
+  filter: brightness(1.4) contrast(1.2) saturate(1.1);
+}
+
+/* 차트 애니메이션 개선 */
+.chart-container {
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-1px);
+}
+
+/* 차트 로딩 스타일 */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+/* 차트 에러 스타일 */
+.chart-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--color-error);
+  font-size: var(--font-size-base);
+  text-align: center;
+}

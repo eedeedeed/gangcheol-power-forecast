@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // 1. useNavigate 훅을 import 합니다.
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import AuthFormInput from '../components/common/AuthFormInput';
@@ -19,7 +19,7 @@ const MoonIcon = () => (
 function AuthPage() {
 	const { handleLoginSuccess } = useContext(AuthContext);
 	const { theme, toggleTheme } = useContext(ThemeContext);
-	const navigate = useNavigate(); // 2. useNavigate 훅을 호출합니다.
+	const navigate = useNavigate();
 
 	const [isLoginMode, setIsLoginMode] = useState(true);
 	const [formData, setFormData] = useState({ ADMIN_ID: '', ADMIN_PASSWORD: '', confirmPassword: '', ADMIN_NAME: '' });
@@ -53,20 +53,30 @@ function AuthPage() {
 		}
 	};
 
-    // 3. 로그인 성공 시 처리할 로직을 별도 함수로 묶습니다.
-    const handleSuccessfulLogin = () => {
-        handleLoginSuccess(); // Context의 상태를 업데이트하고
-        navigate('/dashboard'); // /dashboard 경로로 페이지를 이동시킵니다.
-    };
-
-	const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
 		e.preventDefault();
 		setErrorMessage('');
 		setIsLoading(true);
 		try {
 			if (isLoginMode) {
-				await login(formData.ADMIN_ID, formData.ADMIN_PASSWORD);
-				handleSuccessfulLogin(); // 4. 로그인 성공 처리 함수를 호출합니다.
+				const response = await login(formData.ADMIN_ID, formData.ADMIN_PASSWORD);
+				
+				// ⭐️ 해결책 A: 서버가 응답에 user 객체를 포함해서 보내준다고 가정합니다.
+				const userData = response.data; 
+				console.log('서버 응답:', response.data);
+				console.log("유저데이터확인 : " +  userData);
+				console.log('메시지확인 : ' + response.data.admin.ADMIN_ID);
+				if (userData) {
+					console.log('로그인 성공! ID:', userData.admin.ADMIN_ID);
+					handleLoginSuccess(userData);
+					navigate('/dashboard');
+				} else {
+					// 서버가 약속된 user 객체를 보내주지 않은 경우
+					console.error('서버 응답에 user 객체가 없습니다. 백엔드 코드를 확인하세요.');
+					console.log("패스워드확인 : " +  formData.ADMIN_PASSWORD);
+					setErrorMessage('서버 응답 형식이 올바르지 않습니다.');
+				}
+
 			} else {
 				if (!isIdChecked) throw new Error('ID 중복확인을 해주세요.');
 				if (formData.ADMIN_PASSWORD !== formData.confirmPassword) throw new Error('비밀번호가 일치하지 않습니다.');
@@ -80,6 +90,13 @@ function AuthPage() {
 			setIsLoading(false);
 		}
 	};
+
+    const handleGuestLogin = () => {
+        const guestData = { ADMIN_NAME: '게스트', ADMIN_ID: 'Guest' };
+        console.log('로그인 성공! ID:', guestData.ADMIN_ID);
+        handleLoginSuccess(guestData);
+        navigate('/dashboard');
+    };
 
 	return (
 		<div id="auth-page" className="auth-page-container">
@@ -118,8 +135,7 @@ function AuthPage() {
 				</div>
 				<div className="auth-guest-access">
 					<div className="auth-divider"><span>또는</span></div>
-					{/* 5. '둘러보기' 버튼도 동일한 성공 처리 함수를 사용합니다. */}
-					<button type="button" className="btn-guest-access" onClick={handleSuccessfulLogin}>🔍 로그인 없이 둘러보기</button>
+					<button type="button" className="btn-guest-access" onClick={handleGuestLogin}>🔍 로그인 없이 둘러보기</button>
 				</div>
 			</div>
 		</div>

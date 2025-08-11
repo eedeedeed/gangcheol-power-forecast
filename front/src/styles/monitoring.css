@@ -2,42 +2,67 @@
   max-width: 1200px;
   margin: 40px auto;
 }
+
 .management-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 24px; /* 기존 20px → 24px */
 }
+
 .management-card h4 {
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: 10px; margin-bottom: 20px;
+  padding-bottom: 12px; /* 기존 10px → 12px */
+  margin-bottom: 24px; /* 기존 20px → 24px */
+  font-size: var(--font-size-xl); /* 폰트 크기 증가 */
 }
+
 .building-management-table {
   width: 100%;
   border-collapse: collapse;
   white-space: nowrap;
-  table-layout: fixed; 
+  table-layout: fixed;
 }
+
 .building-management-table th, .building-management-table td {
-  text-align: left; padding: 12px 15px;
+  text-align: left; 
+  padding: 14px 16px; /* 기존 12px 15px → 14px 16px */
   border-bottom: 1px solid var(--color-border);
-  font-size: 16px;
+  font-size: var(--font-size-base); /* 기존 16px → var(--font-size-base) */
 }
-.building-management-table th:nth-child(1), .building-management-table td:nth-child(1) { width: 10%; text-align: center; }
-.building-management-table th:nth-child(2), .building-management-table td:nth-child(2) { width: 40%; }
-.building-management-table th:nth-child(3), .building-management-table td:nth-child(3) { width: 25%; }
+
+.building-management-table th:nth-child(1), .building-management-table td:nth-child(1) { 
+  width: 10%; text-align: center; 
+}
+.building-management-table th:nth-child(2), .building-management-table td:nth-child(2) { 
+  width: 40%; 
+}
+.building-management-table th:nth-child(3), .building-management-table td:nth-child(3) { 
+  width: 25%; 
+}
+
 .building-management-table .actions { text-align: right; }
 .building-management-table .actions button {
-  padding: var(--space-8) var(--space-16);
+  padding: var(--space-10) var(--space-20); /* 패딩 증가 */
   font-size: var(--font-size-base);
+  margin-left: var(--space-8);
 }
+
 .add-building-btn {
-  width: 50px; height: 50px; border-radius: 50%;
+  width: 54px; height: 54px; /* 기존 50px → 54px */
+  border-radius: 50%;
   background-color: var(--color-primary);
-  color: white; font-size: 30px;
+  color: white; font-size: 32px; /* 기존 30px → 32px */
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
 }
+
+.add-building-btn:hover {
+  background-color: var(--color-teal-400);
+  transform: scale(1.05);
+}
+
 .modal-backdrop {
   position: fixed; top: 0; left: 0;
   width: 100%; height: 100%;
@@ -45,46 +70,104 @@
   display: flex; justify-content: center; align-items: center;
   z-index: 1000;
 }
+
 .modal-content {
   background: var(--color-surface);
-  padding: 30px; border-radius: var(--radius-lg);
+  padding: 32px; /* 기존 30px → 32px */
+  border-radius: var(--radius-lg);
   width: 90%; max-width: 800px;
   max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
 }
+
 .modal-header {
   display: flex; justify-content: space-between; align-items: center;
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: 15px; margin-bottom: 20px;
+  padding-bottom: 16px; /* 기존 15px → 16px */
+  margin-bottom: 24px; /* 기존 20px → 24px */
 }
+
+.modal-header h3 {
+  font-size: var(--font-size-2xl); /* 폰트 크기 증가 */
+}
+
 .modal-close-btn {
-  background: none; border: none; font-size: 28px;
+  background: none; border: none; 
+  font-size: 30px; /* 기존 28px → 30px */
   cursor: pointer; color: var(--color-text-secondary);
+  transition: color 0.2s ease;
 }
+
+.modal-close-btn:hover {
+  color: var(--color-text);
+}
+
 .modal-body .building-form .form-group {
-  display: flex; align-items: center; gap: 16px;
+  display: flex; align-items: center; 
+  gap: 18px; /* 기존 16px → 18px */
+  margin-bottom: var(--space-20); /* 기존 16px → 20px */
 }
+
 .modal-body .building-form .form-group label {
   font-weight: 600; color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  width: 150px; flex-shrink: 0; text-align: right;
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  width: 160px; /* 기존 150px → 160px */
+  flex-shrink: 0; text-align: right;
 }
-.address-container { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-.address-field { display: flex; gap: 8px; }
-.zip-code-input { flex-grow: 0 !important; width: 120px !important; }
+
+.modal-body .building-form .form-group label.required::after {
+  content: ' *';
+  color: var(--color-error);
+}
+
+.address-container { 
+  display: flex; flex-direction: column; 
+  gap: 10px; /* 기존 8px → 10px */
+  flex-grow: 1; 
+}
+
+.address-field { display: flex; gap: 10px; /* 기존 8px → 10px */ }
+
+.zip-code-input { flex-grow: 0 !important; width: 130px !important; /* 기존 120px → 130px */ }
+
 .address-search-btn {
   flex-shrink: 0; height: 46px;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base); /* 기존 lg → base */
+  padding: 0 var(--space-16);
 }
-.input-with-checkbox { display: flex; align-items: center; gap: var(--space-12); flex-grow: 1; }
-.capacity-checkbox { width: 20px; height: 20px; cursor: pointer; }
-.input-with-checkbox .form-control:disabled { background-color: rgba(94, 82, 64, 0.12); cursor: not-allowed; opacity: 0.6; }
-.modal-body .building-form .form-submit { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+
+.input-with-checkbox { 
+  display: flex; align-items: center; 
+  gap: var(--space-16); /* 기존 12px → 16px */
+  flex-grow: 1; 
+}
+
+.capacity-checkbox { 
+  width: 22px; height: 22px; /* 기존 20px → 22px */
+  cursor: pointer; 
+}
+
+.input-with-checkbox .form-control:disabled { 
+  background-color: rgba(94, 82, 64, 0.12); 
+  cursor: not-allowed; opacity: 0.6; 
+}
+
+.modal-body .building-form .form-submit { 
+  display: flex; justify-content: center; 
+  gap: 1.2rem; /* 기존 1rem → 1.2rem */
+  margin-top: 2rem; /* 기존 1.5rem → 2rem */
+}
+
 .modal-body p {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
   line-height: 1.6;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-16); /* 기존 12px → 16px */
 }
-.modal-body .building-form .form-group input[type="number"] { -moz-appearance: textfield; }
+
+.modal-body .building-form .form-group input[type="number"] { 
+  -moz-appearance: textfield; 
+}
+
 .modal-body .building-form .form-group input[type="number"]::-webkit-outer-spin-button,
 .modal-body .building-form .form-group input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none; margin: 0;

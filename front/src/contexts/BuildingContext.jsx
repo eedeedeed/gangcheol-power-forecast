@@ -19,9 +19,9 @@ export default function BuildingProvider({ children }) {
     const fetchBuildings = useCallback(async () => {
         try {
             const tempBuildings = [
-                {id: 1, name: "본관"},
-                {id: 2, name: "연구동"},
-                {id: 3, name: "생산동"}
+                // {id: 1, name: "본관"},
+                // {id: 2, name: "연구동"},
+                // {id: 3, name: "생산동"}
             ];
             setBuildings(tempBuildings);
             if (tempBuildings.length > 0 && !selectedBuildingId) {

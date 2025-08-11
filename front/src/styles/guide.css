@@ -3,30 +3,44 @@
   flex-direction: column;
   gap: var(--space-20);
 }
+
 .guide-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-20);
+  padding: var(--space-24); /* 기존 20px → 24px */
+  transition: all 0.2s ease;
 }
+
+.guide-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
 .guide-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-16); /* 기존 12px → 16px */
 }
+
 .guide-action {
   font-weight: 550;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  color: var(--color-text);
 }
+
 .guide-saving {
   background: rgba(33, 128, 141, 0.15);
   color: var(--color-success);
-  padding: var(--space-4) var(--space-8);
+  padding: var(--space-6) var(--space-12); /* 패딩 증가 */
   border-radius: var(--radius-base);
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm); /* 기존 xs → sm */
+  font-weight: 500;
 }
+
 .guide-description {
   color: var(--color-text-secondary);
-  font-size: 20px;
+  font-size: var(--font-size-lg); /* 기존 20px → var(--font-size-lg) */
+  line-height: 1.6;
 }

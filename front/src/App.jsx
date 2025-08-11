@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Context Providers
 import ThemeProvider from './contexts/ThemeContext';
-import AuthProvider, { AuthContext } from './contexts/AuthContext';
+import  AuthProvider, { AuthContext } from './contexts/AuthContext';
 import BuildingProvider from './contexts/BuildingContext';
 import NotificationProvider from './contexts/NotificationContext';
 
@@ -75,7 +75,6 @@ function App() {
                   <Route path="/alerts" element={<Alerts />} />
                   <Route path="/guide" element={<Guide />} />
                   <Route path="/settings" element={<Settings />} />
-                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Route>
               </Routes>

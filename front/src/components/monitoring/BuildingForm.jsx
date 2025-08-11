@@ -25,12 +25,13 @@ function BuildingForm({ form, onFormChange, onOtherTypeNameChange, otherTypeName
   return (
     <div className="building-form">
       <div className="form-group">
-        <label>건물명</label>
+        <label className="required">건물명</label>
         <input type="text" name="name" value={form.name} onChange={onFormChange} required placeholder="건물명을 입력하세요" />
       </div>
       <div className="form-group">
-        <label>건물유형</label>
+        <label className="required">건물유형</label>
         <select name="type" value={form.type} onChange={onFormChange} required>
+          <option value="" disabled>선택하세요</option>
           {buildingTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
       </div>
@@ -41,12 +42,12 @@ function BuildingForm({ form, onFormChange, onOtherTypeNameChange, otherTypeName
         </div>
       )}
       <div className="form-group inline">
-        <label>연면적(㎡)</label>
-        <input type="number" name="area" value={form.area} onChange={onFormChange} placeholder="숫자만 입력" />
+        <label className="required">연면적(㎡)</label>
+        <input type="number" name="area" value={form.area} onChange={onFormChange} required placeholder="숫자만 입력" />
       </div>
       <div className="form-group inline">
-        <label>냉방면적(㎡)</label>
-        <input type="number" name="coolingArea" value={form.coolingArea} onChange={onFormChange} placeholder="숫자만 입력" />
+        <label className="required">냉방면적(㎡)</label>
+        <input type="number" name="coolingArea" value={form.coolingArea} onChange={onFormChange} required placeholder="숫자만 입력" />
       </div>
       <div className="form-group">
         <label>냉방 비율</label>
@@ -65,13 +66,13 @@ function BuildingForm({ form, onFormChange, onOtherTypeNameChange, otherTypeName
         <input type="number" name="solarCapacity" value={form.solarCapacity} onChange={onFormChange} placeholder="숫자만 입력" />
       </div>
       <div className="form-group address-group">
-        <label>건물주소</label>
+        <label className="required">건물주소</label>
         <div className="address-container">
           <div className="zip-search">
             <input type="text" name="zipCode" value={form.zipCode} placeholder="우편번호" readOnly />
             <button type="button" onClick={handleDaumSearch} className="btn btn--secondary btn--small">주소 검색</button>
           </div>
-          <input type="text" name="address" value={form.address} placeholder="주소" readOnly />
+          <input type="text" name="address" value={form.address} placeholder="주소" readOnly required />
           <input type="text" name="detailAddress" value={form.detailAddress} onChange={onFormChange} placeholder="상세주소 입력 (동, 호수 등)" />
           
         </div>

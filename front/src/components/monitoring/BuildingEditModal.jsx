@@ -6,7 +6,7 @@ function BuildingEditModal({ isOpen, onClose, onSave, initialData = null }) {
   // 폼 관련 상태와 핸들러는 모두 useBuildingForm 훅에서 가져옵니다.
   const { 
     building, otherTypeName, showOtherType, 
-    handleInputChange, handleOtherTypeNameChange, handleAddressSearch, getFormData
+    handleInputChange, handleOtherTypeNameChange, handleAddressSearch, getFormData, resetForm
   } = useBuildingForm(initialData);
   
   if (!isOpen) return null;
@@ -14,7 +14,17 @@ function BuildingEditModal({ isOpen, onClose, onSave, initialData = null }) {
   // 저장 버튼 클릭 시 실행될 함수
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // 유효성 검사
+    if (!building.name || !building.type || !building.area || !building.coolingArea || !building.address) {
+      alert('필수 입력 항목(*)을 모두 채워주세요.');
+      return;
+    }
+
     onSave(getFormData()); // 최종 데이터를 부모에게 전달
+    if (!initialData) { // 새 건물 등록일 경우에만 폼을 리셋
+      resetForm();
+    }
   };
 
   return (

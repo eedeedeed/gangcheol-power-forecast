@@ -7,98 +7,137 @@
   background: var(--color-background);
   position: relative;
 }
+
 .auth-card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  padding: var(--space-24);
+  padding: var(--space-32); /* 기존 24px → 32px */
   width: 90%;
-  max-width: 500px;
+  max-width: 520px; /* 기존 500px → 520px */
   box-shadow: var(--shadow-lg);
   color: var(--color-text);
 }
+
 .auth-header {
-  margin-bottom: var(--space-20);
+  margin-bottom: var(--space-24); /* 기존 20px → 24px */
   text-align: center;
 }
+
 .auth-header h4 {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl); /* 기존 xl → 2xl */
   color: var(--color-text);
   margin: 0;
+  font-weight: 600;
 }
+
 .auth-body .form-group {
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--space-20); /* 기존 16px → 20px */
 }
+
 .auth-body .form-label {
   color: var(--color-text-secondary);
   display: block;
-  margin-bottom: var(--space-8);
-  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-10); /* 기존 8px → 10px */
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  font-weight: 500;
 }
+
 .auth-body .form-control {
   width: 100%;
+  font-size: var(--font-size-base); /* 명시적으로 base 크기 */
 }
+
 .auth-submit-container {
-  margin-top: var(--space-24);
+  margin-top: var(--space-32); /* 기존 24px → 32px */
   text-align: center;
 }
+
 .auth-switch-mode {
   text-align: right;
   margin-top: var(--space-24);
 }
+
 .btn-text-link {
   background: none; border: none;
   color: var(--color-primary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
   cursor: pointer;
-  padding: var(--space-4) var(--space-8);
+  padding: var(--space-6) var(--space-12); /* 기존 4px 8px → 6px 12px */
   border-radius: var(--radius-base);
+  transition: all 0.2s ease;
 }
+
+.btn-text-link:hover {
+  background: rgba(33, 128, 141, 0.1);
+  transform: translateY(-1px);
+}
+
 .input-with-button {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem; /* 기존 0.5rem → 0.6rem */
   align-items: center;
 }
+
 .input-with-button .form-control { flex: 1; margin: 0; }
+
 .btn-check-id {
-  padding: var(--space-10) var(--space-12);
-  font-size: var(--font-size-xs);
+  padding: var(--space-12) var(--space-16); /* 기존 10px 12px → 12px 16px */
+  font-size: var(--font-size-sm);
   height: 46px;
+  white-space: nowrap;
 }
+
 .btn--login-width {
   width: 100%;
   max-width: 350px;
+  font-size: var(--font-size-base); /* 명시적으로 base 크기 */
+  padding: var(--space-16) var(--space-24); /* 패딩 증가 */
 }
-.auth-guest-access { margin-top: var(--space-16); }
+
+.auth-guest-access { 
+  margin-top: var(--space-20); /* 기존 16px → 20px */
+}
+
 .auth-divider {
   display: flex; align-items: center;
-  margin: var(--space-16) 0;
+  margin: var(--space-20) 0; /* 기존 16px → 20px */
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
 }
+
 .auth-divider::before, .auth-divider::after {
   content: ''; flex: 1; height: 1px;
   background: var(--color-border);
 }
-.auth-divider span { padding: 0 var(--space-12); }
+
+.auth-divider span { 
+  padding: 0 var(--space-16); /* 기존 12px → 16px */
+}
+
 .btn-guest-access {
   width: 100%;
   border: 2px dashed var(--color-primary);
   color: var(--color-primary);
+  font-size: var(--font-size-base); /* 명시적으로 base 크기 */
+  padding: var(--space-16) var(--space-24); /* 패딩 증가 */
 }
+
 .btn-guest-access:hover {
   background: var(--color-primary);
   color: white; border-style: solid;
   transform: translateY(-1px);
 }
+
 .error-message {
   color: var(--color-error);
-  font-size: var(--font-size-sm);
-  margin-top: var(--space-8);
-  padding: var(--space-8);
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  margin-top: var(--space-10); /* 기존 8px → 10px */
+  padding: var(--space-12); /* 기존 8px → 12px */
   background: rgba(var(--color-error-rgb), 0.1);
   border-radius: var(--radius-base);
   border-left: 3px solid var(--color-error);
 }
+
 .theme-toggle-container {
-  position: absolute; top: 20px; right: 20px;
+  position: absolute; top: 24px; right: 24px; /* 기존 20px → 24px */
 }

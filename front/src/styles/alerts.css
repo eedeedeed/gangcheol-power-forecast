@@ -1,64 +1,85 @@
 .alerts-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-20); /* 기존 16px → 20px */
 }
+
 .alert-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-20);
+  padding: var(--space-24); /* 기존 20px → 24px */
   border-left: 4px solid;
+  transition: all 0.2s ease;
 }
+
+.alert-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
 .alert-card--warning {
   border-left-color: var(--color-warning);
 }
+
 .alert-card--info {
   border-left-color: var(--color-info);
 }
+
 .alert-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-16); /* 기존 12px → 16px */
 }
+
 .alert-title {
-  font-weight: var(--font-weight-semibold);
+  font-weight: 600; /* 기존 var(--font-weight-semibold) → 600 */
   color: var(--color-text);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
 }
+
 .alert-meta {
   display: flex;
   align-items: center;
-  gap: var(--space-12);
+  gap: var(--space-16); /* 기존 12px → 16px */
 }
+
 .alert-time {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base); /* 기존 sm → base */
 }
+
 .alert-message {
   color: var(--color-text-secondary);
-  line-height: 1.5;
-  font-size: 20px !important;
+  line-height: 1.6;
+  font-size: var(--font-size-lg) !important; /* 기존 20px → var(--font-size-lg) */
 }
+
 .card-close-btn {
   background: none; border: none;
   color: var(--color-text-secondary);
-  font-size: 22px; cursor: pointer;
+  font-size: 24px; /* 기존 22px → 24px */
+  cursor: pointer;
   padding: 0; line-height: 1;
-  width: 28px; height: 28px;
+  width: 30px; height: 30px; /* 기존 28px → 30px */
   display: flex; align-items: center;
   justify-content: center; flex-shrink: 0;
   border-radius: var(--radius-full);
+  transition: all 0.2s ease;
 }
+
 .card-close-btn:hover {
   color: var(--color-text);
   background-color: rgba(0,0,0,0.1);
+  transform: scale(1.1);
 }
+
 @keyframes blink {
   0%, 100% { background-color: var(--color-surface); }
   50% { background-color: rgba(var(--color-warning-rgb), 0.15); }
 }
+
 .alert-card.blink {
   animation: blink 0.8s ease-in-out;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // 폼의 초기 상태 정의 (새 필드 추가)
 const initialBuildingState = {
@@ -24,8 +24,7 @@ export function useBuildingForm(initialData = null) {
       }
     } else {
       // 추가 모드일 때, 상태를 초기화
-      setBuilding(initialBuildingState);
-      setOtherTypeName('');
+      resetForm();
     }
   }, [initialData]);
 
@@ -78,6 +77,11 @@ export function useBuildingForm(initialData = null) {
     return formData;
   };
 
+  const resetForm = useCallback(() => {
+    setBuilding(initialBuildingState);
+    setOtherTypeName('');
+  }, []);
+
   return {
     building,
     otherTypeName,
@@ -85,6 +89,9 @@ export function useBuildingForm(initialData = null) {
     handleInputChange,
     handleOtherTypeNameChange,
     handleAddressSearch,
-    getFormData
+    getFormData,
+    resetForm
   };
 }
+
+export default useBuildingForm;

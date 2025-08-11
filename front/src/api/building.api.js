@@ -4,6 +4,12 @@ export const buildingRegister = (data) => {
   return axiosInstance.post('/building/register', data);
 };
 
+// building.api.js
+export const getBuildings = (adminId) => {
+  return axiosInstance.get(`/getbuildings/${adminId}`); // id → adminId로 수정
+}
+
+
 // export const getBuildings = () => {
 //   return axiosInstance.get('/building');
 // };

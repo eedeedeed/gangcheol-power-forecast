@@ -1,132 +1,443 @@
 .dashboard-main-layout {
   display: grid;
   grid-template-columns: 2.5fr 7fr;
-  gap: var(--space-24);
+  gap: var(--space-32);
   margin-bottom: var(--space-32);
 }
+
 .dashboard-left, .dashboard-right { display: flex; }
 .dashboard-right { flex-direction: column; }
 .dashboard-right .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-16);
+  gap: var(--space-20);
   height: 100%;
 }
+
 .stat-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-20);
+  padding: var(--space-24);
+  transition: all 0.2s ease;
 }
+
 .stat-card:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
 }
+
 .stat-header {
   display: flex; justify-content: space-between;
   align-items: center; margin-bottom: var(--space-12);
 }
+
 .stat-header h4 {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
+  font-weight: 600;
 }
+
 .stat-card .stat-body {
   padding: var(--space-20) var(--space-16);
   display: flex; flex-direction: column;
   justify-content: center; align-items: center;
 }
-.stat-card .current-usage-value { font-size: 50px; font-weight: 600; }
-.stat-card .current-usage-percentage { font-size: 30px; color: var(--color-text-secondary); }
+
+.stat-card .current-usage-value { 
+  font-size: 54px;
+  font-weight: 600; 
+  color: var(--color-text);
+}
+
+.stat-card .current-usage-percentage { 
+  font-size: 32px;
+  color: var(--color-text-secondary); 
+}
+
+/* 날씨 카드 */
 .weather-card-large {
   background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
   color: white; border-radius: var(--radius-lg);
   padding: 32px; position: relative;
   min-height: 100%;
   display: flex; flex-direction: column; width: 100%;
+  overflow: hidden;
 }
+
+.weather-card-large::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/><circle cx="60" cy="80" r="1.5" fill="white" opacity="0.1"/></svg>');
+  pointer-events: none;
+}
+
 .weather-header {
   display: flex; justify-content: space-between;
   align-items: center; margin-bottom: 32px;
+  position: relative; z-index: 1;
 }
-.weather-header h3 { font-size: 24px; }
-.weather-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+.weather-header h3 { 
+  font-size: var(--font-size-2xl);
+}
+
+.weather-body { 
+  flex: 1; display: flex; flex-direction: column; 
+  justify-content: center; position: relative; z-index: 1; 
+}
+
 .weather-content { display: flex; flex-direction: column; align-items: center; }
 .weather-main { display: flex; align-items: center; gap: 32px; margin-bottom: 32px; }
 .weather-temp { display: flex; align-items: flex-start; }
-.temp-value { font-size: 72px; font-weight: 200; }
+
+.temp-value { 
+  font-size: 76px;
+  font-weight: 200; 
+}
+
 .temp-unit { font-size: 36px; margin-top: 12px; }
-.weather-location { font-size: 28px; }
-.weather-description { font-size: 18px; }
+
+.weather-location { 
+  font-size: var(--font-size-3xl);
+}
+
+.weather-description { 
+  font-size: var(--font-size-xl);
+  opacity: 0.9;
+}
+
 .weather-details {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 32px; padding: 24px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
 }
-.detail-label { font-size: 14px; }
-.detail-value { font-size: 24px; }
+
+.detail-label { font-size: 14px; opacity: 0.8; }
+.detail-value { font-size: 24px; font-weight: 500; }
+
+/* 차트 영역 */
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  gap: var(--space-20);
+  gap: var(--space-24);
 }
+
 .chart-card {
   background: var(--color-surface);
   border: none !important;
   border-radius: var(--radius-lg);
-  padding: var(--space-20);
+  padding: var(--space-24);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
 }
+
 .chart-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-2px);
 }
+
 .chart-header {
   display: flex; justify-content: space-between;
-  align-items: center; margin-bottom: var(--space-16);
+  align-items: center; margin-bottom: var(--space-20);
 }
+
+.chart-header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.chart-container {
+  position: relative;
+  background: var(--chart-background);
+  border-radius: var(--radius-base);
+  padding: var(--space-16);
+  min-height: 300px;
+}
+
 .power-gauge-large {
   position: relative; width: 350px; height: 350px; margin: 0 auto;
 }
+
 .power-gauge-text-large {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
   font-weight: 600;
+  color: var(--chart-text-color);
 }
+
 .power-gauge-text-large #usagePercentageLarge {
-  font-size: 36px;
+  font-size: 40px;
   display: block;
+  color: var(--color-primary);
+  font-weight: 700;
 }
+
+.power-gauge-text-large .gauge-label {
+  font-size: var(--font-size-sm);
+  color: var(--chart-text-color);
+  margin-top: var(--space-8);
+  opacity: 0.8;
+}
+
+/* 🔥 드롭다운 메뉴 다크모드 완전 해결 */
 .interval-dropdown { position: relative; display: inline-block; }
+
 .dropdown-button {
-  display: flex; align-items: center;
-  gap: 8px; padding: 8px 16px;
+  display: flex; 
+  align-items: center;
+  gap: 8px; 
+  padding: 8px 16px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: var(--font-size-sm);
   min-width: 120px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  color: var(--color-text) !important;
 }
+
+.dropdown-button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+  color: var(--color-text) !important;
+}
+
 .dropdown-menu {
-    position: absolute; top: 100%; right: 0;
-    z-index: 1000; min-width: 120px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0; visibility: hidden;
+  position: absolute; 
+  top: 100%; 
+  right: 0;
+  z-index: 1000; 
+  min-width: 120px;
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0; 
+  visibility: hidden;
+  transition: all 0.2s ease;
 }
-.dropdown-menu.open { opacity: 1; visibility: visible; }
+
+.dropdown-menu.open { 
+  opacity: 1; 
+  visibility: visible; 
+}
+
 .dropdown-item {
-    display: block; width: 100%;
-    padding: 10px 16px; border: none;
-    background: transparent;
-    font-size: var(--font-size-sm);
-    text-align: left; cursor: pointer;
+  display: block; 
+  width: 100%;
+  padding: 10px 16px; 
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-sm);
+  text-align: left; 
+  cursor: pointer;
+  color: var(--color-text) !important;
+  transition: background-color 0.2s ease;
 }
-.dropdown-item.selected { background: var(--color-primary); color: white; }
+
+.dropdown-item:hover {
+  background: rgba(33, 128, 141, 0.1) !important;
+  color: var(--color-primary) !important;
+}
+
+.dropdown-item.selected { 
+  background: var(--color-primary) !important; 
+  color: white !important; 
+}
+
+/* 🔥 다크모드 전용 드롭다운 스타일 */
+html[data-color-scheme='dark'] .dropdown-button {
+  background: var(--color-charcoal-700) !important;
+  color: var(--color-cream-50) !important;
+  border-color: rgba(252, 252, 249, 0.2) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-button:hover {
+  background: var(--color-charcoal-600) !important;
+  color: var(--color-cream-50) !important;
+  border-color: var(--color-teal-300) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-menu {
+  background: var(--color-charcoal-700) !important;
+  border-color: rgba(252, 252, 249, 0.2) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-item {
+  color: var(--color-cream-50) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-item:hover {
+  background: rgba(50, 184, 198, 0.2) !important;
+  color: var(--color-teal-300) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-item.selected {
+  background: var(--color-teal-300) !important;
+  color: var(--color-charcoal-800) !important;
+}
+
+/* 🔥 로그아웃 버튼 빨간색 유지 - 간단한 방법 */
+.dropdown-item--danger,
+.dropdown-item.danger,
+[class*="logout"] {
+  --logout-color: #dc2626;
+  color: var(--logout-color) !important;
+}
+
+.dropdown-item--danger:hover,
+.dropdown-item.danger:hover,
+[class*="logout"]:hover {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: var(--logout-color) !important;
+}
+
+/* 다크모드에서도 같은 색상 유지 */
+html[data-color-scheme='dark'] .dropdown-item--danger,
+html[data-color-scheme='dark'] .dropdown-item.danger,
+html[data-color-scheme='dark'] [class*="logout"] {
+  color: var(--logout-color) !important;
+}
+
+html[data-color-scheme='dark'] .dropdown-item--danger:hover,
+html[data-color-scheme='dark'] .dropdown-item.danger:hover,
+html[data-color-scheme='dark'] [class*="logout"]:hover {
+  background: rgba(220, 38, 38, 0.15) !important;
+  color: var(--logout-color) !important;
+}
+
+/* 🔥 차트 제목/부제목 다크모드 색상 */
+html[data-color-scheme='dark'] .chart-title-section h4 {
+  color: var(--color-cream-50) !important;
+}
+
+html[data-color-scheme='dark'] .chart-subtitle {
+  color: var(--color-gray-300) !important;
+}
+
+.chart-title-section h4 {
+  color: var(--color-slate-900) !important;
+}
+
+.chart-subtitle {
+  color: var(--color-slate-500) !important;
+}
+
 .card__header--space-between {
   display: flex; justify-content: space-between;
   align-items: center;
 }
+
+/* Chart.js 다크모드 전용 스타일 */
+.chart-container canvas {
+  filter: none;
+  transition: filter 0.3s ease;
+}
+
+html[data-color-scheme='dark'] .chart-card .card__body canvas {
+  filter: brightness(1.2) contrast(1.1);
+}
+
+html[data-color-scheme='dark'] .chart-container {
+  color: var(--color-cream-50) !important;
+}
+
+html[data-color-scheme='dark'] .chartjs-tooltip {
+  background-color: var(--color-charcoal-700) !important;
+  color: var(--color-cream-50) !important;
+  border: 1px solid rgba(252, 252, 249, 0.2) !important;
+}
+
+html[data-color-scheme='dark'] .power-gauge-large canvas {
+  filter: hue-rotate(10deg) saturate(1.2) brightness(1.1);
+}
+
+.power-gauge-large canvas {
+  filter: hue-rotate(-5deg) saturate(1.1);
+}
+
+html[data-color-scheme='dark'] .chart-card:nth-child(2) canvas {
+  filter: brightness(1.3) contrast(1.2) saturate(1.1);
+}
+
+html[data-color-scheme='dark'] .chart-card:nth-child(1) canvas {
+  filter: brightness(1.1) saturate(1.3) hue-rotate(5deg);
+}
+
+html[data-color-scheme='dark'] .power-gauge-text-large {
+  color: var(--color-cream-50) !important;
+}
+
+html[data-color-scheme='dark'] .power-gauge-text-large #usagePercentageLarge {
+  color: var(--color-teal-300) !important;
+}
+
+html[data-color-scheme='dark'] canvas {
+  transition: filter 0.3s ease;
+}
+
+.chart-card:hover canvas {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+html[data-color-scheme='dark'] .chart-card:hover canvas {
+  filter: brightness(1.4) contrast(1.3) saturate(1.2);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .power-gauge-large {
+    width: 300px;
+    height: 300px;
+  }
+}
+
 @media (max-width: 1024px) {
-  .dashboard-main-layout { grid-template-columns: 1fr; }
+  .dashboard-main-layout { 
+    grid-template-columns: 1fr; 
+    gap: var(--space-20);
+  }
+  
+  .dashboard-right .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-right .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+  }
+  
+  .chart-card {
+    padding: var(--space-16);
+  }
+  
+  .weather-card-large {
+    padding: 24px;
+  }
+  
+  .temp-value {
+    font-size: 60px;
+  }
+
+  html[data-color-scheme='dark'] .chart-container canvas {
+    filter: brightness(1.3) contrast(1.2);
+  }
 }

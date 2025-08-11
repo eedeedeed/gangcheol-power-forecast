@@ -1,4 +1,5 @@
-import axiosInstance from './axiosInstance';
+import  axiosInstance  from './axiosInstance';
+
 
 export const login = (ADMIN_ID, ADMIN_PASSWORD) => {
   return axiosInstance.post('/admin/login', { ADMIN_ID, ADMIN_PASSWORD });

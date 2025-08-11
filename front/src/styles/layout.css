@@ -99,3 +99,21 @@
   border-radius: 9999px; display: flex;
 }
 .theme-toggle-btn svg { width: 20px; height: 20px; }
+
+/* ===== ⭐️ 사용자 프로필 섹션 스타일 추가 시작 ===== */
+.user-profile-section {
+  padding-bottom: var(--space-24);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-24);
+}
+
+.user-profile-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  /* 텍스트가 길어질 경우 대비 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* ===== ⭐️ 사용자 프로필 섹션 스타일 추가 끝 ===== */

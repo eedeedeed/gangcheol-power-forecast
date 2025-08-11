@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts/AuthContext'; // AuthContext import
 // onLogout prop을 더 이상 받지 않습니다.
 function ProfilePage() {
   // AuthContext에서 handleLogout 함수를 직접 가져옵니다.
-  const { handleLogout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
 
   // --- 임시 데이터 ---
   const userProfile = {
@@ -26,7 +26,7 @@ function ProfilePage() {
             <p><strong>이메일:</strong> {userProfile.email}</p>
             <p><strong>가입일:</strong> {userProfile.memberSince}</p>
             <p><strong>최근 로그인:</strong> {userProfile.lastLogin}</p>
-            <button className="btn btn--secondary" style={{marginTop: '20px'}} onClick={handleLogout}>
+            <button className="btn btn--secondary" style={{marginTop: '20px'}} onClick={logout}>
               로그아웃
             </button>
           </div>

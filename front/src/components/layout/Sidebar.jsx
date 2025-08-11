@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom'; // Link import
+import { Link } from 'react-router-dom';
 import { BuildingContext } from '../../contexts/BuildingContext';
 import { NotificationContext } from '../../contexts/NotificationContext';
+import { AuthContext } from '../../contexts/AuthContext'; // ⭐️ AuthContext 추가
 
 function Sidebar() {
-  // setActiveTab은 더 이상 사용하지 않습니다.
   const { buildings, selectedBuildingId, setSelectedBuildingId } = useContext(BuildingContext);
   const { alerts, guides, setHighlightedAlertId, setHighlightedGuideId } = useContext(NotificationContext);
+  const { user } = useContext(AuthContext); // ⭐️ AuthContext에서 user 정보 가져오기
 
   const handleAlertClick = (alertId) => {
     setHighlightedAlertId(alertId);
@@ -18,6 +19,14 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
+      {/* ===== ⭐️ 사용자 정보 표시 섹션 추가 시작 ===== */}
+      {user && (
+        <section className="sidebar-section user-profile-section">
+          <h4 className="user-profile-name">{user.ADMIN_NAME}({user.ADMIN_ID})</h4>
+        </section>
+      )}
+      {/* ===== ⭐️ 사용자 정보 표시 섹션 추가 끝 ===== */}
+
       <section className="sidebar-section">
         <h4>건물 선택</h4>
         <select value={selectedBuildingId || ''} onChange={(e) => setSelectedBuildingId(Number(e.target.value))} className="form-control">
@@ -29,7 +38,6 @@ function Sidebar() {
         <div className="quick-alerts">
           {alerts.length > 0 ? (
             alerts.map(alert => (
-              // Link 컴포넌트로 감싸고, to 속성으로 이동할 경로를 지정합니다.
               <Link to="/alerts" key={alert.id} className={`quick-alert quick-alert--${alert.type}`} onClick={() => handleAlertClick(alert.id)}>
                 <span className="quick-alert-title">{alert.title}</span>
               </Link>
@@ -42,7 +50,6 @@ function Sidebar() {
         <div className="savings-summary">
           {guides.length > 0 ? (
              guides.map((guide, index) => (
-              // Link 컴포넌트로 감싸고, to 속성으로 이동할 경로를 지정합니다.
               <Link to="/guide" key={index} className="savings-item" onClick={() => handleGuideClick(index)}>
                 <span className="savings-item-action">{guide.action}</span>
               </Link>
