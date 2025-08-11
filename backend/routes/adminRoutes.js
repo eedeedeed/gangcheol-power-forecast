@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Admin } = require('../models');
 const adminController = require('../controllers/adminController');
+const Middleware = require('../config/middleware');
 
 router.post('/register', adminController.createAdmin); //관리자등록
 router.post('/login', adminController.loginAdmin); //관리자로그인

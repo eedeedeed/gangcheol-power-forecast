@@ -1,7 +1,7 @@
 // models/admin.js
 // admin table 정의
 
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   const Admin = sequelize.define('ADMIN', {  // 테이블명 대문자로 변경

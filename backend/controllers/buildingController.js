@@ -90,5 +90,3 @@ exports.registerBuilding = async (req, res) => {
     return res.status(status).json({ error: err.message });
   }
 };
-
-//건물조회
