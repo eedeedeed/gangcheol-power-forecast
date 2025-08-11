@@ -1,6 +1,3 @@
-/* src/styles/components.css */
-
-/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -9,220 +6,51 @@
   border-radius: var(--radius-base);
   font-size: var(--font-size-base);
   font-weight: 500;
-  line-height: 1.5;
   cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-standard);
   border: none;
-  text-decoration: none;
-  position: relative;
 }
-
-.btn:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
 .btn--primary {
   background: var(--color-primary);
-  color: var(--color-btn-primary-text);
+  color: var(--color-cream-50);
 }
-
-.btn--primary:hover {
-  background: var(--color-primary-hover);
-}
-
-.btn--primary:active {
-  background: var(--color-primary-active);
-}
-
 .btn--secondary {
-  background: var(--color-secondary);
+  background: rgba(94, 82, 64, 0.12);
   color: var(--color-text);
 }
-
-.btn--secondary:hover {
-  background: var(--color-secondary-hover);
-}
-
-.btn--secondary:active {
-  background: var(--color-secondary-active);
-}
-
-.btn--outline {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-}
-
-.btn--outline:hover {
-  background: var(--color-secondary);
-}
-
-.btn--sm {
-  padding: var(--space-4) var(--space-12);
-  font-size: var(--font-size-sm);
-  border-radius: var(--radius-sm);
-}
-
-.btn--lg {
-  padding: var(--space-10) var(--space-20);
-  font-size: var(--font-size-lg);
-  border-radius: var(--radius-md);
-}
-
 .btn--full-width {
   width: 100%;
 }
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Form elements */
 .form-control {
-  display: block;
-  width: 100%;
-  padding: var(--space-8) var(--space-12);
-  font-size: var(--font-size-md);
-  line-height: 1.5;
+  display: block; width: 100%;
+  padding: var(--space-12);
+  font-size: var(--font-size-lg);
   color: var(--color-text);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-base);
-  transition: border-color var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-fast) var(--ease-standard);
+  height: 46px;
 }
-
-textarea.form-control {
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
-}
-
-select.form-control {
-  padding: var(--space-8) var(--space-12);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: var(--select-caret-dark);
-  background-repeat: no-repeat;
-  background-position: right var(--space-12) center;
-  background-size: 16px;
-  padding-right: var(--space-32);
-}
-
-[data-color-scheme="light"] select.form-control {
-  background-image: var(--select-caret-light);
-}
-
-.form-control:focus {
-  border-color: var(--color-primary);
-  outline: var(--focus-outline);
-}
-
 .form-label {
-  display: block;
-  margin-bottom: var(--space-8);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
+  display: block; margin-bottom: var(--space-8);
+  font-weight: 500; font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
-
 .form-group {
   margin-bottom: var(--space-16);
 }
-
-/* Card component */
 .card {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: box-shadow var(--duration-normal) var(--ease-standard);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-md);
-}
-
-.card__body {
-  padding: var(--space-16);
-}
-
-.card__header,
-.card__footer {
-  padding: var(--space-16);
-  border-bottom: 1px solid var(--color-card-border-inner);
-}
-
-/* Status indicators */
-.status {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-6) var(--space-12);
-  border-radius: var(--radius-full);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-sm);
-}
-
-.status--success {
-  background-color: rgba(var(--color-success-rgb), var(--status-bg-opacity));
-  color: var(--color-success);
-  border: 1px solid rgba(var(--color-success-rgb), var(--status-border-opacity));
-}
-
-.status--error {
-  background-color: rgba(var(--color-error-rgb), var(--status-bg-opacity));
-  color: var(--color-error);
-  border: 1px solid rgba(var(--color-error-rgb), var(--status-border-opacity));
-}
-
-.status--warning {
-  background-color: rgba(var(--color-warning-rgb), var(--status-bg-opacity));
-  color: var(--color-warning);
-  border: 1px solid rgba(var(--color-warning-rgb), var(--status-border-opacity));
-}
-
-.status--info {
-  background-color: rgba(var(--color-info-rgb), var(--status-bg-opacity));
-  color: var(--color-info);
-  border: 1px solid rgba(var(--color-info-rgb), var(--status-border-opacity));
-}
-
-/* Toggle Button Group */
-.toggle-button-group {
-  display: inline-flex;
-  background-color: var(--color-secondary);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
   border: 1px solid var(--color-border);
 }
-
-.toggle-button {
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  padding: var(--space-4) var(--space-12);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
-  border-radius: var(--radius-base);
-  white-space: nowrap;
+.card__body { padding: var(--space-16); }
+.status {
+  display: inline-flex; align-items: center;
+  padding: var(--space-6) var(--space-12);
+  border-radius: 9999px;
+  font-weight: 500; font-size: var(--font-size-sm);
 }
-
-.toggle-button:hover {
-  color: var(--color-text);
-  background-color: var(--color-secondary-hover);
-}
-
-.toggle-button.active {
-  background-color: var(--color-primary);
-  color: var(--color-btn-primary-text);
-  box-shadow: var(--shadow-sm);
-}
-
-.toggle-button:not(:last-child) {
-  margin-right: var(--space-4);
-}
+.status--success { background-color: rgba(33, 128, 141, 0.15); color: var(--color-success); }
+.status--error { background-color: rgba(192, 21, 47, 0.15); color: var(--color-error); }
+.status--warning { background-color: rgba(168, 75, 47, 0.15); color: var(--color-warning); }
+.status--info { background-color: rgba(98, 108, 113, 0.15); color: var(--color-text-secondary); }

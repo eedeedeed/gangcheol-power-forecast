@@ -1,664 +1,132 @@
-/* src/styles/dashboard.css */
-
-/* 메인 대시보드 좌우 분할 레이아웃 */
 .dashboard-main-layout {
   display: grid;
-  grid-template-columns: 2.5fr 7fr; /* 날씨 카드 30%, stats 카드 70% */
+  grid-template-columns: 2.5fr 7fr;
   gap: var(--space-24);
   margin-bottom: var(--space-32);
 }
-
-/* 왼쪽 영역 - 날씨 카드 영역 (노란색 네모 위치) */
-.dashboard-left {
-  display: flex;
-  align-items: stretch;
-}
-
-/* 오른쪽 영역 - stats 카드들 */
-.dashboard-right {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Stats Grid - 오른쪽 영역 내부 그리드 (2x3 레이아웃) */
+.dashboard-left, .dashboard-right { display: flex; }
+.dashboard-right { flex-direction: column; }
 .dashboard-right .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2열 그리드 */
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-16);
   height: 100%;
-  margin-bottom: 0; /* 오버라이드 */
 }
-
-/* 기본 Stats Grid (사용되지 않음 - 호환성을 위해 유지) */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-20);
-  margin-bottom: var(--space-32);
-}
-
 .stat-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-20);
-  transition: all var(--duration-normal) var(--ease-standard);
 }
-
+.stat-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+}
 .stat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-12);
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: var(--space-12);
 }
-
 .stat-header h4 {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  margin: 0;
 }
-
-/* .stat-card .stat-body CSS 수정 (min-height 제거) */
 .stat-card .stat-body {
   padding: var(--space-20) var(--space-16);
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* 수직 중앙 정렬 */
-  align-items: center; /* 수평 중앙 정렬 */
-  /* min-height: 120px; <--- 이 줄을 제거합니다. */
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
 }
-
-/* Dashboard specific text styles for values */
-.stat-card .current-usage-value,
-.stat-card .peak-usage-value,
-.stat-card .savings-rate-value,
-.stat-card .cost-saved-value {
-  /* 현재 사용량... 예상 피크... 예상 사용량... 폰트*/
-  font-size: 50px; /* 스크린샷과 유사한 큰 글씨 */
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text); /* 스크린샷과 유사한 색상 */
-  margin-bottom: var(--space-4); /* 여백 조정 */
-}
-
-.stat-card .current-usage-percentage,
-.stat-card .peak-time,
-.stat-card .savings-rate-description,
-.stat-card .cost-saved-description {
-  font-size: 30px; /* 스크린샷과 유사한 작은 글씨 */
-  color: var(--color-text-secondary); /* 스크린샷과 유사한 색상 */
-}
-
-/* 날씨 섹션 - 노란색 네모 위치 (사용되지 않음 - 호환성을 위해 유지) */
-.weather-section {
-  margin-bottom: var(--space-32);
-}
-
-/* 큰 날씨 카드 - 노란색 네모 크기와 동일 */
+.stat-card .current-usage-value { font-size: 50px; font-weight: 600; }
+.stat-card .current-usage-percentage { font-size: 30px; color: var(--color-text-secondary); }
 .weather-card-large {
   background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-  color: white;
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  position: relative;
-  overflow: hidden;
-  min-height: 100%; /* 전체 높이 채우기 */
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+  color: white; border-radius: var(--radius-lg);
+  padding: 32px; position: relative;
+  min-height: 100%;
+  display: flex; flex-direction: column; width: 100%;
 }
-
-.weather-card-large::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
-
 .weather-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-  position: relative;
-  z-index: 1;
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 32px;
 }
-
-.weather-header h3 {
-  color: white;
-  margin: 0;
-  font-size: 24px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.weather-refresh-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-}
-
-.weather-refresh-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
-  transform: rotate(180deg);
-}
-
-.weather-refresh-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 날씨 카드 본문이 남은 공간을 채우도록 */
-.weather-body {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.weather-loading {
-  text-align: center;
-  padding: 60px 0;
-}
-
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.weather-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.weather-main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-
-.weather-icon {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-}
-
-.weather-temp {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.temp-value {
-  font-size: 72px;
-  font-weight: 200;
-  line-height: 1;
-}
-
-.temp-unit {
-  font-size: 36px;
-  font-weight: 300;
-  margin-top: 12px;
-}
-
-.weather-info {
-  margin-bottom: 32px;
-}
-
-.weather-location {
-  font-size: 28px;
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: 8px;
-}
-
-.weather-description {
-  font-size: 18px;
-  opacity: 0.9;
-  text-transform: capitalize;
-}
-
+.weather-header h3 { font-size: 24px; }
+.weather-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.weather-content { display: flex; flex-direction: column; align-items: center; }
+.weather-main { display: flex; align-items: center; gap: 32px; margin-bottom: 32px; }
+.weather-temp { display: flex; align-items: flex-start; }
+.temp-value { font-size: 72px; font-weight: 200; }
+.temp-unit { font-size: 36px; margin-top: 12px; }
+.weather-location { font-size: 28px; }
+.weather-description { font-size: 18px; }
 .weather-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  padding: 24px 32px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px; padding: 24px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
-  backdrop-filter: blur(10px);
-  max-width: 400px;
-  width: 100%;
 }
-
-.detail-item {
-  text-align: center;
-}
-
-.detail-label {
-  display: block;
-  font-size: 14px;
-  opacity: 0.8;
-  margin-bottom: 8px;
-  font-weight: var(--font-weight-medium);
-}
-
-.detail-value {
-  display: block;
-  font-size: 24px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.weather-error {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background: rgba(255, 193, 7, 0.25);
-  border-radius: var(--radius-md);
-  text-align: center;
-  font-size: 14px;
-  max-width: 500px;
-}
-
-/* Chart Card specific styling */
-.card.chart-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.card.chart-card .card__body {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative; /* 자식 요소의 absolute 포지셔닝을 위해 */
-}
-
-/* Charts Grid */
+.detail-label { font-size: 14px; }
+.detail-value { font-size: 24px; }
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: var(--space-20);
-  margin-bottom: var(--space-32);
 }
-
 .chart-card {
   background: var(--color-surface);
-  border: none; /* ← border 완전 제거 */
+  border: none !important;
   border-radius: var(--radius-lg);
   padding: var(--space-20);
-  transition: all var(--duration-normal) var(--ease-standard);
 }
-
-
 .chart-card:hover {
-  box-shadow: none; /* 그림자 제거 */
-  border: none; /* 테두리 제거 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04) !important;
 }
-
-.chart-card--full {
-  grid-column: 1 / -1;
-}
-
 .chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-16);
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: var(--space-16);
 }
-
-.chart-header h4 {
-  color: var(--color-text);
-  margin: 0;
-  font-weight: var(--font-weight-semibold);
-}
-
-.chart-subtitle {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-}
-
-
-
-/* Larger Gauge Chart Styles */
 .power-gauge-large {
-  position: relative;
-  width: 350px; /* 스크린샷에 맞춰 더 큰 너비 */
-  height: 350px; /* 스크린샷에 맞춰 더 큰 높이 */
-  margin: 0 auto; /* 중앙 정렬 */
-  border: none;
-  outline: none;
+  position: relative; width: 350px; height: 350px; margin: 0 auto;
 }
-
-.power-gauge-large canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Gauge Chart Text (Central) */
 .power-gauge-text-large {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: var(--color-text); /* 스크린샷 텍스트 색상 */
-  font-weight: var(--font-weight-bold);
-  line-height: 1.2;
-  z-index: 10;
+  font-weight: 600;
 }
-
 .power-gauge-text-large #usagePercentageLarge {
-  font-size: 50px; /* 스크린샷 퍼센트 크기 */
-  display: block; /* 블록 요소로 만들어 줄바꿈 */
-}
-
-/* Counter Animation */
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.stat-value {
-  animation: countUp 0.8s ease-out;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 1024px) {
-  .dashboard-main-layout {
-    grid-template-columns: 1fr; /* 태블릿에서는 세로 배치 */
-  }
-  
-  .dashboard-right .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 1200px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .weather-main {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .temp-value {
-    font-size: 60px;
-  }
-  
-  .weather-details {
-    gap: 20px;
-    padding: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .dashboard-right .stats-grid {
-    grid-template-columns: 1fr; /* 모바일에서는 세로 단일 열 */
-  }
-  
-  .weather-card-large {
-    padding: 24px;
-    min-height: 300px;
-  }
-  
-  .weather-header h3 {
-    font-size: 20px;
-  }
-  
-  .weather-main {
-    gap: 16px;
-  }
-  
-  .temp-value {
-    font-size: 48px;
-  }
-  
-  .temp-unit {
-    font-size: 24px;
-  }
-  
-  .weather-location {
-    font-size: 22px;
-  }
-  
-  .weather-description {
-    font-size: 16px;
-  }
-  
-  .weather-details {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 16px;
-  }
-}
-/* 드롭다운 메뉴 스타일 */
-.interval-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  color: var(--color-text);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 120px;
-  justify-content: space-between;
-}
-
-.dropdown-button:hover {
-  background: var(--color-hover, rgba(0, 0, 0, 0.05));
-  border-color: var(--color-primary);
-}
-
-.dropdown-button.active {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-}
-
-.dropdown-arrow {
-  transition: transform 0.2s ease;
-  font-size: 12px;
-}
-
-.dropdown-button.active .dropdown-arrow {
-  transform: rotate(180deg);
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 1000;
-  min-width: 120px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
-  margin-top: 4px;
-}
-
-.dropdown-menu.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-item {
+  font-size: 36px;
   display: block;
-  width: 100%;
-  padding: 10px 16px;
-  border: none;
-  background: transparent;
-  color: var(--color-text);
+}
+.interval-dropdown { position: relative; display: inline-block; }
+.dropdown-button {
+  display: flex; align-items: center;
+  gap: 8px; padding: 8px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-normal);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 0;
+  min-width: 120px;
 }
-
-.dropdown-item:first-child {
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+.dropdown-menu {
+    position: absolute; top: 100%; right: 0;
+    z-index: 1000; min-width: 120px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0; visibility: hidden;
 }
-
-.dropdown-item:last-child {
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+.dropdown-menu.open { opacity: 1; visibility: visible; }
+.dropdown-item {
+    display: block; width: 100%;
+    padding: 10px 16px; border: none;
+    background: transparent;
+    font-size: var(--font-size-sm);
+    text-align: left; cursor: pointer;
 }
-
-.dropdown-item:hover {
-  background: var(--color-hover, rgba(0, 0, 0, 0.05));
-}
-
-.dropdown-item.selected {
-  background: var(--color-primary);
-  color: white;
-  font-weight: var(--font-weight-semibold);
-}
-
-.dropdown-item.selected:hover {
-  background: var(--color-primary);
-}
-
-/* 차트 헤더 레이아웃 조정 */
+.dropdown-item.selected { background: var(--color-primary); color: white; }
 .card__header--space-between {
-  display: flex;
-  justify-content: space-between;
+  display: flex; justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-16);
-  gap: var(--space-16);
 }
-
-.chart-title-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.chart-title-section h4 {
-  margin: 0;
-  color: var(--color-text);
-  font-weight: var(--font-weight-semibold);
-}
-
-/* 다크모드 지원 */
-.dashboard-container.dark .dropdown-button {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border-color);
-  color: var(--dark-text-color);
-}
-
-.dashboard-container.dark .dropdown-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dashboard-container.dark .dropdown-menu {
-  background: var(--dark-card-bg);
-  border-color: var(--dark-border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.dashboard-container.dark .dropdown-item {
-  color: var(--dark-text-color);
-}
-
-.dashboard-container.dark .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* 반응형 디자인 추가 */
-@media (max-width: 768px) {
-  .card__header--space-between {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-12);
-  }
-  
-  .interval-dropdown {
-    width: 100%;
-  }
-  
-  .dropdown-button {
-    width: 100%;
-    min-width: auto;
-  }
-  
-  .dropdown-menu {
-    left: 0;
-    right: 0;
-    min-width: auto;
-  }
-}
-/* 완전한 테두리 제거 - 강제 적용 */
-.chart-card,
-.card.chart-card,
-.chart-card * {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.chart-card:hover,
-.card.chart-card:hover {
-  border: none !important;
-  outline: none !important;
-  box-shadow: var(--shadow-md) !important; /* 호버 시에만 약간의 그림자 */
-}
-
-/* Canvas 요소 강제 스타일링 */
-.power-gauge-large canvas,
-.chart-card canvas {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* 캔버스에서 특정 요소 숨기기 */
-.power-gauge-large canvas {
-  filter: blur(0px) !important;
+@media (max-width: 1024px) {
+  .dashboard-main-layout { grid-template-columns: 1fr; }
 }

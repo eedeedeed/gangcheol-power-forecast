@@ -1,238 +1,95 @@
-/* src/styles/auth.css */
-
-/* Auth Page Styles */
 .auth-page-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 73px var(--space-24) 0; /* 상단 패딩으로 Navbar 공간 확보 */
+  padding: var(--space-24);
   background: var(--color-background);
-  box-sizing: border-box;
+  position: relative;
 }
-
 .auth-card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-24);
   width: 90%;
-  max-width: 500px; /* 적당한 최대 너비 설정 */
+  max-width: 500px;
   box-shadow: var(--shadow-lg);
   color: var(--color-text);
-  display: flex; /* 내부 요소 정렬을 위해 flexbox 사용 */
-  flex-direction: column; /* 세로 방향 정렬 */
-  justify-content: space-between; /* 내용과 하단 링크를 분리 */
-  min-height: 350px; /* 카드 최소 높이 설정 (내용이 적을 때도 보기 좋게) */
 }
-
 .auth-header {
   margin-bottom: var(--space-20);
   text-align: center;
 }
-
 .auth-header h4 {
   font-size: var(--font-size-xl);
   color: var(--color-text);
-  margin: 0; /* 기본 마진 제거 */
+  margin: 0;
 }
-
 .auth-body .form-group {
   margin-bottom: var(--space-16);
-  padding-left: 50px;
-  padding-right: 50px;
 }
-
 .auth-body .form-label {
   color: var(--color-text-secondary);
-  display: block; /* 라벨이 한 줄 전체를 차지하도록 */
-  margin-bottom: var(--space-8); /* 라벨과 입력 필드 사이 간격 */
-  font-size: var(--font-size-sm); /* 라벨 폰트 크기 조정 */
+  display: block;
+  margin-bottom: var(--space-8);
+  font-size: var(--font-size-sm);
 }
-
 .auth-body .form-control {
   width: 100%;
-  padding: var(--space-12) var(--space-16);
-  border-radius: var(--radius-base);
-  font-size: var(--font-size-base);
-  box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
 }
-
-/* 폼 제출 버튼 컨테이너 */
 .auth-submit-container {
-  margin-top: 50px; /* 폼 그룹과 버튼 사이 간격 */
-  text-align: center; /* 버튼 중앙 정렬 */
-  padding-left: 50px;
-  padding-right: 50px;
+  margin-top: var(--space-24);
+  text-align: center;
 }
-
-/* 전체 너비 버튼 */
-.btn--full-width {
-  width: 100%;
-}
-
-.btn--login-width {
-  width: 100%;
-}
-
-/* 모드 전환 텍스트 링크 */
 .auth-switch-mode {
-  text-align: right; /* 우측 정렬 */
-  margin-top: var(--space-24); /* 카드 본문과의 간격 */
+  text-align: right;
+  margin-top: var(--space-24);
 }
-
 .btn-text-link {
-  background: none;
-  border: none;
-  color: var(--color-primary); /* 링크 색상 */
-  font-size: var(--font-size-xs);
+  background: none; border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  padding: var(--space-4) var(--space-8); /* 클릭 영역 확보 */
+  padding: var(--space-4) var(--space-8);
   border-radius: var(--radius-base);
-  transition: all var(--duration-fast) var(--ease-standard);
 }
-
-.btn-text-link:hover {
-  background-color: rgba(var(--color-primary-rgb), 0.1); /* 호버 시 배경색 */
-  color: var(--color-primary-hover); /* 호버 시 색상 */
-}
-
-.btn-text-link:active {
-  background-color: rgba(var(--color-primary-rgb), 0.2);
-}
-/* ========== Dup-Check Button (=중복확인) ========= */
-.btn-check-id {
-  padding: 3px 3px;
-  background: var(--color-secondary);
-  color: var(--color-text);
-  font-size: 12px;
-  font-weight: var(--font-weight-medium);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-base);
-  cursor: pointer;
-  transition: background-color var(--duration-fast) var(--ease-standard),
-              border-color     var(--duration-fast) var(--ease-standard),
-              color            var(--duration-fast) var(--ease-standard);
-}
-
-.btn-check-id:hover {
-  background: var(--color-secondary-hover);
-  border-color: var(--color-border);
-}
-
-.btn-check-id:active {
-  background: var(--color-secondary-active);
-}
-
-.btn-check-id:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
-
-/* 🔥 입력 필드 + 버튼 조합 스타일 */
 .input-with-button {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  width: 100%;
 }
-
-.input-with-button .form-control {
-  flex: 1;
-  margin: 0;
-}
-
-.input-with-button .btn-check-id {
-  flex: 0 0 auto;
+.input-with-button .form-control { flex: 1; margin: 0; }
+.btn-check-id {
   padding: var(--space-10) var(--space-12);
-  background: var(--color-secondary);
-  color: var(--color-text);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-base);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-standard);
-  white-space: nowrap;
-  min-width: 80px;
-  height: 44px; /* 입력 필드와 높이 맞춤 */
+  height: 46px;
 }
-
-.input-with-button .btn-check-id:hover {
-  background: var(--color-secondary-hover);
-  border-color: var(--color-primary);
+.btn--login-width {
+  width: 100%;
+  max-width: 350px;
 }
-
-.input-with-button .btn-check-id:active {
-  background: var(--color-secondary-active);
-}
-
-.input-with-button .btn-check-id:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* 🔥 확인완료 상태 스타일 */
-.input-with-button .btn-check-id.checked {
-  background: var(--color-success);
-  color: white;
-  border-color: var(--color-success);
-}
-
-.input-with-button .btn-check-id.checked:hover {
-  background: var(--color-success-hover);
-}
-
-/* 게스트 접근 섹션 스타일 */
-.auth-guest-access {
-  margin-top: var(--space-16);
-}
-
+.auth-guest-access { margin-top: var(--space-16); }
 .auth-divider {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   margin: var(--space-16) 0;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
 }
-
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px;
   background: var(--color-border);
 }
-
-.auth-divider span {
-  padding: 0 var(--space-12);
-  background: var(--color-surface);
-}
-
+.auth-divider span { padding: 0 var(--space-12); }
 .btn-guest-access {
   width: 100%;
-  padding: var(--space-12) var(--space-16);
-  background: transparent;
   border: 2px dashed var(--color-primary);
-  border-radius: var(--radius-base);
   color: var(--color-primary);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  transition: all var(--duration-normal) var(--ease-standard);
-  font-size: var(--font-size-sm);
 }
-
 .btn-guest-access:hover {
   background: var(--color-primary);
-  color: white;
-  border-style: solid;
+  color: white; border-style: solid;
   transform: translateY(-1px);
 }
-
-.btn-guest-access:active {
-  transform: translateY(0);
-}
-
-/* 에러 메시지 스타일 */
 .error-message {
   color: var(--color-error);
   font-size: var(--font-size-sm);
@@ -242,121 +99,6 @@
   border-radius: var(--radius-base);
   border-left: 3px solid var(--color-error);
 }
-
-/* 반응형 디자인 */
-@media (max-width: 480px) {
-  .input-with-button {
-    flex-direction: column;
-    gap: var(--space-8);
-  }
-  
-  .input-with-button .btn-check-id {
-    width: 100%;
-    min-width: auto;
-  }
-}
-/* 테마 토글 버튼 스타일 추가 */
 .theme-toggle-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-}
-
-.theme-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: var(--card-bg, #ffffff);
-  border: 1px solid var(--border-color, #e1e5e9);
-  border-radius: 20px;
-  color: var(--text-color, #333);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 12px;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.theme-toggle-btn:hover {
-  background: var(--hover-bg, #f8f9fa);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.auth-page-container {
-  position: relative; /* 토글 버튼 절대 위치를 위해 */
-  transition: all 0.3s ease;
-}
-
-/* 다크모드 스타일 */
-.auth-page-container.dark {
-  background: var(--dark-bg, #1a1a1a);
-}
-
-.auth-page-container.dark .theme-toggle-btn {
-  background: var(--dark-card-bg, #2d2d2d);
-  border-color: var(--dark-border-color, #404040);
-  color: var(--dark-text-color, #ffffff);
-}
-
-.auth-page-container.dark .theme-toggle-btn:hover {
-  background: var(--dark-hover-bg, #404040);
-}
-
-.auth-page-container.dark .auth-card {
-  background: var(--dark-card-bg, #2d2d2d);
-  border-color: var(--dark-border-color, #404040);
-}
-
-.auth-page-container.dark h4 {
-  color: var(--dark-text-color, #ffffff);
-}
-
-.auth-page-container.dark .form-label {
-  color: var(--dark-text-color, #ffffff);
-}
-
-.auth-page-container.dark .form-control {
-  background: var(--dark-input-bg, #404040);
-  border-color: var(--dark-border-color, #555555);
-  color: var(--dark-text-color, #ffffff);
-}
-
-.auth-page-container.dark .form-control:focus {
-  border-color: var(--primary-color, #3b82f6);
-  background: var(--dark-input-focus-bg, #4a4a4a);
-}
-
-
-.auth-page-container.dark .btn-text-link {
-  color: var(--primary-color-dark, #60a5fa);
-}
-
-.auth-page-container.dark .btn-text-link:hover {
-  color: var(--primary-color-dark-hover, #93c5fd);
-}
-
-.auth-page-container.dark .btn-guest-access {
-  color: var(--primary-color-dark, #60a5fa);
-  border-color: var(--primary-color-dark, #60a5fa);
-}
-
-.auth-page-container.dark .btn-guest-access:hover {
-  background: var(--primary-color-dark, #60a5fa);
-  color: var(--dark-bg, #1a1a1a);
-}
-
-.auth-page-container.dark .auth-divider {
-  color: var(--dark-text-secondary, #a0a0a0);
-}
-
-.auth-page-container.dark .auth-divider::before,
-.auth-page-container.dark .auth-divider::after {
-  background: var(--dark-border-color, #404040);
-}
-
-.auth-page-container.dark .auth-divider span {
-  background: var(--dark-card-bg, #2d2d2d);
+  position: absolute; top: 20px; right: 20px;
 }

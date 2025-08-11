@@ -1,68 +1,32 @@
-/* src/styles/guide.css */
-
 .guide-container {
   display: flex;
   flex-direction: column;
   gap: var(--space-20);
 }
-
 .guide-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-20);
-  transition: all var(--duration-normal) var(--ease-standard);
 }
-
-.guide-card:hover {
-  border-color: var(--color-success);
-  box-shadow: var(--shadow-md);
-}
-
 .guide-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-12);
 }
-
 .guide-action {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text);
+  font-weight: 550;
   font-size: var(--font-size-sm);
 }
-
-.guide-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-}
-
 .guide-saving {
-  background: var(--color-bg-3);
+  background: rgba(33, 128, 141, 0.15);
   color: var(--color-success);
   padding: var(--space-4) var(--space-8);
   border-radius: var(--radius-base);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
 }
-
-/* ▼▼▼ 본문 폰트 크기를 20px로 확대 ▼▼▼ */
 .guide-description {
   color: var(--color-text-secondary);
-  line-height: 1.5;
-  font-size: 20px; /* 알림창과 동일하게 20px로 설정 */
-}
-
-@keyframes blink {
-  0%, 100% {
-    background-color: var(--color-surface);
-  }
-  50% {
-    background-color: rgba(var(--color-warning-rgb), 0.15);
-  }
-}
-
-.guide-card.blink {
-  animation: blink 0.8s ease-in-out;
+  font-size: 20px;
 }
