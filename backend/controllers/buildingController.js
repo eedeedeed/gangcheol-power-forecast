@@ -1,4 +1,4 @@
-const { BuildingInfo } = require('../models');
+const { Admin, BuildingInfo } = require('../models');
 const { addressToGeocode } = require('../config/geocoding'); // 카카오/네이버/구글 중 택1
 const { convertToGrid } = require('../config/geoUtil');
 
@@ -88,5 +88,50 @@ exports.registerBuilding = async (req, res) => {
     await t.rollback();
     const status = err.status || 500;
     return res.status(status).json({ error: err.message });
+  }
+};
+
+//건물조회
+exports.getBuildingsByAdminId = async (req, res) => {
+  try {
+    const adminId = req.params.adminId || req.query.adminId || req.body.ADMIN_ID;
+    if (!adminId) {
+      return res.status(400).json({ message: 'ADMIN_ID가 필요합니다.' });
+    }
+
+    // (옵션) 탈퇴 계정 차단: deletedYN === 'Y'면 404
+    const admin = await Admin.findByPk(adminId);
+    if (!admin || admin.deletedYN === 'Y') {
+      return res.status(404).json({ message: '존재하지 않거나 탈퇴한 관리자입니다.' });
+    }
+
+    const buildings = await BuildingInfo.findAll({
+      where: { admin_id: adminId },     // 모델 속성명 기준
+      attributes: [
+        ['BUILDING_ID','building_id'],
+        ['BUILDING_NAME','building_name'],
+        ['BUILDING_TYPE','building_type'],
+        ['BUILDING_ADDRESS','building_address'],
+        ['TOTAL_AREA','total_area'],
+        ['COOLING_AREA','cooling_area'],
+        ['COOLING_RATIO','cooling_ratio'],
+        ['PV_CAPACITY','pv_capacity'],
+        ['ESS_CAPACITY','ess_capacity'],
+        ['PCS_CAPACITY','pcs_capacity'],
+        ['HAS_PV','has_pv'],
+        ['HAS_ESS','has_ess'],
+        ['HAS_PCS','has_pcs'],
+        ['LATITUDE','latitude'],
+        ['LONGITUDE','longitude'],
+        ['NX','nx'],
+        ['NY','ny'],
+      ],
+      order: [['BUILDING_ID','ASC']],
+    });
+
+    return res.status(200).json({ admin_id: adminId, count: rows.length, rows });
+  } catch (e) {
+    console.error('[getBuildingsByAdminId] ', e);
+    return res.status(500).json({ message: '건물 조회 중 서버 오류' });
   }
 };

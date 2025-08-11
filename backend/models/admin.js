@@ -1,41 +1,39 @@
 // models/admin.js
-// admin table 정의
-
 const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
-  const Admin = sequelize.define('ADMIN', {  // 테이블명 대문자로 변경
+  const Admin = sequelize.define('Admin', {
     ADMIN_ID: {
       type: DataTypes.STRING(50),
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
     },
-    ADMIN_PASSWORD: {    // 컬럼명 대문자 및 맞춤
+    ADMIN_PASSWORD: {
       type: DataTypes.STRING(100),
-      allowNull: false
+      allowNull: false,
     },
     ADMIN_NAME: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
     },
     BUILDING_ID: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,             // FK -> building_info(BUILDING_ID)
     },
     deletedYN: {
       type: DataTypes.CHAR(1),
       allowNull: false,
-      defaultValue: 'N'
-    }
-
+      defaultValue: 'N',
+    },
   }, {
-    tableName: 'ADMIN',  // 테이블명 대문자 지정
-    timestamps: false
+    tableName: 'admin',            // ← DDL은 소문자 테이블명
+    timestamps: false,
+    underscored: false,
   });
 
-  // 비밀번호 해싱 hook 예시
+  // 비번 해시 (이미 해시되어 넘어오면 생략됨)
   Admin.beforeCreate(async (admin) => {
-    if (admin.ADMIN_PASSWORD) {
+    if (admin.ADMIN_PASSWORD && !admin.ADMIN_PASSWORD.startsWith('$2')) {
       const salt = await bcrypt.genSalt(10);
       admin.ADMIN_PASSWORD = await bcrypt.hash(admin.ADMIN_PASSWORD, salt);
     }

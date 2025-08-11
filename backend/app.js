@@ -3,6 +3,7 @@ const cors = require('cors');
 const adminRoutes = require('./routes/adminRoutes');
 const buildingRouters = require('./routes/buildingRoutes');
 const locationRoutes = require('./routes/locationRoutes');
+const predictRoutes = require('./routes/predictRoutes');
 
 const app = express();
 
@@ -14,11 +15,13 @@ app.use(cors({
 
 //req.body (json) 사용
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 라우터
 app.use('/admin', adminRoutes);
 app.use('/building', buildingRouters);
 app.use('/location', locationRoutes);
+app.use('/', predictRoutes);
 
 //서버실행
 app.listen(5000, '0.0.0.0', () => {

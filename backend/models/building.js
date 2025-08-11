@@ -1,28 +1,29 @@
+// models/building.js
 module.exports = (sequelize, DataTypes) => {
   const BuildingInfo = sequelize.define('BuildingInfo', {
-    building_id: {                        // ← 소문자 속성
-      type: DataTypes.INTEGER.UNSIGNED,
+    building_id: {
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
-      field: 'BUILDING_ID',              // ← DB 컬럼
+      field: 'BUILDING_ID',
     },
 
     building_name: {
       type: DataTypes.STRING(100),
-      allowNull: false,
+      allowNull: true,               // DDL: DEFAULT NULL
       field: 'BUILDING_NAME',
     },
 
     building_type: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: false,              // DDL: NOT NULL
       field: 'BUILDING_TYPE',
     },
 
     building_address: {
       type: DataTypes.STRING(200),
-      allowNull: true,
+      allowNull: true,               // DDL: DEFAULT NULL
       field: 'BUILDING_ADDRESS',
     },
 
@@ -31,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       field: 'TOTAL_AREA',
     },
-
     cooling_area: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -46,24 +46,9 @@ module.exports = (sequelize, DataTypes) => {
       set() { throw new Error('cooling_ratio is generated and read-only'); }
     },
 
-    pv_capacity: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: 0,
-      field: 'PV_CAPACITY',
-    },
-    ess_capacity: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: 0,
-      field: 'ESS_CAPACITY',
-    },
-    pcs_capacity: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: 0,
-      field: 'PCS_CAPACITY',
-    },
+    pv_capacity:  { type: DataTypes.FLOAT, allowNull: true, defaultValue: 0, field: 'PV_CAPACITY' },
+    ess_capacity: { type: DataTypes.FLOAT, allowNull: true, defaultValue: 0, field: 'ESS_CAPACITY' },
+    pcs_capacity: { type: DataTypes.FLOAT, allowNull: true, defaultValue: 0, field: 'PCS_CAPACITY' },
 
     // 생성 칼럼(읽기 전용)
     has_pv:  { type: DataTypes.BOOLEAN, allowNull: true, field: 'HAS_PV',  set() { throw new Error('has_pv is read-only'); } },
@@ -76,11 +61,19 @@ module.exports = (sequelize, DataTypes) => {
     ny:        { type: DataTypes.SMALLINT,      allowNull: true, field: 'NY'        },
 
     geocode_status: {
-      type: DataTypes.ENUM('PENDING','OK','FAILED'),
+      type: DataTypes.ENUM('PENDING', 'OK', 'FAILED'),
       allowNull: false,
       defaultValue: 'PENDING',
       field: 'GEOCODE_STATUS',
     },
+
+    // FK → admin(ADMIN_ID) (nullable)
+    admin_id: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      field: 'ADMIN_ID',
+    },
+
   }, {
     tableName: 'building_info',
     timestamps: false,
