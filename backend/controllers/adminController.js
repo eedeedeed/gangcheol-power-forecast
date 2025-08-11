@@ -17,12 +17,12 @@ exports.createAdmin = async (req, res) => {
     }
 
     // 비밀번호 암호화
-    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    //const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10); - 두번 해싱됨 지워
 
     // 관리자 생성
     const newAdmin = await Admin.create({
       ADMIN_ID,
-      ADMIN_PASSWORD: hashedPassword,
+      ADMIN_PASSWORD,
       ADMIN_NAME,
       BUILDING_ID
     });
