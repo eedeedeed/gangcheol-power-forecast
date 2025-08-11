@@ -18,6 +18,7 @@ const REQUIRED_NON_LAG = [
 //건물 전력예측
 exports.predictForMyBuilding = async (req, res) => {
   try {
+    console.log(req);
     const buildingId = req.admin?.buildingId || req.body?.buildingId; // 토큰 없으면 body fallback
     if (!buildingId) return res.status(400).json({ message: 'buildingId 필요' });
 
@@ -84,6 +85,8 @@ exports.predictForMyBuilding = async (req, res) => {
     if (missing.length) {
       return res.status(400).json({ message: `누락 피처: ${missing.join(', ')}` });
     }
+    console.log('모델 호출 준비 끝');
+    
 
     // 7) 모델 호출
     const { prediction, model_version } = await requestPrediction(payload);
