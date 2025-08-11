@@ -13,10 +13,7 @@ model = joblib.load("./xgb_model.pkl")  # 경로 확인!
 
 def predict():
 
-    input_data = request.get_json()
-
-    # 1. 입력 전처리: input_data → 모델 입력 feature 형태로
-    features = preprocess_input(input_data)  # ⬅️ 여기에 sin/cos, 비율 계산, bool 처리 등 포함
+    features = request.get_json()
 
     # 2. 모델 예측
     prediction = model.predict(features)
