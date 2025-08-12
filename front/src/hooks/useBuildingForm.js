@@ -14,13 +14,25 @@ export function useBuildingForm(initialData = null) {
   
   useEffect(() => {
     if (initialData) {
-      // 수정 모드일 때, 기존 데이터와 새 필드를 합쳐 상태를 설정
-      setBuilding(prev => ({ ...initialBuildingState, ...initialData }));
+      // 수정 모드일 때, 백엔드 데이터(snake_case)를 폼 상태(camelCase)로 매핑합니다.
+      const mappedData = {
+        name: initialData.building_name,
+        type: initialData.building_type,
+        area: initialData.total_area,
+        coolingArea: initialData.cooling_area,
+        pcsCapacity: initialData.pcs_capacity,
+        essCapacity: initialData.ess_capacity,
+        solarCapacity: initialData.pv_capacity,
+        address: initialData.building_address,
+        zipCode: initialData.zip_code,
+        detailAddress: '', // 상세주소는 보통 주소와 분리되어 있으므로 초기화
+      };
+      setBuilding(mappedData);
       
       const standardTypes = ['아파트', '상업', '백화점', '병원', '호텔', '전화국(IDC)', '연구소', '공공', '학교'];
-      if (initialData.type && !standardTypes.includes(initialData.type)) {
+      if (mappedData.type && !standardTypes.includes(mappedData.type)) {
         setBuilding(prev => ({ ...prev, type: '기타' }));
-        setOtherTypeName(initialData.type);
+        setOtherTypeName(mappedData.type);
       }
     } else {
       // 추가 모드일 때, 상태를 초기화
@@ -74,6 +86,7 @@ export function useBuildingForm(initialData = null) {
       building_address: finalAddress,
       zip_code: building.zipCode,
     };
+    console.log('1. [useBuildingForm] 데이터 가공 완료:', formData);
     return formData;
   };
 

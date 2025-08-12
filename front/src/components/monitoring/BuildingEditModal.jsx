@@ -20,8 +20,11 @@ function BuildingEditModal({ isOpen, onClose, onSave, initialData = null }) {
       alert('필수 입력 항목(*)을 모두 채워주세요.');
       return;
     }
+    
+    const formData = getFormData(); // 폼 데이터를 변수에 저장
+    console.log('2. [BuildingEditModal] onSave 호출, 데이터 전달:', formData);
+    onSave(formData); // 최종 데이터를 부모에게 전달
 
-    onSave(getFormData()); // 최종 데이터를 부모에게 전달
     if (!initialData) { // 새 건물 등록일 경우에만 폼을 리셋
       resetForm();
     }

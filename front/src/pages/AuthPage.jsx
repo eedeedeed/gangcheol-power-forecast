@@ -61,20 +61,24 @@ function AuthPage() {
 			if (isLoginMode) {
 				const response = await login(formData.ADMIN_ID, formData.ADMIN_PASSWORD);
 				
-				// ⭐️ 해결책 A: 서버가 응답에 user 객체를 포함해서 보내준다고 가정합니다.
-				const userData = response.data; 
-				console.log('서버 응답:', response.data);
-				console.log("유저데이터확인 : " +  userData);
-				console.log('메시지확인 : ' + response.data.admin.ADMIN_ID);
-				if (userData) {
-					console.log('로그인 성공! ID:', userData.admin.ADMIN_ID);
+				// --- 디버깅을 위한 로그 ---
+				console.log('✅ [AuthPage] 로그인 API 전체 응답:', response);
+				console.log('✅ [AuthPage] 로그인 API 응답 데이터 (response.data):', response.data);
+				// --- 디버깅 끝 ---
+
+				// 서버 응답 데이터에서 실제 사용자 정보를 추출합니다.
+				// 백엔드가 { admin: { ... } } 구조로 보내준다고 가정합니다.
+				const userData = response.data.admin; 
+				
+				if (userData && userData.ADMIN_ID) {
+					console.log('로그인 성공! 사용자 정보:', userData);
 					handleLoginSuccess(userData);
 					navigate('/dashboard');
 				} else {
-					// 서버가 약속된 user 객체를 보내주지 않은 경우
-					console.error('서버 응답에 user 객체가 없습니다. 백엔드 코드를 확인하세요.');
-					console.log("패스워드확인 : " +  formData.ADMIN_PASSWORD);
-					setErrorMessage('서버 응답 형식이 올바르지 않습니다.');
+					// 만약 위 가정이 틀렸다면, 여기서 오류가 발생합니다.
+					// 개발자 도구 콘솔에서 실제 response.data 구조를 확인하고 아래 코드를 수정해야 합니다.
+					console.error('서버 응답에서 사용자 정보(admin 객체)를 찾을 수 없습니다. 백엔드 응답 구조를 확인하세요.');
+					setErrorMessage('로그인에 실패했습니다: 서버 응답 형식 오류');
 				}
 
 			} else {

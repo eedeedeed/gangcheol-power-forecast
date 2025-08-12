@@ -42,22 +42,30 @@ function BuildingMonitoring() {
                 </tr>
               </thead>
               <tbody>
-                {buildings.map((building) => (
-                  <tr key={building.id}>
-                    <td>{building.id}</td>
-                    <td>{building.name}</td>
-                    <td>{building.type || 'N/A'}</td>
-                    <td className="actions">
-                      <button onClick={() => setModalState({ type: 'details', data: building })} className="btn btn--secondary btn--sm">
-                        세부정보 보기
-                      </button>
+                {buildings.length > 0 ? (
+                  buildings.map((building) => (
+                    <tr key={building.building_id}>
+                      <td>{building.building_id}</td>
+                      <td>{building.building_name}</td>
+                      <td>{building.building_type || 'N/A'}</td>
+                      <td className="actions">
+                        <button onClick={() => setModalState({ type: 'details', data: building })} className="btn btn--secondary btn--sm">
+                          세부정보 보기
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                      등록된 건물이 없습니다. 우측 하단의 '+' 버튼을 눌러 건물을 추가하세요.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
-          <div className="add-building-btn-container">
+          <div className="add-building-btn-container" style={{textAlign: "right", marginTop: "20px"}}>
             <button onClick={() => setModalState({ type: 'add', data: null })} className="add-building-btn">+</button>
           </div>
         </div>

@@ -1,8 +1,8 @@
 .dashboard-main-layout {
   display: grid;
   grid-template-columns: 2.5fr 7fr;
-  gap: var(--space-32);
-  margin-bottom: var(--space-32);
+  gap: var(--space-24);
+  margin-bottom: var(--space-24);
 }
 
 .dashboard-left, .dashboard-right { display: flex; }
@@ -22,10 +22,6 @@
   transition: all 0.2s ease;
 }
 
-.stat-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
-  transform: translateY(-2px);
-}
 
 .stat-header {
   display: flex; justify-content: space-between;
@@ -127,7 +123,7 @@
 
 .chart-card {
   background: var(--color-surface);
-  border: none !important;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-24);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -136,7 +132,7 @@
 
 .chart-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .chart-header {
@@ -383,8 +379,7 @@ html[data-color-scheme='dark'] canvas {
 }
 
 .chart-card:hover canvas {
-  transform: scale(1.02);
-  transition: transform 0.2s ease;
+  /* transform: scale(1.02); */
 }
 
 html[data-color-scheme='dark'] .chart-card:hover canvas {

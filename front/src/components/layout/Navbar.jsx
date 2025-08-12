@@ -28,32 +28,21 @@ function Navbar() {
     timeoutRef.current = setTimeout(() => setIsUserDropdownOpen(false), 300);
   };
 
-  // 건물관리 클릭 시 실행될 함수 - user 객체 확인 추가
-  const handleBuildingManagementClick = async () => {
-    try {
-      // 드롭다운 닫기
-      setIsUserDropdownOpen(false);
-      
-      // user 객체가 없으면 에러 처리
-      if (!user) {
-        console.error('사용자 정보가 없습니다. 다시 로그인해주세요.');
-        return;
-      }
+  // 건물관리 클릭 시 실행될 함수
+  const handleBuildingManagementClick = () => {
+    // 드롭다운 메뉴를 먼저 닫습니다.
+    setIsUserDropdownOpen(false);
 
-      // adminId 또는 id가 없으면 에러 처리  
-      const adminId = user.adminId || user.id;
-      if (!adminId) {
-        console.error('사용자 ID 정보가 없습니다.');
-        return;
-      }
-      
-      console.log('건물 데이터 요청 시작...', 'AdminID:', adminId);
-      const response = await getBuildings(adminId);
-      console.log('건물 데이터:', response.data);
-      
-    } catch (error) {
-      console.error('건물 데이터 가져오기 실패:', error);
+    // AuthContext에서 가져온 user 객체와 그 안의 ADMIN_ID를 확인합니다.
+    if (!user || !user.ADMIN_ID) {
+      console.error('사용자 정보(ADMIN_ID)가 없어 건물 관리를 진행할 수 없습니다.');
+      // 사용자에게 알림을 보여주는 로직을 추가할 수 있습니다.
+      return;
     }
+
+    // 페이지 이동만 담당하므로, 별도의 API 호출은 필요 없습니다.
+    // BuildingMonitoring 페이지에서 user.ADMIN_ID를 사용하여 건물 목록을 조회할 것입니다.
+    console.log(`건물 관리 페이지로 이동합니다. 사용자: ${user.ADMIN_NAME}(${user.ADMIN_ID})`);
   };
 
   const getNavLinkClass = ({ isActive }) => "navbar-item" + (isActive ? " active" : "");

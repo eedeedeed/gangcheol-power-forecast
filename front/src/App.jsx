@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet, Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Context Providers
 import ThemeProvider from './contexts/ThemeContext';
-import  AuthProvider, { AuthContext } from './contexts/AuthContext';
+import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import BuildingProvider from './contexts/BuildingContext';
 import NotificationProvider from './contexts/NotificationContext';
 
@@ -61,6 +61,26 @@ function ProtectedRoute() {
 }
 
 function App() {
+
+  // Geolocation API로 사용자의 현재 위치 위도, 경도 데이터 가져오기
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      // 성공 콜백
+      (position) => {
+        console.log(
+          "현재 위치:",
+          `위도(lat): ${position.coords.latitude},`,
+          `경도(lng): ${position.coords.longitude}`
+        );
+      },
+      // 실패 콜백
+      () => {
+        alert("위치 정보를 가져오는 데 실패했습니다.");
+      }
+    );
+  }, []); // 빈 배열[]은 컴포넌트가 처음 로드될 때 한 번만 실행하라는 의미입니다.
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -75,6 +95,7 @@ function App() {
                   <Route path="/alerts" element={<Alerts />} />
                   <Route path="/guide" element={<Guide />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Route>
               </Routes>

@@ -9,7 +9,7 @@ function BuildingForm({ form, onFormChange, onOtherTypeNameChange, otherTypeName
       oncomplete: (data) => onAddressSearch(data),
       theme: {
         bgColor: "#1a1a1a", contentBgColor: "#2d2d2d",
-        textColor: "#ffffff", queryTextColor: "#ffffff",
+        textColor: "#ffffff", queryTextColor: "#2d2d2d",
       }
     }).open();
   };

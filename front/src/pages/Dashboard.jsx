@@ -11,16 +11,20 @@ import { getDashboardData } from '../api/dashboard.api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, Filler);
 
-// 임시 데이터 생성 함수 (API 연동 전까지 사용)
-const createMockDashboardData = () => ({
+// 🔥 기본 데이터 (건물 데이터가 없을 때 사용할 0값 기본 데이터)
+const createDefaultDashboardData = () => ({
   data: {
-    currentUsage: Math.floor(Math.random() * 2000),
-    usagePercentage: Math.random() * 100,
-    status: Math.random() > 0.5 ? 'normal' : 'warning',
-    todayUsage: Array(24).fill(0).map((_, i) => ({ time: `${String(i).padStart(2, '0')}:00`, usage: 400 + Math.random() * 800 })),
+    currentUsage: 0,
+    usagePercentage: 0,
+    status: 'normal',
+    todayUsage: Array(24).fill(0).map((_, i) => ({ 
+      time: `${String(i).padStart(2, '0')}:00`, 
+      usage: 0 
+    })),
     stats: {
-        peak_prediction: { time: "15:00", usage: 1820, status: "warning" },
-        savings_rate: 12.3, savings_rate_status: "success",
+      peak_prediction: { time: "00:00", usage: 0, status: "normal" },
+      savings_rate: 0,
+      savings_rate_status: "normal",
     },
   }
 });
@@ -52,44 +56,120 @@ function Dashboard() {
     return () => observer.disconnect();
   }, []);
 
+  // 🔥 수정된 useQuery - 건물 데이터가 없어도 항상 실행
   const { data: dashboardApiResponse, isLoading, isError, error } = useQuery({
-    queryKey: ['dashboard', selectedBuildingId],
-    queryFn: () => {
-        // 실제 API 호출 (주석 처리)
-        // return getDashboardData(selectedBuildingId)
-
-        // 백엔드 연동 전까지 임시 데이터 반환
-        return Promise.resolve(createMockDashboardData());
+    queryKey: ['dashboard', selectedBuildingId || 'default'],
+    queryFn: async () => {
+      try {
+        // 건물이 선택되어 있으면 실제 API 호출
+        if (selectedBuildingId) {
+          console.log('건물 선택됨 - API 호출:', selectedBuildingId);
+          return await getDashboardData(selectedBuildingId);
+        } else {
+          // 건물이 선택되지 않았으면 기본 0값 데이터 사용
+          console.log('건물 미선택 - 기본 데이터 사용');
+          return Promise.resolve(createDefaultDashboardData());
+        }
+      } catch (error) {
+        console.error('데이터 로드 실패, 기본값 사용:', error);
+        return Promise.resolve(createDefaultDashboardData());
+      }
     },
-    enabled: !!selectedBuildingId,
+    // 🔥 항상 쿼리 실행 (건물 선택 여부와 관계없이)
+    enabled: true,
+    // 🔥 에러 시에도 기본 데이터로 처리
+    retry: false,
+    onError: (error) => {
+      console.error('Dashboard 쿼리 에러:', error);
+    }
   });
   
+  // 🔥 로딩 상태도 기본 레이아웃 유지
   if (isLoading) {
-    return <div>데이터를 불러오는 중입니다...</div>;
+    return (
+      <div id="dashboard">
+        <div className="dashboard-main-layout">
+          <div className="dashboard-left">
+            <div className="loading-placeholder">날씨 정보 로딩 중...</div>
+          </div>
+          <div className="dashboard-right">
+            <div className="stats-grid">
+              <div className="loading-placeholder">데이터 로딩 중...</div>
+            </div>
+          </div>
+        </div>
+        <div className="charts-grid">
+          <div className="card chart-card">
+            <div className="card__header"><h4>실시간 전력 사용량</h4></div>
+            <div className="card__body loading-placeholder">차트 로딩 중...</div>
+          </div>
+          <div className="card chart-card">
+            <div className="card__header"><h4>오늘의 전력 사용량 추이</h4></div>
+            <div className="card__body loading-placeholder">차트 로딩 중...</div>
+          </div>
+        </div>
+      </div>
+    );
   }
   
-  if (isError) {
-    return <div>오류가 발생했습니다: {error.message}</div>;
+  // 🔥 에러 상태에서도 기본 데이터로 레이아웃 유지
+  let dashboardData;
+  if (isError || !dashboardApiResponse?.data) {
+    console.log('에러 또는 데이터 없음 - 기본 데이터 사용');
+    dashboardData = createDefaultDashboardData().data;
+  } else {
+    dashboardData = dashboardApiResponse.data;
   }
 
-  // API 응답에서 실제 데이터 추출 (axios는 보통 response.data에 담겨 옴)
-  const dashboardData = dashboardApiResponse?.data;
-
-  // 데이터가 아직 없으면 렌더링하지 않음
-  if (!dashboardData) {
-    return <div>선택된 건물의 데이터를 표시할 수 없습니다.</div>;
-  }
-
-  const { currentUsage, usagePercentage, status, todayUsage, stats } = dashboardData;
+  // 🔥 안전한 데이터 추출 (기본값 제공)
+  const {
+    currentUsage = 0,
+    usagePercentage = 0,
+    status = 'normal',
+    todayUsage = Array(24).fill(0).map((_, i) => ({ 
+      time: `${String(i).padStart(2, '0')}:00`, 
+      usage: 0 
+    })),
+    stats = {
+      peak_prediction: { time: "00:00", usage: 0, status: "normal" },
+      savings_rate: 0,
+      savings_rate_status: "normal"
+    }
+  } = dashboardData || {};
   
+  // 🔥 안전한 통계 데이터 생성
   const statsData = [
-    { title: '현재 사용량', value: `${currentUsage.toLocaleString()} kW`, description: `용량의 ${usagePercentage.toFixed(1)}%`, status: status, statusText: status === 'normal' ? '정상' : '주의'},
-    { title: '예상 피크', value: `${stats.peak_prediction.usage.toLocaleString()} kW`, description: `내일 ${stats.peak_prediction.time}`, status: stats.peak_prediction.status, statusText: stats.peak_prediction.status === 'warning' ? '주의' : '정상' },
-    { title: '예상 사용량', value: '1,750 kW', description: '내일 평균', status: 'normal', statusText: '정보' },
-    { title: '절감률', value: `${stats.savings_rate.toFixed(1)}%`, description: '전월 대비', status: stats.savings_rate_status, statusText: stats.savings_rate_status === 'success' ? '우수' : '보통' }
+    { 
+      title: '현재 사용량', 
+      value: `${(currentUsage || 0).toLocaleString()} kW`, 
+      description: `용량의 ${(usagePercentage || 0).toFixed(1)}%`, 
+      status: status || 'normal', 
+      statusText: (status || 'normal') === 'normal' ? '정상' : '주의'
+    },
+    { 
+      title: '예상 피크', 
+      value: `${((stats?.peak_prediction?.usage) || 0).toLocaleString()} kW`, 
+      description: `내일 ${(stats?.peak_prediction?.time) || '00:00'}`, 
+      status: (stats?.peak_prediction?.status) || 'normal', 
+      statusText: ((stats?.peak_prediction?.status) || 'normal') === 'warning' ? '주의' : '정상' 
+    },
+    { 
+      title: '예상 사용량', 
+      value: '0 kW', 
+      description: '데이터 없음', 
+      status: 'normal', 
+      statusText: '정보' 
+    },
+    { 
+      title: '절감률', 
+      value: `${((stats?.savings_rate) || 0).toFixed(1)}%`, 
+      description: '전월 대비', 
+      status: (stats?.savings_rate_status) || 'normal', 
+      statusText: ((stats?.savings_rate_status) || 'normal') === 'success' ? '우수' : '보통' 
+    }
   ];
 
-  // 🔥 다크모드 대응 차트 옵션 - 완전 해결
+  // 🔥 다크모드 대응 차트 옵션
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -126,19 +206,19 @@ function Dashboard() {
       x: {
         grid: {
           display: true,
-          color: isDarkMode ? 'rgba(252, 252, 249, 0.3)' : 'rgba(94, 82, 64, 0.2)', // 🔥 확실한 색상 구분
+          color: isDarkMode ? 'rgba(252, 252, 249, 0.3)' : 'rgba(94, 82, 64, 0.2)',
           borderColor: isDarkMode ? '#fcfcf9' : '#13343b',
           borderWidth: 1
         },
         ticks: {
-          color: isDarkMode ? '#fcfcf9' : '#13343b', // 🔥 확실한 흰색/검은색
+          color: isDarkMode ? '#fcfcf9' : '#13343b',
           font: {
             size: 13,
             family: "'Noto Sans KR', sans-serif"
           }
         },
         border: {
-          color: isDarkMode ? '#fcfcf9' : '#13343b', // 🔥 확실한 축 색상
+          color: isDarkMode ? '#fcfcf9' : '#13343b',
           width: 1
         }
       },
@@ -150,7 +230,7 @@ function Dashboard() {
           borderWidth: 1
         },
         ticks: {
-          color: isDarkMode ? '#fcfcf9' : '#13343b', // 🔥 확실한 흰색/검은색
+          color: isDarkMode ? '#fcfcf9' : '#13343b',
           font: {
             size: 13,
             family: "'Noto Sans KR', sans-serif"
@@ -164,19 +244,19 @@ function Dashboard() {
     }
   };
 
-  // 🔥 도넛 차트 옵션 - 수정된 버전
+  // 🔥 도넛 차트 옵션
   const realtimeGaugeOptions = {
     responsive: true,
     maintainAspectRatio: false,
     cutout: '65%',
-    rotation: -90, // 시작점을 상단으로
-    circumference: 360, // 전체 원
+    rotation: -90,
+    circumference: 360,
     plugins: {
       legend: {
         display: false
       },
       tooltip: {
-        enabled: false // 기존과 동일 (툴팁 비활성화)
+        enabled: false
       }
     },
     elements: {
@@ -185,51 +265,52 @@ function Dashboard() {
         borderRadius: 0
       }
     },
-    events: [], // 🔥 이벤트 비활성화 (기존 기능 유지)
+    events: [],
     animation: {
       animateRotate: true,
       animateScale: false
     }
   };
   
+  // 🔥 안전한 차트 데이터 생성
   const todayUsageChartData = {
-    labels: todayUsage.map(data => data.time),
+    labels: (todayUsage || []).map(data => data?.time || '00:00'),
     datasets: [{
-        label: '사용량 (kWh)', 
-        data: todayUsage.map(data => data.usage),
-        borderColor: 'var(--color-primary)', // 테마 색상 사용
-        backgroundColor: 'rgba(50, 184, 198, 0.2)',
-        tension: 0.4, // 부드러운 곡선
-        fill: true,
-        borderWidth: 2,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        pointBackgroundColor: 'var(--color-primary)',
-        pointBorderColor: '#ffffff',
-        pointBorderWidth: 2
+      label: '사용량 (kWh)', 
+      data: (todayUsage || []).map(data => data?.usage || 0),
+      borderColor: 'var(--color-primary)',
+      backgroundColor: 'rgba(50, 184, 198, 0.2)',
+      tension: 0.4,
+      fill: true,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      pointBackgroundColor: 'var(--color-primary)',
+      pointBorderColor: '#ffffff',
+      pointBorderWidth: 2
     }],
   };
   
-  // 🔥 도넛 차트 데이터 - 청록색 계열로 색상 수정
+  // 🔥 도넛 차트 데이터 - 0값 처리
+  const safeUsagePercentage = Math.max(0, Math.min(100, usagePercentage || 0));
   const realtimeGaugeChartData = {
     labels: ['사용량', '남은 용량'],
     datasets: [{
-        data: [usagePercentage, 100 - usagePercentage],
-        backgroundColor: [
-          isDarkMode ? '#32b8c6' : '#21808d', // 🔥 청록색 계열 (Teal-300 : Teal-500)
-          isDarkMode ? 'rgba(252, 252, 249, 0.15)' : 'rgba(226, 232, 240, 0.3)' // 남은 용량 부분
-        ],
-        borderColor: [
-          isDarkMode ? '#32b8c6' : '#21808d',
-          'transparent'
-        ],
-        borderWidth: 0,
-        cutout: '65%',
-        // 🔥 호버 효과도 청록색으로 설정
-        hoverBackgroundColor: [
-          isDarkMode ? '#2db2c1' : '#1e737e', // 호버 시 약간 더 진한 청록색
-          isDarkMode ? 'rgba(252, 252, 249, 0.25)' : 'rgba(226, 232, 240, 0.5)'
-        ]
+      data: [safeUsagePercentage, 100 - safeUsagePercentage],
+      backgroundColor: [
+        isDarkMode ? '#32b8c6' : '#21808d',
+        isDarkMode ? 'rgba(252, 252, 249, 0.15)' : 'rgba(226, 232, 240, 0.3)'
+      ],
+      borderColor: [
+        isDarkMode ? '#32b8c6' : '#21808d',
+        'transparent'
+      ],
+      borderWidth: 0,
+      cutout: '65%',
+      hoverBackgroundColor: [
+        isDarkMode ? '#2db2c1' : '#1e737e',
+        isDarkMode ? 'rgba(252, 252, 249, 0.25)' : 'rgba(226, 232, 240, 0.5)'
+      ]
     }],
   };
 
@@ -238,7 +319,9 @@ function Dashboard() {
       <div className="dashboard-main-layout">
         <div className="dashboard-left"><WeatherCard /></div>
         <div className="dashboard-right">
-          <div className="stats-grid">{statsData.map((stat, index) => <StatCard key={index} {...stat} />)}</div>
+          <div className="stats-grid">
+            {statsData.map((stat, index) => <StatCard key={index} {...stat} />)}
+          </div>
         </div>
       </div>
       <div className="charts-grid">
@@ -246,10 +329,9 @@ function Dashboard() {
           <div className="card__header"><h4>실시간 전력 사용량</h4></div>
           <div className="card__body" style={{ position: 'relative', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div className="power-gauge-large">
-              {/* 🔥 청록색 계열 도넛 차트 */}
               <Doughnut data={realtimeGaugeChartData} options={realtimeGaugeOptions} />
               <div className="power-gauge-text-large">
-                <span id="usagePercentageLarge">{usagePercentage.toFixed(1)}%</span>
+                <span id="usagePercentageLarge">{safeUsagePercentage.toFixed(1)}%</span>
               </div>
             </div>
           </div>
@@ -263,7 +345,6 @@ function Dashboard() {
             <IntervalDropdown activeInterval={lineInterval} onIntervalChange={setLineInterval} />
           </div>
           <div className="card__body" style={{ position: 'relative', height: '300px' }}>
-            {/* 🔥 다크모드 XY축 텍스트 완전 해결된 라인 차트 */}
             <Line data={todayUsageChartData} options={chartOptions} />
           </div>
         </div>
