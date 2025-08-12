@@ -4,6 +4,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const buildingRouters = require('./routes/buildingRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const predictRoutes = require('./routes/predictRoutes');
+const weatherRoutes = require('./routes/weatherRoutes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/admin', adminRoutes);
 app.use('/building', buildingRouters);
 app.use('/location', locationRoutes);
 app.use('/', predictRoutes);
+app.use('/weather', weatherRoutes);
 
 //서버실행
 app.listen(5000, '0.0.0.0', () => {
