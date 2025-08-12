@@ -41,7 +41,9 @@ function WeatherCard() {
             setLoading(true);
             setError(null);
             const response = await getCurrentWeather({ lat, lng });
-            const weatherData = response.data.current_weather;
+            
+            
+            const weatherData = response.data.weather;
             const displayData = getWeatherDisplayData(weatherData.PTY);
 
             setWeather({
