@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/admin', adminRoutes);
 app.use('/building', buildingRouters);
 app.use('/location', locationRoutes);
-app.use('/', predictRoutes);
+app.use('/predict', predictRoutes);
 app.use('/weather', weatherRoutes);
 
 //서버실행

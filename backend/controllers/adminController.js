@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 // 관리자 회원가입
 exports.createAdmin = async (req, res) => {
   try {
-    const { ADMIN_ID, ADMIN_PASSWORD, ADMIN_NAME, BUILDING_ID } = req.body;
+    const { ADMIN_ID, ADMIN_PASSWORD, ADMIN_NAME } = req.body;
 
     // 아이디 중복확인
     const existingAdmin = await Admin.findByPk(ADMIN_ID);
@@ -24,7 +24,6 @@ exports.createAdmin = async (req, res) => {
       ADMIN_ID,
       ADMIN_PASSWORD,
       ADMIN_NAME,
-      BUILDING_ID
     });
 
     res.status(201).json({ message: '관리자 등록 완료', admin: newAdmin });
