@@ -76,6 +76,8 @@ export function useBuildingForm(initialData = null) {
     
     // 서버에 보낼 데이터 (스네이크 케이스로 변환 및 숫자 타입 변환)
     const formData = {
+      // [수정] 수정 모드일 경우를 대비해 building_id를 포함시킵니다.
+      building_id: initialData?.building_id, 
       building_name: building.name,
       building_type: buildingType,
       total_area: parseFloat(building.area) || 0,

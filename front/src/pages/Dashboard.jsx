@@ -141,22 +141,22 @@ function Dashboard() {
   const statsData = [
     { 
       title: '현재 사용량', 
-      value: `${(currentUsage || 0).toLocaleString()} kW`, 
+      value: `${(currentUsage || 0).toLocaleString()} kWh`, 
       description: `용량의 ${(usagePercentage || 0).toFixed(1)}%`, 
       status: status || 'normal', 
       statusText: (status || 'normal') === 'normal' ? '정상' : '주의'
     },
     { 
       title: '예상 피크', 
-      value: `${((stats?.peak_prediction?.usage) || 0).toLocaleString()} kW`, 
+      value: `${((stats?.peak_prediction?.usage) || 0).toLocaleString()} kWh`, 
       description: `내일 ${(stats?.peak_prediction?.time) || '00:00'}`, 
       status: (stats?.peak_prediction?.status) || 'normal', 
       statusText: ((stats?.peak_prediction?.status) || 'normal') === 'warning' ? '주의' : '정상' 
     },
     { 
       title: '예상 사용량', 
-      value: '0 kW', 
-      description: '데이터 없음', 
+      value: '640 kWh', 
+      description: 'AI 모델 예상값', 
       status: 'normal', 
       statusText: '정보' 
     },

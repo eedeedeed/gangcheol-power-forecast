@@ -16,10 +16,18 @@ const getWeatherDisplayData = (ptyCode) => {
   return ptyMap[ptyCode] || { condition: 'unknown', description: '정보 없음', icon: '🌤️' };
 };
 
-
+// 아이콘 컴포넌트
 const WeatherIcon = ({ icon, size = 48 }) => {
-    return <span style={{ fontSize: `${size}px` }}>{icon}</span>;
+    return <span style={{ fontSize: `${size}px`, lineHeight: 1 }}>{icon}</span>;
 };
+
+// 새로고침 아이콘 SVG 컴포넌트
+const RefreshIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M23 4v6h-6" />
+    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+  </svg>
+);
 
 function WeatherCard() {
     const { selectedBuilding } = useContext(BuildingContext);
@@ -27,7 +35,6 @@ function WeatherCard() {
         temperature: '--',
         humidity: '--',
         windSpeed: '--',
-        condition: 'clear',
         description: '정보 없음',
         icon: '🌤️',
         location: '날씨 정보 로딩 중...',
@@ -35,61 +42,51 @@ function WeatherCard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // 위치 기반으로 날씨를 가져오는 함수
     const fetchWeatherByLocation = async (lat, lng) => {
         try {
             setLoading(true);
             setError(null);
             const response = await getCurrentWeather({ lat, lng });
-            
+            console.log('API로부터 받은 날씨 데이터:', response.data);
             
             const weatherData = response.data.weather;
             const displayData = getWeatherDisplayData(weatherData.PTY);
+            const locationName = response.data.address || '현재 위치주소를 불러올 수 없습니다.';
+            
 
             setWeather({
                 temperature: weatherData.T1H,
                 humidity: weatherData.REH,
                 windSpeed: weatherData.WSD,
-                condition: displayData.condition,
                 description: displayData.description,
                 icon: displayData.icon,
-                location: '현재 위치', // 위치 기반으로 조회했음을 명시
+                location: locationName,
             });
         } catch (err) {
             console.error('위치 기반 날씨 API 오류:', err);
-            setError('현재 위치의 날씨 정보를 가져오는데 실패했습니다.');
+            setError('날씨 정보를 가져오는데 실패했습니다.');
         } finally {
             setLoading(false);
         }
     };
     
-    // 새로고침 버튼 클릭 핸들러
     const handleRefresh = () => {
-        setError(null);
-        setLoading(true);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    fetchWeatherByLocation(latitude, longitude);
-                },
+                (position) => fetchWeatherByLocation(position.coords.latitude, position.coords.longitude),
                 (err) => {
                     console.error('Geolocation 오류:', err);
-                    setError('위치 정보를 가져올 수 없습니다. 브라우저 설정을 확인해주세요.');
+                    setError('위치 정보를 가져올 수 없습니다.');
                     setLoading(false);
                 }
             );
         } else {
-            setError('이 브라우저에서는 위치 정보를 지원하지 않습니다.');
+            setError('브라우저가 위치 정보를 지원하지 않습니다.');
             setLoading(false);
         }
     };
 
-    // 컴포넌트가 처음 마운트될 때, 그리고 선택된 건물이 바뀔 때 실행
     useEffect(() => {
-        // 선택된 건물이 있으면 해당 건물의 날씨를 가져옵니다.
-        // (이 부분은 기존 buildingId 기반 API가 필요하며, 현재는 위치 기반만 구현)
-        // 지금은 초기 로딩 시 현재 위치 기반으로 날씨를 가져오도록 합니다.
         handleRefresh(); 
     }, [selectedBuilding]);
 
@@ -98,23 +95,19 @@ function WeatherCard() {
         <div className="weather-card-large">
             <div className="weather-header">
                 <h3>실시간 날씨</h3>
-                {/* 새로고침 버튼에 새로운 핸들러 연결 */}
-                <button className="weather-refresh-btn" onClick={handleRefresh} disabled={loading}>🔄</button>
+                <button className="weather-refresh-btn" onClick={handleRefresh} disabled={loading} aria-label="날씨 새로고침">
+                    <RefreshIcon />
+                </button>
             </div>
             <div className="weather-body">
                 {loading ? (
-                    <div className="weather-loading">
-                        <div className="loading-spinner"></div>
-                        <p>날씨 정보 로딩 중...</p>
-                    </div>
+                    <div className="weather-loading"><div className="loading-spinner"></div><p>날씨 정보 로딩 중...</p></div>
                 ) : error ? (
-                    <div className="weather-error">
-                        <p>{error}</p>
-                    </div>
+                    <div className="weather-error"><p>{error}</p></div>
                 ) : (
                     <div className="weather-content">
                         <div className="weather-main">
-                            <div className="weather-icon"><WeatherIcon icon={weather.icon} size={80} /></div>
+                            <div className="weather-icon"><WeatherIcon icon={weather.icon} size={64} /></div>
                             <div className="weather-temp">
                                 <span className="temp-value">{weather.temperature}</span>
                                 <span className="temp-unit">°C</span>
@@ -131,7 +124,7 @@ function WeatherCard() {
                             </div>
                             <div className="detail-item">
                                 <span className="detail-label">풍속</span>
-                                <span className="detail-value">{weather.windSpeed} m/s</span>
+                                <span className="detail-value">{weather.windSpeed}m/s</span>
                             </div>
                         </div>
                     </div>

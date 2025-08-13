@@ -36,7 +36,10 @@ function BuildingDetailsModal({ building, onClose, onEdit, onDelete }) {
         <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid var(--color-border)' }}>
           <button onClick={() => onEdit(building)} className="btn btn--secondary">수정</button>
           {/* 삭제 시 ID도 building_id로 전달 */}
-          <button onClick={() => onDelete(building.building_id)} className="btn btn--secondary">삭제</button>
+          <button onClick={() => {
+            console.log(`[Modal] 삭제 버튼 클릭: building_id = ${building.building_id}`);
+            onDelete(building.building_id);
+          }} className="btn btn--secondary">삭제</button>
           <button onClick={onClose} className="btn btn--primary">닫기</button>
         </div>
       </div>

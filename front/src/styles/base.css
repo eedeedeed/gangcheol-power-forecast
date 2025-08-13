@@ -22,6 +22,8 @@
   --space-20: 13.5px;
   --space-24: 16px;
   --space-32: 22px;
+  --space-50: 50px;
+  --space-54: 54px;
 
   /* 기존 반지름 변수들 */
   --radius-sm: 3.5px;

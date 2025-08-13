@@ -12,3 +12,7 @@ export const register = (data) => {
 export const checkDuplicateId = (ADMIN_ID) => {
   return axiosInstance.get(`/admin/check/${ADMIN_ID}`);
 };
+
+export const logout = () => {
+  return axiosInstance.post('/admin/logout');
+}

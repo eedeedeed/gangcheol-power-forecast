@@ -51,15 +51,19 @@
 .add-building-btn {
   width: 54px; height: 54px; /* 기존 50px → 54px */
   border-radius: 50%;
-  background-color: var(--color-primary);
-  color: white; font-size: 32px; /* 기존 30px → 32px */
-  border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  background-color: transparent;
+  color: var(--color-text); 
+  font-size: 32px; /* 기존 30px → 32px */
+  border: 1px solid var(--color-border); 
+  cursor: pointer;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
   transition: all 0.2s ease;
 }
 
 .add-building-btn:hover {
-  background-color: var(--color-teal-400);
+  background-color: var(--color-surface-soft);
   transform: scale(1.05);
 }
 
@@ -171,4 +175,44 @@
 .modal-body .building-form .form-group input[type="number"]::-webkit-outer-spin-button,
 .modal-body .building-form .form-group input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none; margin: 0;
+}
+
+/* src/styles/monitoring.css 파일에 추가 */
+
+.modal-body .building-form .form-group {
+  /* 기존 display: flex를 유지하며, 자식 요소들이 너비를 나눠 갖도록 설정 */
+  flex-grow: 1;
+}
+
+/* 폼 그룹 내의 form-control 클래스가 남은 공간을 모두 차지하도록 설정 */
+.modal-body .building-form .form-group .form-control {
+  flex-grow: 1;
+  width: auto; /* width를 자동으로 조절하여 flex-grow가 잘 동작하게 함 */
+}
+
+/* readonly 속성의 입력창 스타일 수정 */
+.readonly-input {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0 var(--space-12); /* 좌우 패딩만 적용 */
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  background-color: rgba(94, 82, 64, 0.05); /* 살짝 다른 배경색으로 구분 */
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  height: 46px; /* 다른 입력창과 높이 통일 */
+}
+
+/* 주소 검색 부분 레이아웃 미세 조정 */
+.address-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12); /* 간격 조정 */
+}
+
+.zip-search {
+  display: flex;
+  gap: var(--space-12); /* 간격 조정 */
 }
