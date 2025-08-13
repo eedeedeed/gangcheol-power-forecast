@@ -45,6 +45,7 @@ function BuildingMonitoring() {
                   <th>ID</th>
                   <th>건물명</th>
                   <th>유형</th>
+                  <th>건물 주소</th> {/* 👈 [추가] 주소 헤더 */}
                   <th></th>
                 </tr>
               </thead>
@@ -55,6 +56,7 @@ function BuildingMonitoring() {
                       <td>{building.building_id}</td>
                       <td>{building.building_name}</td>
                       <td>{building.building_type || 'N/A'}</td>
+                      <td>{building.building_address || 'N/A'}</td> {/* 👈 [추가] 주소 데이터 */}
                       <td className="actions">
                         <button onClick={() => setModalState({ type: 'details', data: building })} className="btn btn--secondary btn--sm">
                           세부정보 보기
@@ -64,7 +66,8 @@ function BuildingMonitoring() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                    {/* 👇 colSpan을 4에서 5로 수정 */}
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                       등록된 건물이 없습니다. 하단의 '+' 버튼을 눌러 건물을 추가하세요.
                     </td>
                   </tr>
@@ -85,7 +88,6 @@ function BuildingMonitoring() {
         onEdit={async (building) => {
           try {
             console.log(`[수정 시작] ${building.building_id}번 건물의 최신 정보를 가져옵니다.`);
-            // [수정] getBuildingForUpdate 함수를 호출합니다.
             const response = await buildingApi.getBuildingForUpdate(building.building_id); 
             
             const latestBuildingData = response.data.rows[0]; 

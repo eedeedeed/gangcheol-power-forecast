@@ -55,7 +55,7 @@
 
 .weather-card-large {
   background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); /* 부드러운 그라데이션 */
-  color: rgb(0, 0, 0);
+  color: white;
   border-radius: var(--radius-lg);
   padding: var(--space-24); /* 패딩 조정 */
   display: flex;
@@ -64,20 +64,19 @@
   min-height: 100%;
   position: relative;
   overflow: hidden;
-  font-family: 'Your New Font', sans-serif;
 }
 
 .weather-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-54); /* 간격 조정: 16px -> 20px */
+  margin-bottom: var(--space-16); /* 간격 조정 */
   position: relative;
   z-index: 1;
 }
 
 .weather-header h3 { 
-  font-size: var(--font-size-xl); /* 폰트 크기 조정 */
+  font-size: var(--font-size-xl);
   font-weight: 600;
 }
 
@@ -85,7 +84,7 @@
   flex: 1;
   display: flex;
   flex-direction: column; 
-  justify-content: space-between; /* 요소들을 위아래로 분산 */
+  justify-content: space-between;
   position: relative;
   z-index: 1;
 }
@@ -93,13 +92,14 @@
 .weather-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-32); /* 내부 컨텐츠 간격 조정: 24px -> 32px */
+  gap: var(--space-24); /* [수정됨] 내부 요소들 간격 축소 */
+  align-items: center;
 }
 
 .weather-main {
   display: flex;
   align-items: center;
-  gap: var(--space-20); /* 아이콘과 온도 간격 */
+  gap: var(--space-20);
 }
 
 .weather-temp {
@@ -109,38 +109,39 @@
 }
 
 .temp-value { 
-  font-size: 60px; /* 폰트 크기 대폭 축소 */
+  font-size: 60px;
   font-weight: 300; 
 }
 
 .temp-unit {
-  font-size: 24px; /* 폰트 크기 축소 */
+  font-size: 24px;
   margin-top: 8px;
   font-weight: 400;
 }
 
 .weather-info {
-  text-align: left;
+  text-align: center;
 }
 
 .weather-location { 
-  font-size: var(--font-size-xl); /* 폰트 크기 축소 */
+  font-size: var(--font-size-xl);
   font-weight: 500;
   margin-bottom: var(--space-4);
 }
 
 .weather-description { 
-  font-size: var(--font-size-base); /* 폰트 크기 축소 */
+  font-size: var(--font-size-base);
   opacity: 0.9;
 }
 
 .weather-details {
-  display: flex; /* grid에서 flex로 변경 */
-  justify-content: space-around; /* 좌우로 분산 */
+  display: flex;
+  justify-content: space-around;
   gap: var(--space-20);
   padding: var(--space-16);
-  background: rgba(255, 255, 255, 0.2); /* 배경색 살짝 조정 */
+  background: rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-md);
+  width: 100%;
 }
 
 .detail-item {
@@ -151,12 +152,12 @@
 }
 
 .detail-label {
-  font-size: var(--font-size-sm); /* 폰트 크기 축소 */
+  font-size: var(--font-size-sm);
   opacity: 0.8;
 }
 
 .detail-value {
-  font-size: var(--font-size-lg); /* 폰트 크기 축소 */
+  font-size: var(--font-size-lg);
   font-weight: 500;
 }
 
