@@ -70,49 +70,14 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
-// 관리자 수정
-exports.updateAdmin = async (req, res) => {
-  const { id } = req.params;
-  const { ADMIN_NAME, BUILDING_ID } = req.body;
-
+// 관리자 로그아웃
+exports.logoutAdmin = async (req, res) => {
   try {
-    const admin = await Admin.findByPk(id);
-    if (!admin) {
-      return res.status(404).json({ message: '관리자를 찾을 수 없습니다.' });
-    }
-
-    if (ADMIN_NAME !== undefined) admin.ADMIN_NAME = ADMIN_NAME;
-    if (BUILDING_ID !== undefined) admin.BUILDING_ID = BUILDING_ID;
-
-    await admin.save();
-
-    res.status(200).json({ message: '관리자 정보가 수정되었습니다.', admin });
+    // 서버에서는 별다른 데이터베이스 작업이 필요하지 않습니다.
+    // 클라이언트 측에서 로컬 스토리지 등에 저장된 토큰을 삭제하는 것으로 로그아웃이 완료됩니다.
+    res.status(200).json({ message: '로그아웃 성공' });
   } catch (error) {
-    console.error('관리자 수정 오류:', error);
-    res.status(500).json({ message: '서버 오류로 관리자 정보 수정 실패' });
-  }
-};
-
-// 관리자 삭제(탈퇴) - deletedYN 컬럼
-exports.deleteAdmin = async (req, res) => {
-  const { ADMIN_ID } = req.body;
-
-  try {
-    const admin = await Admin.findByPk(ADMIN_ID);
-    if (!admin) {
-      return res.status(404).json({ message: '존재하지 않는 관리자입니다.' });
-    }
-
-    if (admin.deletedYN === 'Y') {
-      return res.status(400).json({ message: '이미 탈퇴한 관리자입니다.' });
-    }
-
-    admin.deletedYN = 'Y';
-    await admin.save();
-
-    res.status(200).json({ message: '관리자 탈퇴 처리 완료' });
-  } catch (error) {
-    console.error('회원 탈퇴 오류:', error);
-    res.status(500).json({ message: '회원 탈퇴 실패' });
+    console.error('로그아웃 오류:', error);
+    res.status(500).json({ message: '로그아웃 실패' });
   }
 };

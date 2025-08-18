@@ -6,8 +6,8 @@ const Middleware = require('../config/middleware');
 
 router.post('/register', adminController.createAdmin); //관리자등록
 router.post('/login', adminController.loginAdmin); //관리자로그인
-router.put('/update/:id', adminController.updateAdmin); //관리자수정 put방식!!! (:id는 그냥 변수의 의미입니다...)
-router.post('/delete', adminController.deleteAdmin); //관리자 탈퇴
+router.post('/logout', adminController.logoutAdmin); //관리자로그아웃
+
 
 // ID 중복 확인 라우트 추가
 // adminRoutes.js or adminController.js

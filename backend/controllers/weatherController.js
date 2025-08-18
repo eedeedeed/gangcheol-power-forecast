@@ -5,6 +5,7 @@ const dayjs = require('dayjs');
 const { getBaseTimeFromNow, getRoundedFcstTime } = require('../config/weatherUnits');
 const { ptyMap, formatRainfall } = require('../config/weather_code_mapping');
 const { convertToGrid } = require('../config/geoUtil');
+const {geocodeToAddress} = require('../config/geocoding')
 
 // 초단기예보 가져오기
 const toNumOrNull = (v) => {
@@ -222,17 +223,35 @@ exports.getCurrentWeatherByLatLon = async (req, res) => {
     const { nx, ny } = convertToGrid(lat, lon);
     console.log('날씨격자로 변경 완료');
     
-    const weatherData = await exports.getCurrentWeather(nx, ny);
+    // ⬇️ 날씨와 주소를 병렬 조회
+    const [weatherData, addressData] = await Promise.all([
+      exports.getCurrentWeather(nx, ny),
+      (async () => {
+        try {
+          return await geocodeToAddress(lon, lat);
+        } catch (e) {
+          console.warn('역지오코딩 실패:', e.message);
+          return null; // 주소 조회 실패해도 날씨는 반환
+        }
+      })(),
+    ]);
+
+    console.log('[OK] weather done. address done?', !!addressData);
+    console.log(addressData);
+    const address = addressData
     console.log(weatherData);
     
-    return res.status(200).json({
-      timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      location: { lat, lon, nx, ny },
-      weather: weatherData,
-    });
+
+return res.status(200).json({
+  timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  location: { lat, lon, nx, ny, crs: 'EPSG:4326' },
+  address: address,
+  weather: weatherData,
+});
     
-    
+
   } catch (err) {
+    console.error('현재 날씨 조회 실패:', err);
     return res.status(500).json({ message: '현재 날씨 조회 실패', error: err.message });
   }
 };

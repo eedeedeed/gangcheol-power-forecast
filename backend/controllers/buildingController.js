@@ -143,3 +143,136 @@ exports.getBuildingsByAdminId = async (req, res) => {
     return res.status(500).json({ message: '건물 조회 중 서버 오류' });
   }
 };
+
+//건물삭제
+exports.deleteBuilding = async (req, res) => {
+  console.log('건물삭제 함수 호출됨');
+
+  const t = await BuildingInfo.sequelize.transaction();
+
+  const buildingId = req.params.buildingId;
+  if (!buildingId) {
+    return res.status(400).json({ message: 'BUILDING_ID가 필요합니다.' });
+  } 
+
+  try {
+    const deletedCount = await BuildingInfo.destroy({
+      where: { building_id: buildingId },
+      transaction: t,
+    });
+
+    if (deletedCount === 0) {
+      await t.rollback();
+      return res.status(404).json({ message: '해당 BUILDING_ID의 건물을 찾을 수 없습니다.' });
+    }
+
+    await t.commit();
+    console.log(`건물 ID ${buildingId} 삭제 완료`);
+
+    return res.status(200).json({
+      message: '건물 삭제 성공',
+      building_id: buildingId,
+    });
+
+  } catch (err) {
+    await t.rollback();
+    console.error('[deleteBuilding] ', err);
+    return res.status(500).json({ message: '건물 삭제 중 서버 오류' });
+  }
+};
+
+//건물수정
+exports.updateBuilding = async (req, res) => {
+  console.log('건물 수정 함수 호출됨');
+
+  const t = await BuildingInfo.sequelize.transaction();
+  try {
+    const { buildingId } = req.params;
+    const updateData = req.body;
+
+    //건물 여부 확인
+    const building = await BuildingInfo.findByPk(buildingId, { transaction: t });
+    if (!building) {
+      const e = new Error('해당 건물이 존재하지 않습니다.');
+      e.status = 404;
+      throw e;
+    }
+
+    const updatedFields = {};
+
+    // total_area 및 cooling_area 유효성 검사 및 업데이트
+    const newTotalArea = updateData.total_area !== undefined
+      ? Number(updateData.total_area)
+      : building.TOTAL_AREA;
+
+    const newCoolingArea = updateData.cooling_area !== undefined
+      ? Number(updateData.cooling_area)
+      : building.COOLING_AREA;
+
+    if (newTotalArea <= 0) {
+      const e = new Error('total_area는 0보다 커야 합니다.');
+      e.status = 400;
+      throw e;
+    }
+
+    if (newCoolingArea < 0 || newCoolingArea > newTotalArea) {
+      const e = new Error('cooling_area는 0 이상이며 total_area 이하여야 합니다.');
+      e.status = 400;
+      throw e;
+    }
+
+    updatedFields.TOTAL_AREA = newTotalArea;
+    updatedFields.COOLING_AREA = newCoolingArea;
+
+    // 주소 변경 시 위경도/기상 격자 재계산
+    if (updateData.building_address && updateData.building_address !== building.BUILDING_ADDRESS) {
+      const { lat, lon } = await addressToGeocode(updateData.building_address);
+      const { nx, ny } = convertToGrid(lat, lon);
+
+      updatedFields.BUILDING_ADDRESS = updateData.building_address;
+      updatedFields.LATITUDE = lat;
+      updatedFields.LONGITUDE = lon;
+      updatedFields.NX = nx;
+      updatedFields.NY = ny;
+      updatedFields.GEOCODE_STATUS = 'OK';
+    } else if (updateData.building_address === '') {
+      updatedFields.BUILDING_ADDRESS = null;
+      updatedFields.LATITUDE = null;
+      updatedFields.LONGITUDE = null;
+      updatedFields.NX = null;
+      updatedFields.NY = null;
+      updatedFields.GEOCODE_STATUS = 'ERROR';
+    } else if (updateData.building_address === undefined) {
+      updatedFields.BUILDING_ADDRESS = building.BUILDING_ADDRESS;
+      updatedFields.LATITUDE = building.LATITUDE;
+      updatedFields.LONGITUDE = building.LONGITUDE;
+      updatedFields.NX = building.NX;
+      updatedFields.NY = building.NY;
+      updatedFields.GEOCODE_STATUS = building.GEOCODE_STATUS;
+    }
+
+    // 그 외 필드들 추가
+    const simpleFields = ['building_name', 'building_type', 'pv_capacity', 'ess_capacity', 'pcs_capacity'];
+    simpleFields.forEach(field => {
+      if (updateData[field] !== undefined) {
+        updatedFields[field.toUpperCase()] = updateData[field] === '' ? null : updateData[field];
+      }
+    });
+
+    // 최종 업데이트
+    await building.update(updatedFields, { transaction: t });
+    await t.commit();
+    console.log('건물 수정 완료');
+
+    const updatedBuilding = await BuildingInfo.findByPk(buildingId);
+    return res.status(200).json({
+      message: '건물 수정 성공',
+      building: updatedBuilding,
+    });
+
+  } catch (err) {
+    await t.rollback();
+    const status = err.status || 500;
+    return res.status(status).json({ error: err.message });
+  }
+};
