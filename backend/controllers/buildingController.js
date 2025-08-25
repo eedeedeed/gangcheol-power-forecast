@@ -1,6 +1,7 @@
 const { Admin, BuildingInfo } = require('../models');
 const { addressToGeocode } = require('../config/geocoding'); // 카카오/네이버/구글 중 택1
 const { convertToGrid } = require('../config/geoUtil');
+const sequelize = require('sequelize');
 
 //건물등록
 
@@ -181,7 +182,7 @@ exports.deleteBuilding = async (req, res) => {
   }
 };
 
-//건물수정
+// 건물 수정
 exports.updateBuilding = async (req, res) => {
   console.log('건물 수정 함수 호출됨');
 
@@ -190,7 +191,7 @@ exports.updateBuilding = async (req, res) => {
     const { buildingId } = req.params;
     const updateData = req.body;
 
-    //건물 여부 확인
+    // 건물 여부 확인
     const building = await BuildingInfo.findByPk(buildingId, { transaction: t });
     if (!building) {
       const e = new Error('해당 건물이 존재하지 않습니다.');
@@ -251,13 +252,21 @@ exports.updateBuilding = async (req, res) => {
       updatedFields.GEOCODE_STATUS = building.GEOCODE_STATUS;
     }
 
-    // 그 외 필드들 추가
-    const simpleFields = ['building_name', 'building_type', 'pv_capacity', 'ess_capacity', 'pcs_capacity'];
-    simpleFields.forEach(field => {
-      if (updateData[field] !== undefined) {
-        updatedFields[field.toUpperCase()] = updateData[field] === '' ? null : updateData[field];
+    // 그 외 필드들 업데이트
+    const fieldMapping = {
+      building_name: 'BUILDING_NAME',
+      building_type: 'BUILDING_TYPE',
+      pv_capacity: 'PV_CAPACITY',
+      ess_capacity: 'ESS_CAPACITY',
+      pcs_capacity: 'PCS_CAPACITY'
+    };
+
+    for (const key in fieldMapping) {
+      const dbField = fieldMapping[key];
+      if (updateData[key] !== undefined) {
+        updatedFields[dbField] = updateData[key] === '' ? null : updateData[key];
       }
-    });
+    }
 
     // 최종 업데이트
     await building.update(updatedFields, { transaction: t });
