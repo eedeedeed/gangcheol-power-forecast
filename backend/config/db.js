@@ -11,5 +11,4 @@ module.exports = {
     port: process.env.DB_PORT || 3306,
     dialect: 'mysql'
   },
-  // 필요하다면 test/production 환경도 추가 가능
 };

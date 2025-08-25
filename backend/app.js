@@ -5,6 +5,8 @@ const buildingRouters = require('./routes/buildingRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const predictRoutes = require('./routes/predictRoutes');
 const weatherRoutes = require('./routes/weatherRoutes');
+const replayRoutes = require('./routes/replayRoutes');
+const streamRoutes = require('./routes/streamRoutes');
 
 const app = express();
 
@@ -24,6 +26,10 @@ app.use('/building', buildingRouters);
 app.use('/location', locationRoutes);
 app.use('/predict', predictRoutes);
 app.use('/weather', weatherRoutes);
+
+// 리플레이용
+app.use('/replay', replayRoutes);
+app.use('/stream', streamRoutes);
 
 //서버실행
 app.listen(5000, '0.0.0.0', () => {
