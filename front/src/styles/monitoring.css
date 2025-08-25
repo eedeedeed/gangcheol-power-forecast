@@ -216,3 +216,12 @@
   display: flex;
   gap: var(--space-12); /* 간격 조정 */
 }
+
+/* src/styles/monitoring.css 파일에 추가 */
+
+.modal-footer {
+  display: flex;                 /* 버튼들을 가로로 배치 */
+  justify-content: flex-end;     /* 버튼들을 오른쪽 끝으로 정렬 */
+  gap: var(--space-12);          /* 버튼 사이의 간격 (약 8px) */
+  margin-top: var(--space-32);     /* 폼 영역과의 간격 (약 22px) */
+}

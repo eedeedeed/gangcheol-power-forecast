@@ -1,36 +1,35 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Line, Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, Filler } from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import { Link } from 'react-router-dom'; // 👈 [추가] Link import
 
 import StatCard from '../components/dashboard/StatCard';
 import WeatherCard from '../components/dashboard/WeatherCard';
 import IntervalDropdown from '../components/common/IntervalDropdown';
 import { BuildingContext } from '../contexts/BuildingContext';
+import { NotificationContext } from '../contexts/NotificationContext'; // 👈 [추가] NotificationContext import
 import { getDashboardData } from '../api/dashboard.api';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement, Filler);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
-// [추가] UI 확인을 위한 가상 더미 데이터 생성 함수
+// 더미 데이터 및 기본 데이터 생성 함수 (기존과 동일)
 const createDummyDashboardData = () => ({
   data: {
     currentUsage: 785,
     usagePercentage: 65.4,
     status: 'warning',
-    // 0시부터 23시까지의 가상 사용량 데이터 (300에서 800 사이의 랜덤 값)
     todayUsage: Array(24).fill(0).map((_, i) => ({ 
       time: `${String(i).padStart(2, '0')}:00`, 
       usage: Math.floor(Math.random() * (800 - 300 + 1)) + 300
     })),
     stats: {
       peak_prediction: { time: "15:00", usage: 950, status: "warning" },
-      savings_rate: -5.2, // 전월 대비 5.2% 증가 (절감률은 음수)
+      savings_rate: -5.2,
       savings_rate_status: "warning",
     },
   }
 });
-
-// 기존의 0으로 채워진 기본 데이터
 const createDefaultDashboardData = () => ({
   data: {
     currentUsage: 0,
@@ -50,117 +49,68 @@ const createDefaultDashboardData = () => ({
 
 function Dashboard() {
   const { selectedBuildingId } = useContext(BuildingContext);
-  const [lineInterval, setLineInterval] = useState('realtime');
+  // 👇 [추가] NotificationContext에서 필요한 데이터와 함수를 가져옵니다.
+  const { alerts, guides, setHighlightedAlertId, setHighlightedGuideId } = useContext(NotificationContext);
 
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.getAttribute('data-color-scheme') === 'dark'
-  );
+  const [lineInterval, setLineInterval] = useState('realtime');
+  const [isDarkMode, setIsDarkMode] = useState(() => document.documentElement.getAttribute('data-color-scheme') === 'dark');
+
+  // 👇 [추가] 알림 및 가이드 클릭 시 하이라이트 효과를 주기 위한 함수입니다.
+  const handleAlertClick = (alertId) => setHighlightedAlertId(alertId);
+  const handleGuideClick = (guideIndex) => setHighlightedGuideId(guideIndex);
 
   useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-color-scheme') {
-          setIsDarkMode(document.documentElement.getAttribute('data-color-scheme') === 'dark');
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-color-scheme']
-    });
-
+    const observer = new MutationObserver(() => setIsDarkMode(document.documentElement.getAttribute('data-color-scheme') === 'dark'));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-color-scheme'] });
     return () => observer.disconnect();
   }, []);
 
-  const { data: dashboardApiResponse, isLoading, isError, error } = useQuery({
+  const { data: dashboardApiResponse, isLoading, isError } = useQuery({
     queryKey: ['dashboard', selectedBuildingId || 'default'],
-    queryFn: async () => {
-      try {
-        if (selectedBuildingId) {
-          console.log('건물 선택됨 - API 호출:', selectedBuildingId);
-          return await getDashboardData(selectedBuildingId);
-        } else {
-          // [수정됨] 건물이 선택되지 않았을 때, 0 대신 가상 더미 데이터를 보여줍니다.
-          console.log('건물 미선택 - 가상 더미 데이터 사용');
-          return Promise.resolve(createDummyDashboardData());
-        }
-      } catch (error) {
-        console.error('데이터 로드 실패, 기본값 사용:', error);
-        return Promise.resolve(createDefaultDashboardData());
-      }
-    },
+    queryFn: () => selectedBuildingId ? getDashboardData(selectedBuildingId) : Promise.resolve(createDummyDashboardData()),
     enabled: true,
     retry: false,
-    onError: (error) => {
-      console.error('Dashboard 쿼리 에러:', error);
-    }
   });
   
-  if (isLoading) {
-    return (
-      <div id="dashboard">
-        {/* ... 로딩 UI ... */}
-      </div>
-    );
-  }
-  
-  let dashboardData;
-  if (isError || !dashboardApiResponse?.data) {
-    dashboardData = createDefaultDashboardData().data;
-  } else {
-    dashboardData = dashboardApiResponse.data;
-  }
+  // (차트 색상, 옵션, 데이터 설정 등 나머지 로직은 기존과 동일)
+  const primaryColor = isDarkMode ? '#32b8c6' : '#21808d';
+  const textColor = isDarkMode ? 'rgba(252, 252, 249, 0.9)' : '#13343B';
+  const secondaryTextColor = isDarkMode ? 'rgba(167, 169, 169, 0.8)' : '#626c71';
+  const gridColor = isDarkMode ? 'rgba(252, 252, 249, 0.1)' : 'rgba(94, 82, 64, 0.1)';
+  const lineAreaColor = isDarkMode ? 'rgba(50, 184, 198, 0.15)' : 'rgba(33, 128, 141, 0.15)';
+  const tooltipBackgroundColor = isDarkMode ? 'rgba(31, 33, 33, 0.9)' : 'rgba(255, 255, 255, 0.9)';
 
-  const {
-    currentUsage = 0,
-    usagePercentage = 0,
-    status = 'normal',
-    todayUsage = [],
-    stats = {}
-  } = dashboardData || {};
+  const dashboardData = isError || !dashboardApiResponse?.data ? createDefaultDashboardData().data : dashboardApiResponse.data;
+  const { currentUsage = 0, usagePercentage = 0, status = 'normal', todayUsage = [], stats = {} } = dashboardData || {};
   
   const statsData = [
-    { 
-      title: '현재 사용량', 
-      value: `${(currentUsage || 0).toLocaleString()} kWh`, 
-      description: `용량의 ${(usagePercentage || 0).toFixed(1)}%`, 
-      status: status || 'normal', 
-      statusText: (status || 'normal') === 'normal' ? '정상' : '주의'
-    },
-    { 
-      title: '예상 피크', 
-      value: `${((stats?.peak_prediction?.usage) || 0).toLocaleString()} kWh`, 
-      description: `내일 ${(stats?.peak_prediction?.time) || '00:00'}`, 
-      status: (stats?.peak_prediction?.status) || 'normal', 
-      statusText: ((stats?.peak_prediction?.status) || 'normal') === 'warning' ? '주의' : '정상' 
-    },
-    { 
-      title: '예상 사용량', 
-      value: '640 kWh', 
-      description: 'AI 모델 예상값', 
-      status: 'normal', 
-      statusText: '정보' 
-    },
-    { 
-      title: '절감률', 
-      value: `${((stats?.savings_rate) || 0).toFixed(1)}%`, 
-      description: '전월 대비', 
-      status: (stats?.savings_rate_status) || 'normal', 
-      statusText: ((stats?.savings_rate_status) || 'normal') === 'success' ? '우수' : '보통' 
-    }
+    { title: '현재 사용량', value: `${(currentUsage || 0).toLocaleString()} kWh`, description: `용량의 ${(usagePercentage || 0).toFixed(1)}%`, status: status || 'normal', statusText: (status || 'normal') === 'normal' ? '정상' : '주의' },
+    { title: '예상 피크', value: `${((stats?.peak_prediction?.usage) || 0).toLocaleString()} kWh`, description: `내일 ${(stats?.peak_prediction?.time) || '00:00'}`, status: (stats?.peak_prediction?.status) || 'normal', statusText: ((stats?.peak_prediction?.status) || 'normal') === 'warning' ? '주의' : '정상' },
+    { title: '예상 사용량', value: '0 kWh', description: 'AI 모델 예상값', status: 'normal', statusText: '정보' },
+    { title: '절감률', value: `${((stats?.savings_rate) || 0).toFixed(1)}%`, description: '전월 대비', status: (stats?.savings_rate_status) || 'normal', statusText: ((stats?.savings_rate_status) || 'normal') === 'success' ? '우수' : '보통' }
   ];
 
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    // ... (차트 옵션 생략)
-  };
-
-  const realtimeGaugeOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    // ... (도넛 차트 옵션 생략)
+    plugins: {
+      legend: { labels: { color: textColor } },
+      tooltip: {
+        enabled: true,
+        backgroundColor: tooltipBackgroundColor,
+        titleColor: textColor,
+        bodyColor: secondaryTextColor,
+        borderColor: gridColor,
+        borderWidth: 1,
+        padding: 10,
+        displayColors: true,
+        boxPadding: 4,
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: secondaryTextColor } },
+      y: { grid: { color: gridColor }, ticks: { color: secondaryTextColor }, min: 0 }
+    }
   };
   
   const todayUsageChartData = {
@@ -168,24 +118,16 @@ function Dashboard() {
     datasets: [{
       label: '사용량 (kWh)', 
       data: (todayUsage || []).map(data => data?.usage || 0),
-      borderColor: 'var(--color-primary)',
-      backgroundColor: 'rgba(50, 184, 198, 0.2)',
-      // ... (데이터셋 스타일 생략)
+      fill: true,
+      borderColor: primaryColor,
+      backgroundColor: lineAreaColor,
+      pointBackgroundColor: primaryColor,
+      pointBorderColor: primaryColor,
+      tension: 0.3
     }],
   };
   
-  const safeUsagePercentage = Math.max(0, Math.min(100, usagePercentage || 0));
-  const realtimeGaugeChartData = {
-    labels: ['사용량', '남은 용량'],
-    datasets: [{
-      data: [safeUsagePercentage, 100 - safeUsagePercentage],
-      backgroundColor: [
-        isDarkMode ? '#32b8c6' : '#21808d',
-        isDarkMode ? 'rgba(252, 252, 249, 0.15)' : 'rgba(226, 232, 240, 0.3)'
-      ],
-      // ... (데이터셋 스타일 생략)
-    }],
-  };
+  if (isLoading) return <div id="dashboard">Loading...</div>;
 
   return (
     <div id="dashboard">
@@ -197,18 +139,9 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      {/* 👇 [수정됨] charts-grid 구조 변경 */}
       <div className="charts-grid">
-        <div className="card chart-card">
-          <div className="card__header"><h4>실시간 전력 사용량</h4></div>
-          <div className="card__body" style={{ position: 'relative', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div className="power-gauge-large">
-              <Doughnut data={realtimeGaugeChartData} options={realtimeGaugeOptions} />
-              <div className="power-gauge-text-large">
-                <span id="usagePercentageLarge">{safeUsagePercentage.toFixed(1)}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* 왼쪽 칸: 전력 사용량 추이 차트 */}
         <div className="card chart-card">
           <div className="card__header card__header--space-between">
             <div className="chart-title-section">
@@ -219,6 +152,42 @@ function Dashboard() {
           </div>
           <div className="card__body" style={{ position: 'relative', height: '300px' }}>
             <Line data={todayUsageChartData} options={chartOptions} />
+          </div>
+        </div>
+
+        {/* 오른쪽 칸: 알림 및 가이드 요약 */}
+        <div className="dashboard-side-panel">
+          <div className="card">
+            <div className="card__body">
+              <section className="info-section">
+                <h4>빠른 알림</h4>
+                <div className="quick-info-list">
+                  {alerts.length > 0 ? (
+                    alerts.map(alert => (
+                      <Link to="/alerts" key={alert.id} className="quick-info-item" onClick={() => handleAlertClick(alert.id)}>
+                        <span>{alert.title}</span>
+                      </Link>
+                    ))
+                  ) : (<p className="no-info-text">새로운 알림이 없습니다.</p>)}
+                </div>
+              </section>
+            </div>
+          </div>
+          <div className="card">
+            <div className="card__body">
+              <section className="info-section">
+                <h4>절감 가이드 요약</h4>
+                <div className="quick-info-list">
+                  {guides.length > 0 ? (
+                    guides.map((guide, index) => (
+                      <Link to="/guide" key={index} className="quick-info-item" onClick={() => handleGuideClick(index)}>
+                        <span>{guide.action}</span>
+                      </Link>
+                    ))
+                  ) : (<p className="no-info-text">절감 가이드가 없습니다.</p>)}
+                </div>
+              </section>
+            </div>
           </div>
         </div>
       </div>

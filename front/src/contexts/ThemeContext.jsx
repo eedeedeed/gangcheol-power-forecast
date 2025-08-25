@@ -30,7 +30,7 @@ export default function ThemeProvider({ children }) {
     toggleTheme,
   };
 
-  // 🚨 오타 수정: ThemeProvider.Provider -> ThemeContext.Provider
+
   return (
     <ThemeContext.Provider value={value}>
       {children}

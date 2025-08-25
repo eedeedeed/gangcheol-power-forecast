@@ -126,8 +126,8 @@ function AuthPage() {
 					<button type="button" onClick={toggleMode} className="btn-text-link">{isLoginMode ? '계정이 없으신가요? 회원가입' : '이미 계정이 있으신가요? 로그인'}</button>
 				</div>
 				<div className="auth-guest-access">
-					<div className="auth-divider"><span>또는</span></div>
-					<button type="button" className="btn-guest-access" onClick={handleGuestLogin}>🔍 로그인 없이 둘러보기</button>
+
+					<button type="button" className="btn-guest-access" onClick={handleGuestLogin}> 로그인 없이 둘러보기</button>
 				</div>
 			</div>
 		</div>

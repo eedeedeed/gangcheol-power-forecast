@@ -84,7 +84,7 @@
   flex: 1;
   display: flex;
   flex-direction: column; 
-  justify-content: space-between;
+  justify-content: center; 
   position: relative;
   z-index: 1;
 }
@@ -92,7 +92,7 @@
 .weather-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-24); /* [수정됨] 내부 요소들 간격 축소 */
+  gap: var(--space-24);
   align-items: center;
 }
 
@@ -187,7 +187,8 @@
 /* 차트 영역 */
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  /* 👇 [수정됨] 2.5:1 비율의 2단 그리드로 변경 */
+  grid-template-columns: 2.5fr 1fr;
   gap: var(--space-24);
 }
 
@@ -451,6 +452,7 @@ html[data-color-scheme='dark'] .chart-card:hover canvas {
 
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
+  /* 👇 [수정됨] 반응형에서도 2단 레이아웃을 유지하거나, 1단으로 변경할 수 있습니다. 여기서는 1단으로 변경합니다. */
   .charts-grid {
     grid-template-columns: 1fr;
   }
@@ -534,4 +536,56 @@ html[data-color-scheme='dark'] .chart-card:hover canvas {
   to {
     transform: rotate(360deg);
   }
+}
+
+
+/* ===== 👇 [추가됨] 오른쪽 정보 패널 스타일 ===== */
+
+.dashboard-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24); /* 카드 사이의 간격 */
+}
+
+.info-section h4 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-16);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.quick-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.quick-info-item {
+  display: block;
+  padding: var(--space-16);
+  border-radius: var(--radius-base);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick-info-item:hover {
+  background-color: rgba(94, 82, 64, 0.08);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+html[data-color-scheme='dark'] .quick-info-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.no-info-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-16) 0;
 }

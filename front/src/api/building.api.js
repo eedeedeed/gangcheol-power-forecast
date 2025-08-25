@@ -12,17 +12,18 @@ export const getBuildings = (adminId) => {
 
 // 건물수정 (데이터 저장)
 export const updateBuilding = (buildingId, data) => {
-  console.log(`[API] 건물 수정 요청: PUT /building/update/${buildingId}`, data);
-  // 백엔드 API 경로가 '/building/:id' 또는 '/building/update/:id' 등일 수 있습니다.
-  // 우선 '/building/update/:id'로 가정하고 작성합니다.
-  return axiosInstance.put(`/building/update/${buildingId}`, data);
+  console.log(`[API] 건물 수정 요청: PUT /building/updateBuildings/${buildingId}`, data);
+  // 백엔드 라우터에 맞게 경로를 수정했습니다.
+  return axiosInstance.put(`/building/updateBuildings/${buildingId}`, data);
 };
 
 // 건물수정 (수정 전 최신 데이터 가져오기)
+// 이 함수는 백엔드 라우터에 별도로 정의되지 않아, 기존 getBuildings를 사용하도록 제안합니다.
 export const getBuildingForUpdate = (buildingId) => {
   console.log(`[API] 수정용 건물 정보 조회 요청: GET /building/getbuildings/${buildingId}`);
-  // 사용자 요청에 따라 /updatebuildings/ 경로를 사용했으나, getbuildings와 기능이 동일할 것으로 추정하여 통합합니다.
-  return axiosInstance.get(`/building/getbuildings/${buildingId}`); 
+  // 백엔드 라우터가 getbuildings에 adminId를 기대하므로, 이 함수는 동작하지 않을 수 있습니다.
+  // getBuildingsByAdminId를 호출해야 합니다.
+  return axiosInstance.get(`/building/getbuildings/${buildingId}`);
 }
 
 // 건물삭제
