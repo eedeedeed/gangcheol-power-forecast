@@ -1,133 +1,163 @@
-const axios = require('axios');
+// services/replayService.js
+const dayjs = require('dayjs');
 const db = require('../models');
-const { broadcast } = require('./streamService');
 
-const timers = new Map();
-const pointers = new Map(); // buildingId -> current TS
+const { getWeatherAt } = require('./weatherService');
+const { getBuildingStaticFeatures } = require('./buildingService');
+const { getLagsForBuilding } = require('./lagService');
+const { requestPrediction } = require('./modelService');
 
-function judgePeak(yhat, th, mu, sigma) {
-  if (th == null) return { is_peak: null, risk: null, peak_prob: null };
-  const is_peak = yhat >= th ? 1 : 0;
-  let risk = null, peak_prob = null;
-  if (sigma && sigma > 0) {
-    const z = (yhat - mu) / sigma;
-    risk = Math.max(0, Math.min(1, 0.5 + z / 6));
-  }
-  peak_prob = is_peak ? Math.max(0.5, risk ?? 0.7) : Math.min(0.5, risk ?? 0.3);
-  return { is_peak, risk, peak_prob };
-}
+// 🔸 건물별 현재 재생 시각(메모리)
+// 서버 재시작하면 초기화됨 (요구사항: 추가 테이블/파일 없이!)
+const pointers = new Map();
 
-async function loadThreshold(buildingId) {
+// 최소 TS 가져오기
+async function getMinTs(buildingId) {
   const [rows] = await db.sequelize.query(
-    `SELECT THRESHOLD_VALUE th, MU mu, SIGMA sigma FROM peak_threshold WHERE BUILDING_ID=?`,
+    `SELECT MIN(TS) AS ts
+       FROM sim_replay_data
+      WHERE BUILDING_ID = ?`,
     { replacements: [buildingId] }
   );
-  return rows[0] || {};
+  const ts = rows?.[0]?.ts;
+  if (!ts) throw new Error(`replay 시작 TS 없음 (buildingId=${buildingId})`);
+  return dayjs(ts).format('YYYY-MM-DD HH:mm:ss');
 }
 
-async function tick(buildingId = 74) {
-  // 포인터 초기화 (맨 처음 TS)
+// 현재 포인터 확보 (없으면 MIN(TS)로 초기화)
+async function ensurePointer(buildingId) {
   if (!pointers.has(buildingId)) {
-    const [r0] = await db.sequelize.query(
-      `SELECT MIN(TS) AS ts FROM sim_replay_data WHERE BUILDING_ID=?`,
-      { replacements: [buildingId] }
-    );
-    if (!r0[0]?.ts) return;
-    pointers.set(buildingId, r0[0].ts);
+    const ts0 = await getMinTs(buildingId);
+    pointers.set(buildingId, ts0);
+  }
+  return pointers.get(buildingId);
+}
+
+// currentTs 이후의 다음 TS
+async function findNextTs(buildingId, currentTs) {
+  const [rows] = await db.sequelize.query(
+    `SELECT TS
+       FROM sim_replay_data
+      WHERE BUILDING_ID = ?
+        AND TS > ?
+      ORDER BY TS ASC
+      LIMIT 1`,
+    { replacements: [buildingId, currentTs] }
+  );
+  const next = rows?.[0]?.TS || rows?.[0]?.ts || null;
+  return next ? dayjs(next).format('YYYY-MM-DD HH:mm:ss') : null;
+}
+
+/**
+ * 외부에서 포인터를 초기화/재설정하고 싶을 때 호출 (옵션)
+ *  - ts 미지정 시 MIN(TS)로 리셋
+ */
+exports.resetReplayPointer = async (buildingId, tsInput) => {
+  const ts = tsInput ? dayjs(tsInput).format('YYYY-MM-DD HH:mm:ss') : await getMinTs(buildingId);
+  pointers.set(buildingId, ts);
+  return ts;
+};
+
+/**
+ * 리플레이 1틱 실행 (실제 + 예측)
+ * - 새 테이블/파일 없이, 메모리 pointers 기준으로 진행
+ * - tsInput을 주면 그 시각부터 시작(메모리 포인터도 그 시각으로 세팅)
+ */
+exports.runReplayOnce = async (buildingId, tsInput) => {
+  // 1) 현재 TS 결정
+  let currentTs;
+  if (tsInput) {
+    currentTs = dayjs(tsInput).format('YYYY-MM-DD HH:mm:ss');
+    pointers.set(buildingId, currentTs);
+  } else {
+    currentTs = await ensurePointer(buildingId);
   }
 
-  const ptr = pointers.get(buildingId);
-
-  // 다음 1건
+  // 2) 해당 TS의 실제값 조회
   const [rows] = await db.sequelize.query(
-    `SELECT ID, BUILDING_ID, TS, POWER_KWH, TEMPERATURE, HUMIDITY, WIND_SPEED, PRECIPITATION
+    `SELECT TS, POWER_KWH
        FROM sim_replay_data
-      WHERE BUILDING_ID=? AND TS >= ?
-      ORDER BY TS
+      WHERE BUILDING_ID = ? AND TS = ?
       LIMIT 1`,
-    { replacements: [buildingId, ptr] }
+    { replacements: [buildingId, currentTs] }
   );
-  if (!rows.length) return;
-  const r = rows[0];
+  const row = rows?.[0];
+  if (!row) {
+    // 데이터가 없으면 스트림 종료 신호
+    return { building_id: buildingId, ts: currentTs, done: true };
+  }
+  const actual = Number(row.POWER_KWH ?? NaN);
 
-  // 임계치
-  const { th = null, mu = null, sigma = null } = await loadThreshold(buildingId);
+  // 3) 과거 시점의 정적/날씨/랙 조회
+  const staticFeat = await getBuildingStaticFeatures(buildingId);
+  if (!staticFeat) throw new Error(`건물 정적정보 없음 (buildingId=${buildingId})`);
 
-  // lag들
-  const [lags] = await db.sequelize.query(
-    `
-    SELECT
-      (SELECT POWER_KWH FROM sim_replay_data WHERE BUILDING_ID=? AND TS=DATE_SUB(?, INTERVAL 1 HOUR))  AS lag1,
-      (SELECT POWER_KWH FROM sim_replay_data WHERE BUILDING_ID=? AND TS=DATE_SUB(?, INTERVAL 24 HOUR)) AS lag24,
-      (SELECT POWER_KWH FROM sim_replay_data WHERE BUILDING_ID=? AND TS=DATE_SUB(?, INTERVAL 168 HOUR)) AS lag168
-    `,
-    { replacements: [buildingId, r.TS, buildingId, r.TS, buildingId, r.TS] }
-  );
-  const { lag1, lag24, lag168 } = lags[0];
+  const weather = await getWeatherAt(buildingId, currentTs); // { temperature, humidity, wind_speed, precipitation }
+  if (!weather) throw new Error(`과거 날씨 없음 (buildingId=${buildingId}, ts=${currentTs})`);
 
-  // 시간 피처
-  const ts = new Date(r.TS);
-  const hour = ts.getHours();
-  const weekday = ts.getDay();
-  const is_weekend = (weekday === 0 || weekday === 6) ? 1 : 0;
-  const hour_sin = Math.sin((2 * Math.PI * hour) / 24);
-  const hour_cos = Math.cos((2 * Math.PI * hour) / 24);
+  const lags = await getLagsForBuilding(buildingId, currentTs); // { lag1, lag24, lag168 }  ※ lagService에서 `\`TIMESTAMP\`` 주의!
 
-  // 모델 호출
-  const url = process.env.MODEL_API_URL || 'http://127.0.0.1:6000/predict';
-  const payload = {
-    features: {
-      hour_sin, hour_cos, weekday, is_weekend,
-      temperature: r.TEMPERATURE,
-      humidity: r.HUMIDITY,
-      wind_speed: r.WIND_SPEED,
-      precipitation: r.PRECIPITATION,
-      power_consumption_lag1:   lag1,
-      power_consumption_lag24:  lag24,
-      power_consumption_lag168: lag168,
-    }
+  // 4) 시간 파생
+  const d = dayjs(currentTs);
+  const hour = d.hour();
+  const weekday = d.day(); // 0=일
+  const isWeekend = (weekday === 0 || weekday === 6) ? 1 : 0;
+  const hourSin = Math.sin((2 * Math.PI * hour) / 24);
+  const hourCos = Math.cos((2 * Math.PI * hour) / 24);
+
+  // 5) 모델 features(17개)
+  const num = (v, def = 0) => {
+    const n = Number(v);
+    return Number.isNaN(n) ? def : n;
   };
 
-  let yhat = null;
-  try {
-    const { data } = await axios.post(url, payload, { timeout: 2500 });
-    yhat = data?.prediction ?? null;
-  } catch {
-    // 데모 안전장치: 실패 시 관측값 기반 대체
-    yhat = (r.POWER_KWH ?? 0) * (0.97 + Math.random() * 0.06);
-  }
+  const features = {
+    hour_sin: hourSin,
+    hour_cos: hourCos,
+    weekday,
+    is_weekend: isWeekend,
 
-  // 피크 판단
-  const { is_peak, risk, peak_prob } = judgePeak(yhat, th, mu, sigma);
+    temperature: num(weather?.temperature),
+    humidity: num(weather?.humidity),
+    wind_speed: num(weather?.wind_speed),
+    precipitation: num(weather?.precipitation),
 
-  // 송출
-  broadcast(buildingId, {
-    ts: r.TS,
-    buildingId,
-    actual_kwh: r.POWER_KWH,
-    yhat_kwh: yhat,
-    threshold: th,
-    is_peak, peak_prob, risk
-  });
+    log_total_area: num(staticFeat?.log_total_area),
+    cooling_ratio: num(staticFeat?.cooling_ratio),
+    has_pv: Number(!!staticFeat?.has_pv),
+    has_ess: Number(!!staticFeat?.has_ess),
+    has_pcs: Number(!!staticFeat?.has_pcs),
+    building_type_encoded: num(staticFeat?.building_type_encoded),
 
-  // 포인터 +1h
-  const [nxt] = await db.sequelize.query(
-    `SELECT DATE_ADD(?, INTERVAL 1 HOUR) AS next_ts`, { replacements: [r.TS] }
-  );
-  pointers.set(buildingId, nxt[0].next_ts);
-}
+    lag1: num(lags?.lag1),
+    lag24: num(lags?.lag24),
+    lag168: num(lags?.lag168),
+  };
 
-function startReplayTimer(buildingId = 74, speedSec = 5) {
-  if (timers.has(buildingId)) clearInterval(timers.get(buildingId));
-  const id = setInterval(() => tick(buildingId), speedSec * 1000);
-  timers.set(buildingId, id);
-}
+  // 6) 모델 호출 (Flask /predict)
+  const resp = await requestPrediction({ buildingId, ts: currentTs, features });
+  const yhat = (typeof resp?.yhat === 'number') ? resp.yhat : null;
+  const is_peak = (resp?.peak?.is_peak === 0 || resp?.peak?.is_peak === 1) ? resp.peak.is_peak : null;
+  const prob = (typeof resp?.peak?.prob === 'number') ? resp.peak.prob : null;
 
-function stopReplayTimer(buildingId = 74) {
-  if (timers.has(buildingId)) {
-    clearInterval(timers.get(buildingId));
-    timers.delete(buildingId);
-  }
-}
+  // 7) 다음 TS로 포인터 전진 (항상 +1시간)
+  const nextTs = dayjs(currentTs).add(1, 'hour').format('YYYY-MM-DD HH:mm:ss');
+  pointers.set(buildingId, nextTs);
 
-module.exports = { startReplayTimer, stopReplayTimer };
+  // 8) 페이로드 반환
+  return {
+    building_id: buildingId,
+    ts: currentTs,
+    next_ts: nextTs,                   // 디버깅용 (프론트에서 다음 시각 확인 가능)
+    actual_kwh: actual,
+    predicted_kwh: yhat,
+    weather_used: {
+      temperature: num(weather?.temperature),
+      humidity: num(weather?.humidity),
+      wind_speed: num(weather?.wind_speed),
+      precipitation: num(weather?.precipitation),
+    },
+    peak: { is_peak, prob },
+    done: !nextTs,                     // 다음 시각 없으면 종료 신호
+  };
+};

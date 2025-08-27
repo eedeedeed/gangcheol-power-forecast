@@ -10,8 +10,9 @@ function addSubscriber(buildingId, res, remove = false) {
 function broadcast(buildingId, payload) {
   const set = subscribers.get(buildingId);
   if (!set) return;
-  const data = `data: ${JSON.stringify(payload)}\n\n`;
-  for (const res of set) res.write(data);
+  const s = `event: replay_tick\n` +  // ← 이벤트명 추가
+            `data: ${JSON.stringify(payload)}\n\n`;
+  for (const res of set) res.write(s);
 }
 
 module.exports = { addSubscriber, broadcast };

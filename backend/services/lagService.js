@@ -1,45 +1,38 @@
 // services/lagService.js
-const { PowerConsumption } = require('../models');
+const db = require('../models');
 
 const toNumOrNull = (v) => {
   const n = Number(v);
   return Number.isNaN(n) ? null : n;
 };
 
-exports.getLagsForBuilding = async (buildingId) => {
-  // 1) 최근 레코드의 사전계산 lag 컬럼 우선 사용
-  const latest = await PowerConsumption.findOne({
-    where: { building_id: buildingId },           // 모델 속성명 사용
-    order: [['timestamp', 'DESC']],
-    attributes: ['power_kwh_lag1', 'power_kwh_lag24', 'power_kwh_lag168'],
-    raw: true,
-  });
+/**
+ * 특정 시각(ts) 기준으로 저장된 랙 컬럼을 그대로 조회
+ * - 테이블: power_consumption
+ * - 컬럼: POWER_KWH_LAG1 / POWER_KWH_LAG24 / POWER_KWH_LAG168
+ * - 시간 컬럼명은 `TIMESTAMP` 이므로 백틱으로 감싼다.
+ */
+exports.getLagsForBuilding = async (buildingId, ts) => {
+  const [rows] = await db.sequelize.query(
+    `SELECT 
+        POWER_KWH_LAG1   AS lag1,
+        POWER_KWH_LAG24  AS lag24,
+        POWER_KWH_LAG168 AS lag168
+     FROM power_consumption
+     WHERE BUILDING_ID = ? AND \`TIMESTAMP\` = ?
+     LIMIT 1`,
+    { replacements: [buildingId, ts] }
+  );
 
-  if (latest) {
-    const lag1   = toNumOrNull(latest.power_kwh_lag1);
-    const lag24  = toNumOrNull(latest.power_kwh_lag24);
-    const lag168 = toNumOrNull(latest.power_kwh_lag168);
-    // 셋 중 하나라도 채워져 있으면 그 값으로 반환
-    if (lag1 !== null || lag24 !== null || lag168 !== null) {
-      return { lag1, lag24, lag168 };
-    }
+  if (rows && rows.length) {
+    const r = rows[0];
+    return {
+      lag1:   toNumOrNull(r.lag1),
+      lag24:  toNumOrNull(r.lag24),
+      lag168: toNumOrNull(r.lag168),
+    };
   }
 
-  // 2) 폴백: 최근 169개를 내려받아 인덱스로 계산 (정각 연속 데이터 가정)
-  const rows = await PowerConsumption.findAll({
-    where: { building_id: buildingId },
-    order: [['timestamp', 'DESC']],
-    attributes: ['power_kwh'],
-    limit: 169,      // 1, 24, 168 확보
-    raw: true,
-  });
-
-  if (!rows.length) return { lag1: null, lag24: null, lag168: null };
-
-  const val = (i) => (rows[i] ? toNumOrNull(rows[i].power_kwh) : null);
-  return {
-    lag1:   val(0),     // 직전 1시간
-    lag24:  val(23),    // 24시간 전
-    lag168: val(167),   // 168시간 전
-  };
+  // 폴백: 못 찾으면 0으로 (또는 null 원하면 null로 바꿔도 됨)
+  return { lag1: 0, lag24: 0, lag168: 0 };
 };
