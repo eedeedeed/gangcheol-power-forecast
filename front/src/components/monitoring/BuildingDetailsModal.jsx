@@ -17,8 +17,7 @@ function BuildingDetailsModal({ building, onClose, onEdit, onDelete }) {
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          {/* 백엔드 필드명에 맞게 수정: building_name */}
-          <h4>{building.building_name} - 세부 정보</h4>
+          <h4>{building.building_name}</h4>
           <button onClick={onClose} className="modal-close-btn">&times;</button>
         </div>
         <div className="modal-body" style={{ padding: '20px' }}>
@@ -31,6 +30,8 @@ function BuildingDetailsModal({ building, onClose, onEdit, onDelete }) {
           <p><strong>PCS용량(kW):</strong> {formatNumber(building.pcs_capacity)} kW</p>
           <p><strong>ESS저장용량(kWh):</strong> {formatNumber(building.ess_capacity)} kWh</p>
           <p><strong>태양광용량(kW):</strong> {formatNumber(building.pv_capacity)} kW</p>
+          {/* ✅ [추가] 우편번호를 표시하는 라인 */}
+          {/* <p><strong>우편번호:</strong> {building.zip_code || 'N/A'}</p> */}
           <p><strong>건물주소:</strong> {building.building_address || 'N/A'}</p>
         </div>
         <div style={{ padding: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px', borderTop: '1px solid var(--color-border)' }}>

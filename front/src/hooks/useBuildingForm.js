@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-// 폼의 초기 상태 정의 (새 필드 추가)
+// 폼의 초기 상태 정의
 const initialBuildingState = {
   name: '', type: '', area: '', coolingArea: '', 
   pcsCapacity: '', essCapacity: '', solarCapacity: '',
@@ -14,18 +14,27 @@ export function useBuildingForm(initialData = null) {
   
   useEffect(() => {
     if (initialData) {
-      // 수정 모드일 때, 백엔드 데이터(snake_case)를 폼 상태(camelCase)로 매핑합니다.
+      // 주소 문자열을 공백 기준으로 분리
+      const addressParts = (initialData.building_address || '').split(' ');
+      // 주소의 마지막 부분을 상세주소로 추정 (단어가 3개 이상일 때만)
+      const detailAddressGuess = addressParts.length > 2 ? addressParts.pop() : ''; 
+      // 나머지 부분을 도로명 주소로 설정
+      const mainAddress = addressParts.join(' ');
+
       const mappedData = {
-        name: initialData.building_name,
-        type: initialData.building_type,
-        area: initialData.total_area,
-        coolingArea: initialData.cooling_area,
-        pcsCapacity: initialData.pcs_capacity,
-        essCapacity: initialData.ess_capacity,
-        solarCapacity: initialData.pv_capacity,
-        address: initialData.building_address,
-        zipCode: initialData.zip_code,
-        detailAddress: '', // 상세주소는 보통 주소와 분리되어 있으므로 초기화
+        name: initialData.building_name || '',
+        type: initialData.building_type || '',
+        area: initialData.total_area || '',
+        coolingArea: initialData.cooling_area || '',
+        pcsCapacity: initialData.pcs_capacity || '',
+        essCapacity: initialData.ess_capacity || '',
+        solarCapacity: initialData.pv_capacity || '',
+        
+        // 서버에서 오는 키 이름이 zip_code 또는 zipCode일 경우 모두 처리
+        zipCode: initialData.zip_code || initialData.zipCode || '', 
+        
+        address: mainAddress,
+        detailAddress: detailAddressGuess,
       };
       setBuilding(mappedData);
       
@@ -76,7 +85,6 @@ export function useBuildingForm(initialData = null) {
     
     // 서버에 보낼 데이터 (스네이크 케이스로 변환 및 숫자 타입 변환)
     const formData = {
-      // [수정] 수정 모드일 경우를 대비해 building_id를 포함시킵니다.
       building_id: initialData?.building_id, 
       building_name: building.name,
       building_type: buildingType,
@@ -88,7 +96,6 @@ export function useBuildingForm(initialData = null) {
       building_address: finalAddress,
       zip_code: building.zipCode,
     };
-    console.log('1. [useBuildingForm] 데이터 가공 완료:', formData);
     return formData;
   };
 

@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { Routes, Route, Navigate, Outlet, Link } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Context Providers
-import ThemeProvider from './contexts/ThemeContext';
-import AuthProvider, { AuthContext } from './contexts/AuthContext';
-import BuildingProvider from './contexts/BuildingContext';
-import NotificationProvider from './contexts/NotificationContext';
+import logo from './assets/logo.png'; 
+
+// Contexts
+import { ThemeContext } from './contexts/ThemeContext';
+import { AuthContext } from './contexts/AuthContext';
+import { NotificationContext } from './contexts/NotificationContext';
+import { BuildingContext } from './contexts/BuildingContext';
 
 // Styles
 import './styles/base.css';
@@ -14,96 +17,105 @@ import './styles/components.css';
 import './styles/layout.css';
 import './styles/dashboard.css';
 import './styles/monitoring.css';
-import './styles/alerts.css';
-import './styles/guide.css';
 import './styles/auth.css';
 
-// Layout Components
-import Sidebar from './components/layout/Sidebar';
+// Components
 import Navbar from './components/layout/Navbar';
+import NotificationManager from './components/common/NotificationManager';
+import NotificationDetailsModal from './components/dashboard/NotificationDetailsModal';
 
 // Page Components
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import BuildingMonitoring from './pages/BuildingMonitoring';
-import Alerts from './pages/Alerts';
-import Guide from './pages/Guide';
 import Settings from './pages/Settings';
 import ProfilePage from './pages/ProfilePage';
 
-// QueryClient 인스턴스 생성
-const queryClient = new QueryClient();
-
-function MainLayout() {
+// ✅ [수정] 팝업 관련 props 모두 제거
+function MainLayout({ isEditMode, handleEditModeToggle }) {
   return (
-    <>
+    <div className="app-layout">
       <nav className="navbar">
         <div className="navbar-container">
           <Link to="/dashboard" className="navbar-brand">
-            <h2>Power Monitoring</h2>
+            <img src={logo} alt="FLEAK 로고" className="navbar-logo" />
           </Link>
-          <Navbar />
+          <Navbar 
+            isEditMode={isEditMode}
+            onEditModeToggle={handleEditModeToggle}
+          />
         </div>
       </nav>
       <div className="main-container">
-        <Sidebar />
         <main className="main-content">
-          <Outlet />
+          {/* ✅ [수정] Outlet context에 handleEditModeToggle 추가 */}
+          <Outlet context={{ isEditMode, handleEditModeToggle }} />
         </main>
       </div>
-    </>
+    </div>
   );
 }
 
-function ProtectedRoute() {
-  const { isLoggedIn } = React.useContext(AuthContext);
-  return isLoggedIn ? <MainLayout /> : <Navigate to="/auth" replace />;
+// ✅ [수정] 팝업 관련 props 모두 제거
+function ProtectedRoute({ isEditMode, handleEditModeToggle }) {
+  const { isLoggedIn } = useContext(AuthContext);
+  return isLoggedIn ? (
+    <MainLayout 
+      isEditMode={isEditMode}
+      handleEditModeToggle={handleEditModeToggle}
+    />
+  ) : <Navigate to="/auth" replace />;
 }
 
 function App() {
+  const { theme } = useContext(ThemeContext);
+  const { isModalOpen, selectedNotification, closeNotificationModal } = useContext(NotificationContext);
+  
+  const { selectedBuilding } = useContext(BuildingContext);
+  const { addRealtimeAlert } = useContext(NotificationContext);
 
-  // Geolocation API로 사용자의 현재 위치 위도, 경도 데이터 가져오기
+  const [isEditMode, setIsEditMode] = useState(false);
+  const handleEditModeToggle = useCallback(() => setIsEditMode(prev => !prev), []);
+  
+  // ✅ [제거] 대시보드 편집 확인 팝업 관련 상태 및 핸들러 모두 제거
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      // 성공 콜백
       (position) => {
-        console.log(
-          "현재 위치:",
-          `위도(lat): ${position.coords.latitude},`,
-          `경도(lng): ${position.coords.longitude}`
-        );
+        console.log("현재 위치:", `위도(lat): ${position.coords.latitude},`, `경도(lng): ${position.coords.longitude}`);
       },
-      // 실패 콜백
       () => {
-        alert("위치 정보를 가져오는 데 실패했습니다.");
+        console.warn("위치 정보를 가져오는 데 실패했습니다.");
       }
     );
-  }, []); // 빈 배열[]은 컴포넌트가 처음 로드될 때 한 번만 실행하라는 의미입니다.
-
+  }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <BuildingProvider>
-            <NotificationProvider>
-              <Routes>
-                <Route path="/auth" element={<AuthPage />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/monitoring" element={<BuildingMonitoring />} />
-                  <Route path="/alerts" element={<Alerts />} />
-                  <Route path="/guide" element={<Guide />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Route>
-              </Routes>
-            </NotificationProvider>
-          </BuildingProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <>
+      <NotificationManager />
+      <Routes>
+        <Route path="/auth" element={<AuthPage />} />
+        {/* ✅ [수정] ProtectedRoute에 전달하는 props 단순화 */}
+        <Route element={
+          <ProtectedRoute 
+            isEditMode={isEditMode}
+            handleEditModeToggle={handleEditModeToggle}
+          />
+        }>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/monitoring" element={<BuildingMonitoring />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+      </Routes>
+      <ToastContainer theme={theme} limit={1} />
+      <NotificationDetailsModal 
+        isOpen={isModalOpen}
+        onClose={closeNotificationModal}
+        notification={selectedNotification}
+      />
+    </>
   );
 }
 

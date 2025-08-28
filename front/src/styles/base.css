@@ -22,6 +22,7 @@
   --space-20: 13.5px;
   --space-24: 16px;
   --space-32: 22px;
+  --space-36: 24px; /* 24px 변수 */
   --space-50: 50px;
   --space-54: 54px;
 
@@ -66,7 +67,7 @@
   --color-warning-rgb: 168, 75, 47;
   --color-btn-secondary-bg: rgba(94, 82, 64, 0.12);
 
-  /* 🔥 다크모드 차트 색상 변수 추가 */
+  /* 다크모드 차트 색상 변수 추가 */
   --chart-text-color: var(--color-slate-900);
   --chart-grid-color: rgba(94, 82, 64, 0.2);
   --chart-axis-color: var(--color-slate-500);
@@ -76,7 +77,7 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* 🔥 다크 모드 색상 - 차트 색상 포함 */
+/* 다크 모드 색상 - 차트 색상 포함 */
 html[data-color-scheme='dark'] {
   --color-background: var(--color-charcoal-800);
   --color-surface: var(--color-charcoal-700);
@@ -89,7 +90,7 @@ html[data-color-scheme='dark'] {
   --color-error: var(--color-red-500);
   --color-btn-secondary-bg: rgba(252, 252, 249, 0.12);
 
-  /* 🔥 다크모드 차트 색상 - 핵심 개선사항 */
+  /* 다크모드 차트 색상 - 핵심 개선사항 */
   --chart-text-color: var(--color-cream-50);
   --chart-grid-color: rgba(252, 252, 249, 0.2);
   --chart-axis-color: var(--color-gray-300);
@@ -106,7 +107,7 @@ html {
 body, *, *::before, *::after { 
   margin: 0; 
   box-sizing: border-box;
-  /* 🔥 부드러운 테마 전환 효과 */
+  /* 부드러운 테마 전환 효과 */
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -123,7 +124,41 @@ h4 { font-size: var(--font-size-xl); }
 h5 { font-size: var(--font-size-lg); }
 h6 { font-size: var(--font-size-md); }
 
+/* ... base.css의 기존 코드 ... */
+
 html[data-color-scheme='dark'] .btn--secondary {
   background: var(--color-btn-secondary-bg);
   color: var(--color-text);
+}
+
+
+/* ========================================================================== */
+/* 🔥 [추가] 미니멀 스크롤바 디자인 */
+/* ========================================================================== */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) transparent;
+}
+
+/* Chrome, Edge, Safari 등 Webkit 기반 브라우저 */
+::-webkit-scrollbar {
+  width: 8px;  /* 스크롤바 너비 */
+  height: 8px; /* 가로 스크롤바 높이 */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;  /* 스크롤바 배경 투명 처리 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-300); /* 스크롤바 막대 색상 */
+  border-radius: var(--radius-full); /* 완전 둥글게 */
+  border: 2px solid transparent; /* 막대 주변에 투명 여백 생성 */
+  background-clip: content-box; /* 여백이 배경색을 가리지 않도록 설정 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-400); /* 마우스 올렸을 때 더 진하게 */
 }

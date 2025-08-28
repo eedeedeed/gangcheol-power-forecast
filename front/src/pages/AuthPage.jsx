@@ -127,7 +127,7 @@ function AuthPage() {
 				</div>
 				<div className="auth-guest-access">
 
-					<button type="button" className="btn-guest-access" onClick={handleGuestLogin}> 로그인 없이 둘러보기</button>
+					<button type="button" className="btn-guest-access" onClick={handleGuestLogin}> 로그인 없이 들어가는 문</button>
 				</div>
 			</div>
 		</div>

@@ -1,21 +1,84 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .navbar {
   background: var(--color-surface);
   position: sticky; top: 0;
   z-index: 100;
   border-bottom: 1px solid var(--color-border);
 }
+
 .navbar-container {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: var(--space-24) var(--space-12);
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) var(--space-24);
 }
 
-.navbar-brand h2 {
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 20px;
+.navbar-brand {
+  flex-shrink: 0;
 }
-.navbar-menu { display: flex; gap: var(--space-24); align-items: center; }
+
+.navbar-logo {
+  height: 50px;
+  width: auto;
+  vertical-align: middle;
+}
+
+.navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  margin-left: var(--space-32);
+}
+
+.navbar-right-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-32);
+  margin-left: auto;
+}
+
+.navbar-info-section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.navbar-user-info {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.navbar-building-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.navbar-building-selector label {
+  flex-shrink: 0;
+}
+
+.navbar-building-selector select.form-control {
+  min-width: 200px;
+  width: auto;
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--font-size-sm);
+}
+
+.navbar-menu {
+  display: flex;
+  gap: var(--space-24);
+  align-items: center;
+}
+
 .navbar-item {
   color: var(--color-text-secondary);
   padding: var(--space-8) var(--space-16);
@@ -23,116 +86,91 @@
   font-weight: 500;
   font-size: var(--font-size-sm);
   background: transparent;
-  border: none; cursor: pointer;
+  border: none;
+  cursor: pointer;
 }
+
 .navbar-item.active {
   background: var(--color-primary);
   color: var(--color-cream-50);
 }
-.navbar-dropdown { position: relative; }
+
+.navbar-dropdown {
+  position: relative;
+}
+
 .navbar-dropdown-menu {
-  position: absolute; top: 100%; right: 0;
+  position: absolute;
+  top: 100%;
+  right: 0;
   min-width: 160px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-base);
   z-index: 1000;
-  opacity: 0; visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
-.navbar-dropdown:hover .navbar-dropdown-menu { opacity: 1; visibility: visible; }
+
+.navbar-dropdown:hover .navbar-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
 .dropdown-item {
-  display: block; width: 100%;
+  display: block;
+  width: 100%;
   padding: var(--space-8) var(--space-16);
-  text-align: left; background: none; border: none;
+  text-align: left;
+  background: none;
+  border: none;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
-.dropdown-item--danger { color: var(--color-error) !important; }
-.dropdown-item--danger:hover { background: rgba(192, 21, 47, 0.1); }
-.dropdown-divider { height: 1px; background: var(--color-border); margin: var(--space-4) 0; }
-.main-container { display: flex; min-height: calc(100vh - 72px); }
-.sidebar {
-  width: 300px;
-  background: var(--color-surface);
-  padding: var(--space-24);
-  border-right: 1px solid var(--color-border);
-  flex-shrink: 0;
+
+.dropdown-item--danger {
+  color: var(--color-error) !important;
 }
-.sidebar-section { margin-bottom: var(--space-32); }
-.sidebar-section h4 { font-size: var(--font-size-md); }
-.quick-alert {
-  padding: var(--space-16); border-radius: var(--radius-base);
-  border-left: 3px solid; display: flex;
-  align-items: center; cursor: pointer;
+
+.dropdown-item--danger:hover {
+  background: rgba(192, 21, 47, 0.1);
 }
-.quick-alert-title, .savings-item-action {
-  flex-grow: 1;
-  white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--font-size-md);
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-4) 0;
 }
-.quick-alert-close-btn {
-  background: none; border: none; color: var(--color-text-secondary);
-  font-size: 20px; cursor: pointer;
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
+
+.main-container {
+  display: flex;
+  flex: 1;
+  min-height: 0;
 }
-.savings-item {
-  padding: var(--space-16);
-  background: rgba(33, 128, 141, 0.15);
-  border-radius: var(--radius-base);
-  display: flex; align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-}
+
 .main-content {
-  flex: 1; padding: var(--space-24);
+  flex: 1;
+  padding: var(--space-24);
   background: var(--color-background);
+  overflow-y: auto;
 }
-.main-content--full-width { width: 100%; padding: var(--space-24); }
-.main-container:has(.main-content--full-width) { display: block; }
+
 .theme-toggle-btn {
-  background: none; border: none; color: var(--color-text-secondary);
-  cursor: pointer; padding: var(--space-8);
-  border-radius: 9999px; display: flex;
-}
-.theme-toggle-btn svg { width: 20px; height: 20px; }
-
-/* ===== ⭐️ 사용자 프로필 섹션 스타일 추가 시작 ===== */
-.user-profile-section {
-  padding-bottom: var(--space-24);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--space-24);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-8);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.user-profile-name {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--color-text);
-  /* 텍스트가 길어질 경우 대비 */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sidebar-section h4 {
-  margin-bottom: 10px; /* 10px 만큼 아래쪽 여백을 줍니다. 원하는 만큼 조절하세요. */
-}
-
-
-.quick-alert,
-.savings-item {
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* 기본 (라이트 모드) 호버 효과 */
-.quick-alert:hover,
-.savings-item:hover {
-  background-color: rgba(94, 82, 64, 0.08); /* 기존의 미세한 갈색 오버레이 */
-}
-
-/* 🔥 다크 모드 전용 호버 효과 (추가) */
-html[data-color-scheme='dark'] .quick-alert:hover,
-html[data-color-scheme='dark'] .savings-item:hover {
-  background-color: rgba(255, 255, 255, 0.08); /* 미세한 흰색 오버레이로 변경 */
+.theme-toggle-btn svg {
+  width: 20px;
+  height: 20px;
 }
