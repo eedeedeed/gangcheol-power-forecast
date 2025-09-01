@@ -1,5 +1,10 @@
-# ESG_C 팀프로젝트
+# 2025년 ESG과정 C반 팀프로젝트
 > gangcheol-power-forecast 팀 강철전기 ⚡🔌
+
+📅 프로젝트 기간 (Project Timeline)
+- 기획: 2025년 7월 28일 ~ 2025년 8월 3일 (1주)
+- 개발 및 구현: 2025년 8월 4일 ~ 2025년 8월 28일
+- 총 소요 기간: 약 1개월
 
 # Fleak: 전력소비량 예측 · 피크탐지 · 모니터링 (Gangcheol Electric)
 
@@ -11,7 +16,6 @@
 [![MySQL](https://img.shields.io/badge/DB-MySQL-00618a)]()
 
 **Fleak**(flex peak)은 건물 단위의 시간별 전력사용량(kWh)을 예측하고, 사전 피크(최대부하) 리스크를 탐지하여 **요금 절감·ESG 대응·전력망 안정화**에 기여하는 대시보드형 서비스입니다.
-
 
 ---
 
