@@ -28,7 +28,7 @@ router.get('/replay', async (req, res) => {
     }
   }
 
-  const INTERVAL = 1000; // 1초마다 1틱
+  const INTERVAL = 2000; // 1초마다 1틱
   let stopped = false;
 
   const stop = () => {
