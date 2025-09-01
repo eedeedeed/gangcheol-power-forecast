@@ -1,0 +1,181 @@
+.building-management-section {
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.management-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-36);
+}
+
+.management-card h4 {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  font-size: var(--font-size-xl);
+}
+
+.building-management-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  table-layout: fixed;
+}
+
+.building-management-table th, .building-management-table td {
+  text-align: left; 
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-base);
+}
+
+.building-management-table th:nth-child(1), .building-management-table td:nth-child(1) { 
+  width: 10%; text-align: center; 
+}
+.building-management-table th:nth-child(2), .building-management-table td:nth-child(2) { 
+  width: 20%; 
+}
+.building-management-table th:nth-child(3), .building-management-table td:nth-child(3) { 
+  width: 25%; 
+}
+
+.building-management-table .actions { text-align: right; }
+.building-management-table .actions button {
+  padding: var(--space-10) var(--space-20);
+  font-size: var(--font-size-base);
+  margin-left: var(--space-8);
+}
+
+.add-building-btn {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--color-text); 
+  font-size: 32px;
+  border: 1px solid var(--color-border); 
+  cursor: pointer;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.add-building-btn:hover {
+  background-color: var(--color-surface-soft);
+  transform: scale(1.05);
+}
+
+/* ========================================================================== */
+/* 모달 관련 스타일은 components.css로 통합되어 모두 제거됨 */
+/* ========================================================================== */
+
+.modal-body .building-form .form-group {
+  display: flex; align-items: center; 
+  gap: 18px;
+  margin-bottom: var(--space-20);
+}
+
+.modal-body .building-form .form-group label {
+  font-weight: 600; color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  width: 160px;
+  flex-shrink: 0; text-align: right;
+}
+
+.modal-body .building-form .form-group label.required::after {
+  content: ' *';
+  color: var(--color-error);
+}
+
+.address-container { 
+  display: flex; flex-direction: column; 
+  gap: 10px;
+  flex-grow: 1; 
+}
+
+/* ✅ [추가] 우편번호와 주소 검색 버튼을 가로로 배치하기 위한 스타일 */
+.zip-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.zip-search .form-control {
+  width: 130px;
+  flex-grow: 0;
+}
+.zip-search .btn {
+  flex-shrink: 0;
+  height: 46px; /* 입력 필드와 높이를 맞춤 */
+}
+
+
+.address-field { display: flex; gap: 10px; }
+
+.zip-code-input { flex-grow: 0 !important; width: 130px !important; }
+
+.address-search-btn {
+  flex-shrink: 0; height: 46px;
+  font-size: var(--font-size-base);
+  padding: 0 var(--space-16);
+}
+
+.input-with-checkbox { 
+  display: flex; align-items: center; 
+  gap: var(--space-16);
+  flex-grow: 1; 
+}
+
+.capacity-checkbox { 
+  width: 22px; height: 22px;
+  cursor: pointer; 
+}
+
+.input-with-checkbox .form-control:disabled { 
+  background-color: rgba(94, 82, 64, 0.12); 
+  cursor: not-allowed; opacity: 0.6; 
+}
+
+.modal-body .building-form .form-submit { 
+  display: flex; justify-content: center; 
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.modal-body p {
+  font-size: var(--font-size-2xl); 
+  line-height: 1.6;
+  margin-bottom: var(--space-16); 
+}
+
+.modal-body .building-form .form-group input[type="number"] { 
+  -moz-appearance: textfield; 
+}
+
+.modal-body .building-form .form-group input[type="number"]::-webkit-outer-spin-button,
+.modal-body .building-form .form-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+
+.modal-body .building-form .form-group {
+  flex-grow: 1;
+}
+
+.modal-body .building-form .form-group .form-control {
+  flex-grow: 1;
+  width: auto;
+}
+
+.readonly-input {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  padding: 0 var(--space-12);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  background-color: rgba(94, 82, 64, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  height: 46px;
+}

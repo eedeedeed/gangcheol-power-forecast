@@ -1,0 +1,435 @@
+.react-grid-layout {
+  position: relative;
+}
+
+.react-grid-item {
+  transition: all 200ms ease;
+}
+
+.react-grid-layout .card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-20);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-header h4 {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.stat-card .stat-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-8) 0;
+  min-height: 0;
+}
+
+.stat-card .current-usage-value {
+  font-size: clamp(28px, 4vw, 54px);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.stat-card .current-usage-percentage {
+  font-size: clamp(16px, 2.5vw, 28px);
+  color: var(--color-text-secondary);
+  word-break: break-all;
+  text-align: center;
+  margin-top: var(--space-8);
+}
+
+.weather-card-large {
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-16);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.weather-header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+.weather-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.weather-content {
+  display: flex; flex-direction: column;
+  gap: var(--space-24); align-items: center;
+}
+.weather-main {
+  display: flex; align-items: center;
+  gap: var(--space-20);
+}
+.weather-temp {
+  display: flex; align-items: flex-start;
+  line-height: 1;
+}
+.temp-value {
+  font-size: 60px; font-weight: 300;
+}
+.temp-unit {
+  font-size: 24px; margin-top: 8px; font-weight: 400;
+}
+.weather-info {
+  text-align: center;
+}
+.weather-location {
+  font-size: var(--font-size-xl); font-weight: 500;
+  margin-bottom: var(--space-4);
+}
+.weather-description {
+  font-size: var(--font-size-base); opacity: 0.9;
+}
+.weather-details {
+  display: flex; justify-content: space-around;
+  gap: var(--space-20); padding: var(--space-16);
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md); width: 100%;
+}
+.detail-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: var(--space-4);
+}
+.detail-label {
+  font-size: var(--font-size-sm); opacity: 0.8;
+}
+.detail-value {
+  font-size: var(--font-size-lg); font-weight: 500;
+}
+.weather-loading, .weather-error {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%; gap: var(--space-12);
+  font-size: var(--font-size-base);
+}
+.loading-spinner {
+  width: 24px; height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.weather-refresh-btn {
+  background: none; border: none; color: white; cursor: pointer;
+  padding: 8px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  opacity: 0.8;
+}
+.weather-refresh-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
+.weather-refresh-btn:disabled {
+  cursor: not-allowed; opacity: 0.6;
+  animation: spin 1.2s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.chart-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.chart-card .card__header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: var(--space-20);
+  flex-shrink: 0;
+}
+.chart-card .card__body {
+  flex-grow: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.react-grid-layout.edit-mode .react-grid-item {
+  box-shadow: inset 0 0 0 2px rgba(33, 128, 141, 0.2);
+  border-radius: var(--radius-lg);
+}
+.react-grid-layout.edit-mode .card {
+  background-color: rgba(255, 255, 253, 0.8);
+  backdrop-filter: blur(2px);
+}
+html[data-color-scheme='dark'] .react-grid-layout.edit-mode .card {
+  background-color: rgba(31, 33, 33, 0.8);
+}
+.react-resizable-handle {
+  background-color: var(--color-primary) !important;
+  border-radius: 50%;
+  width: 16px !important;
+  height: 16px !important;
+  bottom: 4px !important;
+  right: 4px !important;
+  z-index: 20;
+}
+
+.card.no-padding {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.notification-panel-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.notification-panel-section .card__header {
+  padding: var(--space-16) var(--space-20) var(--space-12);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.notification-panel-section .card__header h4 {
+  font-size: var(--font-size-md);
+  margin: 0;
+}
+.notification-panel-section .card__body.scrollable-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.notification-card-content {
+  padding: var(--space-12) var(--space-20);
+}
+.notification-list-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-12);
+  border-radius: var(--radius-base);
+  margin-bottom: var(--space-8);
+  transition: all 0.2s ease;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+}
+.notification-list-item:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+html[data-color-scheme='dark'] .notification-list-item {
+    background-color: rgba(255,255,255,0.03);
+}
+html[data-color-scheme='dark'] .notification-list-item:hover {
+    background-color: rgba(255,255,255,0.07);
+}
+.notification-list-item .item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+.notification-list-item .item-title {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notification-list-item .item-time {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-4);
+}
+.notification-list-item .item-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+.notification-list-item .item-type-badge.info { background-color: var(--color-info); }
+.notification-list-item .item-type-badge.warning { background-color: var(--color-error); }
+.notification-list-item .item-type-badge.guide { background-color: var(--color-success); }
+.notification-list-item.unread {
+  background-color: rgba(var(--color-error-rgb), 0.05);
+  border-left: 3px solid var(--color-error);
+}
+html[data-color-scheme='dark'] .notification-list-item.unread {
+    background-color: rgba(var(--color-error-rgb), 0.15);
+}
+.btn-dismiss-notification {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+.notification-list-item:hover .btn-dismiss-notification {
+  opacity: 1;
+}
+.btn-dismiss-notification:hover {
+  background-color: var(--color-error);
+  color: white;
+  transform: scale(1.1);
+}
+.no-info-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-16) 0;
+  text-align: center;
+}
+
+.resizable-handle {
+  position: relative;
+  background-color: var(--color-border);
+  transition: background-color 0.2s ease;
+}
+.resizable-handle[data-resize-handle-state="hover"],
+.resizable-handle[data-resize-handle-state="drag"] {
+  background-color: var(--color-primary);
+}
+.resizable-handle[data-panel-group-direction="vertical"] {
+  height: 6px;
+  cursor: ns-resize;
+}
+.resizable-handle[data-panel-group-direction="vertical"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 2px;
+  background-color: var(--color-surface);
+  border-radius: 1px;
+}
+
+/* ✅ [추가] 전일 대비 사용량 증감률 색상 스타일 */
+.stat-card .current-usage-value.increase {
+  color: var(--color-error); /* 기존 정의된 error 색상 (빨간 계열) */
+}
+
+.stat-card .current-usage-value.decrease {
+  color: #3498db; /* 파란색 계열 */
+}
+
+/* ✅ [수정] 전일/주간 비교 카드를 위한 스타일 */
+.comparison-card-split {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+.comparison-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-12);
+  text-align: center;
+  height: 100%;
+}
+/* 두 영역 사이에 구분선 추가 */
+.comparison-half + .comparison-half {
+  border-left: 1px solid var(--color-border);
+}
+/* "전일 대비", "주간 대비"와 같은 제목 글씨 */
+.comparison-label {
+  font-size: 20px; /* 현재 크기(14px) 유지 또는 살짝 줄여도 좋습니다. */
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--space-4);
+}
+
+/* "수집 중..." 또는 증감률 숫자 */
+.comparison-value {
+  font-size: 44px; /* ✅ 추천: 기존 28px에서 크게 키움 */
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* "어제: 450.5 kWh" 와 같은 설명 글씨 */
+.comparison-description {
+  font-size: var(--font-size-xs); /* 현재 크기(12px) 유지가 적당합니다. */
+  color: var(--color-text-secondary);
+  margin-top: var(--space-4);
+}
+/* ✅ [수정] 증감률 색상: 살짝 어두운 빨강 (증가) */
+.comparison-value.increase {
+  color: #F87171;
+}
+
+/* ✅ [수정] 증감률 색상: 살짝 어두운 파랑 (감소) */
+.comparison-value.decrease {
+  color: #60A5FA;
+}
+
+/* ✅ [추가] 시계 카드 전용 폰트 크기 스타일 */
+/* 이 스타일은 'time-card' 클래스를 가진 StatCard에만 적용됩니다. */
+.stat-card.time-card .current-usage-value {
+  font-size: 30px; /* 👈 여기에 원하는 폰트 크기를 입력하세요 */
+  /* 예: font-size: clamp(32px, 5vw, 60px); 와 같이 반응형으로도 설정 가능 */
+}
+/* ✅ [추가] 피크 발생 확률 카드 전용 폰트 크기 */
+.stat-card.peak-probability-card .current-usage-value {
+  font-size: 30px; /* 👈 여기에 원하는 폰트 크기를 입력하세요 */
+}

@@ -1,0 +1,125 @@
+.auth-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--space-24);
+  background: var(--color-background);
+  position: relative;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-32); /* 기존 24px → 32px */
+  width: 90%;
+  max-width: 520px; /* 기존 500px → 520px */
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+}
+
+.auth-header {
+  margin-bottom: var(--space-24); /* 기존 20px → 24px */
+  text-align: center;
+}
+
+.auth-header h4 {
+  font-size: var(--font-size-2xl); /* 기존 xl → 2xl */
+  color: var(--color-text);
+  margin: 0;
+  font-weight: 600;
+}
+
+.auth-body .form-group {
+  margin-bottom: var(--space-20); /* 기존 16px → 20px */
+}
+
+.auth-body .form-label {
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: var(--space-10); /* 기존 8px → 10px */
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  font-weight: 500;
+}
+
+.auth-body .form-control {
+  width: 100%;
+  font-size: var(--font-size-base); 
+}
+
+.auth-submit-container {
+  margin-top: var(--space-32); /* 기존 24px → 32px */
+  text-align: center;
+}
+
+.auth-switch-mode {
+  text-align: right;
+  margin-top: var(--space-24);
+}
+
+.btn-text-link {
+  background: none; border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-base); 
+  cursor: pointer;
+  padding: var(--space-6) var(--space-12); 
+  border-radius: var(--radius-base);
+  transition: all 0.2s ease;
+}
+
+.btn-text-link:hover {
+  background: rgba(33, 128, 141, 0.1);
+  transform: translateY(-1px);
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.6rem; 
+  align-items: center;
+}
+
+.input-with-button .form-control { flex: 1; margin: 0; }
+
+.btn-check-id {
+  padding: var(--space-12) var(--space-16); 
+  font-size: var(--font-size-sm);
+  height: 46px;
+  white-space: nowrap;
+}
+
+.btn--login-width {
+  width: 100%;
+  max-width: 350px;
+  font-size: var(--font-size-base); 
+  padding: var(--space-16) var(--space-24); 
+}
+
+.auth-divider {
+  display: flex; align-items: center;
+  margin: var(--space-20) 0; 
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base); 
+}
+
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--color-border);
+}
+
+.auth-divider span { 
+  padding: 0 var(--space-16); 
+}
+
+.error-message {
+  color: var(--color-error);
+  font-size: var(--font-size-base); /* 기존 sm → base */
+  margin-top: var(--space-10); /* 기존 8px → 10px */
+  padding: var(--space-12); /* 기존 8px → 12px */
+  background: rgba(var(--color-error-rgb), 0.1);
+  border-radius: var(--radius-base);
+  border-left: 3px solid var(--color-error);
+}
+
+.theme-toggle-container {
+  position: absolute; top: 24px; right: 24px; /* 기존 20px → 24px */
+}
