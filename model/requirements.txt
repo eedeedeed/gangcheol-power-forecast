@@ -1,0 +1,6 @@
+flask
+flask-cors
+numpy
+scikit-learn
+xgboost==1.7.6     # (너가 쓰던 버전 맞춰서)
+joblib

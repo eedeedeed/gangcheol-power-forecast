@@ -1,12 +1,9 @@
-# 루트 .gitignore에 추가(없으면 생성)
-"node_modules/"        | Out-File -FilePath .gitignore -Encoding utf8 -Append
-"front/node_modules/"  | Out-File -FilePath .gitignore -Encoding utf8 -Append
-"backend/node_modules/"| Out-File -FilePath .gitignore -Encoding utf8 -Append
+"node_modules/"         | Out-File -FilePath .gitignore -Encoding utf8 -Append
+"backend/node_modules/" | Out-File -FilePath .gitignore -Encoding utf8 -Append
+"front/node_modules/"   | Out-File -FilePath .gitignore -Encoding utf8 -Append
 
-# backend/.gitignore에도 보강 (이미 있을 수 있음)
 if (!(Test-Path backend\.gitignore)) { New-Item backend\.gitignore -ItemType File | Out-Null }
 "node_modules/" | Out-File -FilePath backend\.gitignore -Encoding utf8 -Append
 
-# front/.gitignore 생성/보강
 if (!(Test-Path front\.gitignore)) { New-Item front\.gitignore -ItemType File | Out-Null }
 "node_modules/" | Out-File -FilePath front\.gitignore -Encoding utf8 -Append
